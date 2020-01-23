@@ -1,0 +1,10 @@
+{
+  "name": "studynote",
+  "version": "0.1.0",
+  "scripts": {
+    "test": "node -v && npm -v",
+    "gitinit":"git init",
+    "gitlocal":"git add . && git commit -m --moment",
+    "gitremote":"git push"
+  }
+}

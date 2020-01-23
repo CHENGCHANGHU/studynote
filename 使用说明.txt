@@ -1,0 +1,11 @@
+1、安装node，配置node进环境变量
+2、在当前目录下创建package.json文件
+  {
+    "name": "studynote",
+    "version": "0.1.0",
+    "scripts": {
+      "test": "node -v && npm -v"
+    }
+  }
+3、即可使用：npm run test，运行命令
+  &&：表示顺序运行多个命令
