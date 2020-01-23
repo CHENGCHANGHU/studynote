@@ -4,7 +4,7 @@
   "scripts": {
     "test": "node -v && npm -v",
     "gitinit":"git init",
-    "gitlocal":"git add . && git commit",
+    "gitlocal":"git add . && git commit -m",
     "gitremote":"git push"
   }
 }

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Vue CLI3 笔记</title>
+</head>
+
+<body>
+  <pre>
+    1、Vue CLI3 取别名
+      新建CLI3的Vue项目：vue create marketdemo
+      在src目录下创建配置文件：vue.config.js
+        module.exports={
+          configureWebpack:{
+            resolve:{
+              extensions:[],
+              alias:{
+                // "@":"src",//这个已经默认配置过了
+                "assets":"@/assets",
+                "common":"@/common",
+                "components":"@/components",
+                "network":"@/network",
+                "views":"@/views",
+              }
+            }
+          }
+        }
+      注意： 在html中使用别名，需要加~，而在js代码中不需要
+    2、
+  </pre>
+</body>
+
+</html>

@@ -4,9 +4,13 @@
     "name": "studynote",
     "version": "0.1.0",
     "scripts": {
-      "test": "node -v && npm -v"
+      "test": "node -v && npm -v",
+      "gitinit":"git init",
+      "gitlocal":"git add . && git commit -m",
+      "gitremote":"git push"
     }
   }
 3、即可使用：npm run test，运行命令
   &：表示并行运行多个命令
   &&：表示顺序运行多个命令
+  npm run gitlocal -- "测试"：-- 表示npm script脚本命令的结束，后面的"测试"将作为git commit -m的参数
