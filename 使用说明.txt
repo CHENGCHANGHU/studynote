@@ -14,3 +14,4 @@
   &：表示并行运行多个命令
   &&：表示顺序运行多个命令
   npm run gitlocal -- "测试"：-- 表示npm script脚本命令的结束，后面的"测试"将作为git commit -m的参数
+  start https://www.baidu.com：使用默认浏览器打开百度（dos命令）

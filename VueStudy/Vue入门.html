@@ -1,0 +1,2711 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <title>vue学习</title>
+  <!-- 对于制作原型或学习，你可以这样使用最新版本： -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <style type='text/css'>
+    /* * {
+      padding: 0;
+      margin: 0;
+    } */
+
+    * {
+      font-family: "Microsoft YaHei";
+    }
+
+    .catalog-box {
+      display: inline-block;
+      position: fixed;
+      top: 5%;
+      right: 10px;
+      height: 90%;
+      width: 300px;
+      overflow-y: scroll;
+      background-color: rgb(244, 244, 244);
+      box-shadow: 2px 2px 5px #ddd;
+    }
+
+    .catalog-box li {
+      line-height: 25px;
+    }
+
+    .sticky-title {
+      position: sticky;
+      top: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      text-align: center;
+      height: 40px;
+      line-height: 40px;
+      font-size: 24px;
+      letter-spacing: 3px;
+      font-weight: bold;
+      width: 700px;
+      margin: 0 auto;
+      z-index: 9999;
+    }
+
+    h2 {
+      margin: 0;
+      position: sticky;
+      top: 0;
+      /* background-color: lightcoral; */
+      background: linear-gradient(to right, rgb(240, 163, 163), #fff 30%);
+      height: 40px;
+      line-height: 40px;
+      /* display: inline-block; */
+      padding-left: 10px;
+      box-sizing: border-box;
+      color: #333;
+    }
+
+    h2::before {
+      content: "# ";
+    }
+
+    pre,
+    strong {
+      font-size: 1.2rem;
+      font-family: 'KaiTi';
+      background-color: rgba(0, 0, 0, 0.9);
+      color: coral;
+      /* background: url('bgtile.png'); */
+    }
+  </style>
+</head>
+
+
+<body>
+  <div class="sticky-title">
+    伟大、无私、正经的 黄橙 先生存笔记于此
+  </div>
+
+  <div id="app1">
+    <hr>
+    <h2>app1 vue简单例子1</h2>
+    {{ message }}
+  </div>
+  <script type="text/javascript">
+    let app1 = new Vue({
+      el: '#app1',
+      data: {
+        message: 'Hello Vue!'
+      }
+    });
+  </script>
+
+
+  <div id="app2">
+    <hr>
+    <h2>app2 vue简单例子2</h2>
+    {{a}}
+  </div>
+  <script type='text/javascript'>
+    let data = {
+      a: 'chengchanghu'
+    };
+    let app2vm = new Vue({
+      el: '#app2',
+      data: data
+    });
+    app2vm.$data.a = 'allx';// $[p] 获取vm的p属性对应的对象
+    // vm.$el === document.getElementById('example') // => true
+
+    app2vm.$watch('a', (newVal, oldVal) => {
+      console.log('newVal:' + newVal + ' oldVal:' + oldVal);
+    })
+    data.a = 'allx cheng';
+
+  </script>
+
+  <div id="app3">
+    <hr>
+    <h2>app3 vue生命周期</h2>
+    {{msg}}
+  </div>
+  <script type='text/javascript'>
+    let app3vm = new Vue({
+      el: '#app3',
+      data: {
+        msg: '伟大、无私、正经的黄橙先生',
+      },
+      // 生命周期函数不能使用箭头函数（箭头函数没有this）
+
+      // 1、在实例初始化之后。数据观测（data observer）和 event/watcher 时间配置之前被调用
+      beforeCreate: function () {
+        console.log('beforeCreate');
+      },
+
+      // 2、在实例创建完成后被立即调用
+      // 在这一步，实例已完成一下配置：
+      // 数据观测（data observer），属性和方法的运算，watch/event 事件回调
+      // 然而，挂载阶段还未开始，$el 属性目前不可见
+      created: function () {
+        console.log('created');
+      },
+
+      // 3、在挂载开始之前被调用：相关的渲染函数首次被调用
+      beforeMount: function () {
+        console.log('beforeMount');
+      },
+
+      // 4、el 被新创建的 vm.$el 替换，挂载成功
+      mounted: function () {
+        console.log('mounted');
+      },
+
+      // 5、数据更新时调用
+      beforeUpdate: function () {
+        console.log('beforeUpdate');
+      },
+
+      // 6、组件 DOM 已经更新完成，组件更新完成
+      updated: function () {
+        console.log('updated');
+      },
+    });
+
+    let newMsg = '伟大、无私、正经的黄橙先生(newMSG)';
+    let updateTime = 1000;
+    // setTimeout(((newMsg) => {
+    //     app3vm.msg = newMsg;
+    // })(newMsg), updateTime);
+    setTimeout(() => {
+      // app3vm.msg = newMsg;
+      app3vm.$data.msg = newMsg;
+    }, updateTime);
+  </script>
+
+  <div id='app4' v-html>
+    <hr>
+    <h2>app4 v-once简单例子</h2>
+    <p v-once>{{app4_p1}}</p><!-- v-once 只渲染一次，不可更改 -->
+
+    <!-- v-html 的使用 -->
+    <!-- 将字符串渲染成子级html元素 -->
+    <p>not using v-html:{{app4_p2}}</p>
+    <p>using v-html:<span v-html="app4_p2"></span></p>
+    <p v-html="app4_p2">using v-html:</p>
+
+    <!-- v-bind:属性="" 动态绑定元素属性 -->
+    <div v-bind:class='app4_div1_class'>v-bind test</div>
+
+    <!-- javascript运算 -->
+    <p>{{app4_number+1}}</p>
+    <p>{{ app4_ok?'YES':'NO' }}</p>
+    <p>{{ app4_msg.split('').reverse().join('') }}</p>
+
+  </div>
+  <script type='text/javascript'>
+    let app4vm = new Vue({
+      el: '#app4',
+      data: {
+        app4_p1: '伟大、无私、正经的黄橙先生',
+        app4_p2: '<span style="color:brown">伟大、无私、正经的黄橙先生</span>',
+        app4_div1_class: `red-color`,
+        app4_number: 1000,
+        app4_ok: true,
+        app4_msg: 'allx cheng',
+      },
+    });
+
+    setTimeout(() => {
+      app4vm.$data.app4_div1_class = `blue-color`;
+    }, updateTime);
+  </script>
+  <style type='text/css'>
+    .red-color {
+      color: red;
+    }
+
+    .blue-color {
+      color: blue;
+      font-size: 4rem;
+    }
+  </style>
+
+  <div id="app5">
+    <hr>
+    <h2>app5 v-if v-bind v-on 简单例子</h2>
+    <p v-if='app5_seen'>现在你可以看见我了</p>
+    <a v-bind:href='app5_url' target='_blank'>黄橙资源站</a>
+
+    <!-- 修饰符 -->
+    <div @click='app5_click1'>
+      <div @click.stop='app5_click2'>click me</div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    let app5vm = new Vue({
+      el: '#app5',
+
+      data: {
+        app5_seen: false,
+        app5_url: `https://[2001:da8:1002:315:343f:efbe:8c08:e1c3]/`,
+      },
+
+      methods: {
+        app5_click1: function () {
+          console.log(`click1...`);
+        },
+        app5_click2: function () {
+          console.log(`click2...`);
+        },
+      },
+    });
+
+    setTimeout(() => {
+      app5vm.$data.app5_seen = true;
+    }, updateTime);
+  </script>
+
+  <div id='app6'>
+    <hr>
+    <h2>app6 v-bind class style 简单例子</h2>
+    <!-- <div class='app6_normal' v-bind:class="{ app6_active:app6_isActive }">ALLX</div> -->
+    <!-- <div v-bind:class="{ app6_normal:true,app6_active:app6_isActive }">ALLX</div> -->
+    <div v-bind:class="[ 'app6_normal',app6_isActive?'app6_active':'' ]">ALLX</div>
+
+    <div class="app6_normal" :style="{ 
+            color:app6_color,
+            font_size:app6_fontSize,
+            background:app6_isBrown?'brown':'darkmagenta',
+        }">
+      ALLX
+    </div>
+  </div>
+  <script type='text/javascript'>
+    let app6vm = new Vue({
+      el: '#app6',
+
+      data: {
+        app6_isActive: false,
+        app6_color: '#fff',
+        app6_fontSize: '3rem',
+        app6_isBrown: false,
+      },
+    });
+
+    setTimeout(() => {
+      app6vm.app6_isActive = true;
+      app6vm.$data.app6_isBrown = true;
+    }, updateTime);
+  </script>
+  <style type='text/css'>
+    .app6_normal {
+      width: 240px;
+      height: 100px;
+      margin: 0 auto;
+      background-color: coral;
+      color: #fff;
+      font-size: 4rem;
+      text-align: center;
+      line-height: 100px;
+      letter-spacing: 2px;
+    }
+
+    .app6_active {
+      background-color: crimson;
+    }
+  </style>
+
+  <div id="app7">
+    <hr>
+    <h2>app7 v-if v-else-if v-show 简单例子</h2>
+    <!-- v-if 指令用于条件性地渲染一块内容。这块内容只会在指令的表达式返回 truthy 值的时候被渲染。 -->
+    <div v-if="app7_type===app7_typeA">A</div>
+    <div v-else-if="app7_type===app7_typeB">B</div>
+    <div v-else-if="app7_type===app7_typeC">C</div>
+    <div v-else>Not A/B/C</div>
+
+    <!-- v-show 不可见是因为 display 为 none -->
+    <div v-show='app7_ok'>ok</div>
+
+    <!-- 切换频繁 v-show ; 较少切换 v-if -->
+  </div>
+  <script type='text/javascript'>
+    let app7vm = new Vue({
+      el: '#app7',
+
+      data: {
+        app7_typeA: 'A',
+        app7_typeB: 'B',
+        app7_typeC: 'C',
+        app7_type: 'A',
+        app7_ok: true,
+      },
+    });
+  </script>
+
+  <div id="app8">
+    <hr>
+    <h2>app8 v-for 简单例子</h2>
+    <ul>
+      <!-- v-bind 可以省略 -->
+      <!-- key 跟踪每个元素 -->
+      <li v-for="item,index in app8_items" :key="index">
+        {{ index }}、{{ item.msg }}
+      </li>
+    </ul>
+    <ul>
+      <!-- <li v-for='obj in app8_object'>
+                {{ obj }}
+            </li> -->
+      <li v-for='v,k in app8_object' :key="k">
+        {{ k }} : {{ v }}
+      </li>
+    </ul>
+  </div>
+  <script type="text/javascript">
+    let app8vm = new Vue({
+      el: '#app8',
+
+      data: {
+        app8_items: [
+          { msg: 'Cheng' },
+          { msg: 'Chang' },
+          { msg: 'Hu' },
+        ],
+        app8_object: {
+          title: '赞扬黄橙先生',
+          who: '黄橙先生',
+          how: '伟大、无私、正经',
+          when: '2019-12-18',
+        }
+      },
+    });
+  </script>
+
+  <div id='app9'>
+    <hr>
+    <h2>app9 methods 简单例子</h2>
+    <div id='app9-example-1'>
+      <button v-on:click='app9_counter+=1'>
+        counter: {{ app9_counter }}
+      </button>
+
+      <button v-on:click='app9_greet("黄橙先生",$event)'>
+        向您致意
+      </button>
+    </div>
+  </div>
+  <script type='text/javascript'>
+    let app9vm = new Vue({
+      el: '#app9',
+
+      data: {
+        app9_counter: 0,
+        app9_how: '伟大、无私、正经的',
+      },
+
+      methods: {
+        app9_greet: function (str, e) {
+          window.alert(this.app9_how + str + '向您致意');
+          console.log(e);
+        },
+      },
+    });
+  </script>
+
+  <div id='app10'>
+    <hr>
+    <h2>app10 v-model 简单例子</h2>
+    <!-- v-model 双向绑定 -->
+    <div id='app10-example-1'>
+      <input v-model='app10_msg' placeholder='edit me'>
+      <p>msg is: {{app10_msg}}</p>
+
+      <textarea v-model='app10_msg2' placeholder='add multiple lines'></textarea>
+      <p style='white-space:pre-line;'>{{app10_msg2}}</p>
+
+      <div>
+        <input type='checkbox' id='cch' value='CCH' v-model='app10_checkedNames'>
+        <label for='cch'>CCH</label>
+
+        <input type='checkbox' id='allx' value='ALLX' v-model='app10_checkedNames'>
+        <label for='allx'>ALLX</label>
+
+        <input type='checkbox' id='tiger' value='TIGER' v-model='app10_checkedNames'>
+        <label for='tiger'>TIGER</label>
+
+        <p>Checked names: {{app10_checkedNames}}</p>
+      </div>
+
+      <div>
+        <input type='radio' id='chengchanghu' value="ChengChangHu" v-model='app10_picked'>
+        <label for='chengchanghu'>ChengChangHu</label>
+        <br>
+        <input type='radio' id='tigercheng' value="TigerCheng" v-model='app10_picked'>
+        <label for='tigercheng'>TigerCheng</label>
+        <p>Picked: {{app10_picked}}</p>
+      </div>
+
+      <button @click='app10_submit'>提交</button>
+    </div>
+  </div>
+  <script type='text/javascript'>
+    let app10vm = new Vue({
+      el: '#app10',
+
+      data: {
+        app10_msg: '',
+        app10_msg2: '',
+        // app10_checkedNames: ['TIGER'], //默认值
+        app10_checkedNames: [],
+        app10_picked: "",
+      },
+
+      methods: {
+        app10_submit: function () {
+          let postObj = {
+            msg1: this.app10_msg,
+            msg2: this.app10_msg2,
+            checkedNames: this.app10_checkedNames,
+            picked: this.app10_picked,
+          }
+          console.log(postObj);
+        },
+      }
+    });
+  </script>
+
+  <div id='app11'>
+    <hr>
+    <h2>app11 props 全局组件 简单例子</h2>
+    <!-- 在html或者vue组件元素的属性上使用vue的data值，需要v-bind绑定，并且不需要双花括号 -->
+    <app11-button-counter :prefix='app11_prefix1' v-on:app11_click_component='app11_clicknow'>
+      <h5>这是插槽内容</h5>
+    </app11-button-counter>
+    <app11-button-counter :prefix='app11_prefix2' @app11_click_component='app11_clicknow'>
+      <p>aaaaaaaa</p>
+    </app11-button-counter>
+    <app11-button-counter :prefix='app11_prefix3'>
+      ALLX
+    </app11-button-counter>
+  </div>
+  <script type='text/javascript'>
+    // 全局创建的组件，可在所有的Vue根实例中使用
+    Vue.component('app11-button-counter', {
+      props: ['prefix'],// 属性
+
+      data: function () {
+        return {
+          app11_count: 0,
+        }
+      },
+
+      template: `
+                <div>
+                    <p>按钮</p>
+                    <button v-on:click="app11_countfunc">
+                        {{ prefix }}: you clicked me {{ app11_count }} times.
+                    </button>
+                    <slot></slot>
+                </div>
+            `,// 组件模板必须具备一个根节点，slot 插槽插入html内容
+
+      methods: {
+        app11_countfunc: function () {
+          this.app11_count++;
+
+          // 设置自定义组件的可触发事件，并传入参数
+          this.$emit('app11_click_component', this.app11_count);
+          console.log('.......');
+        }
+      },
+    });
+
+    let app11vm = new Vue({
+      el: '#app11',
+
+      data: {
+        app11_prefix1: 'ALLX',
+        app11_prefix2: 'CCH',
+        app11_prefix3: 'TIGER',
+      },
+
+      methods: {
+        app11_clicknow: function (e) {
+          console.log('app11_clicknow: ' + e);
+        },
+      }
+    });
+  </script>
+
+  <div id='app12'>
+    <hr>
+    <h2>app12 局部组件 简单例子</h2>
+    <app12_test></app12_test>
+  </div>
+  <script tpye='text/javascript'>
+    let app12vm = new Vue({
+      el: '#app12',
+
+      data: {
+      },
+
+      methods: {
+      },
+
+      components: {
+        app12_test: {
+          template: `<h3>app12_test 局部组件</h3>`,
+        },
+      }
+    });
+  </script>
+
+  <div id='app13'>
+    <hr>
+    <h2>app13 computed 实现 v-if </h2>
+    <p>{{result}}</p>
+  </div>
+  <script type='text/javascript'>
+    const app13vm = new Vue({
+      el: '#app13',
+      data: {
+        score: 88,
+      },
+      computed: {
+        result() {
+          if (this.score >= 90) {
+            return '优秀';
+          } else if (this.score >= 80) {
+            return '良好';
+          } else if (this.score >= 60) {
+            return "及格";
+          } else {
+            return '不及格';
+          }
+        },
+      },
+      methods: {},
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <div id='app14'>
+    <hr>
+    <h2>app14 用户切换登录的案例</h2>
+    <span v-if='isUser'>
+      <label for="username">用户账号</label>
+      <input type="text" id="username" placeholder='用户账号' key='userName'>
+    </span>
+    <span v-else>
+      <label for="useremail">用户邮箱</label>
+      <!-- input 的 type 可以避免 vue 不必要的元素复用 -->
+      <!-- 或者使用 key 来避免 -->
+      <input type="text" id="useremail" placeholder='用户邮箱' key='userEmail'>
+    </span>
+    <button @click="changeLoginMethod()">切换</button>
+  </div>
+  <script type='text/javascript'>
+    const app14vm = new Vue({
+      el: '#app14',
+      data: {
+        isUser: true,
+      },
+      computed: {
+
+      },
+      methods: {
+        changeLoginMethod() {
+          this.isUser = !this.isUser
+        },
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <div id='app15'>
+    <hr>
+    <h2>app15 v-for 的 key 的存在</h2>
+    <p>因为如果是数组的循环展示li，那么在数组中间位置插入一个新的元素时，会复用之前的内存，
+      只是将之前内存中内容进行向后移动（传统数组插入法），添加key之后可以避免复用引起的错误问题，提高效能。
+    </p>
+    <p><strong>通过索引值修改数组元素不是响应式的，使用vue.set可以响应</strong></p>
+    <ul>
+      <li v-for="(p,index) in Persons" :key="p.id" class="app15-normal" :class="{'app15-bg':activeId===index}"
+        @click="liClick(index)">
+        {{p.id}}. {{p.name}}
+      </li>
+    </ul>
+    <button @click="pushFunc()">PUSH</button>
+    <button @click="spliceFunc()">SPLICE</button>
+    <button @click="sortFunc()">SORT</button>
+    <button @click="reverseFunc()">REVERSE</button>
+    <button @click="vueSetFunc()">VUESET</button>
+
+    <pre>
+      // 删除、插入或替换元素，第一个参数是操作开始位置下标（下标元素含于内）
+      // 删除：第二个参数传入删除元素个数，如果没有传入，则默认删除后面所有元素
+      // 替换：如果有超过三个参数，第二个参数等于后面参数个数，则将第三个参数起视为从操作下标起的替换元素
+      // 插入：如果替换时第二个参数为0，则是插入操作
+      this.Persons.splice(1);
+    </pre>
+  </div>
+  <script type='text/javascript'>
+    const app15vm = new Vue({
+      el: '#app15',
+      data: {
+        Persons: [
+          {
+            id: 1,
+            name: 'Cheng ChangHu'
+          }, {
+            id: 2,
+            name: 'Huang Cheng'
+          }, {
+            id: 3,
+            name: 'Allx Huang'
+          }, {
+            id: 4,
+            name: 'Tiger Cheng'
+          }
+        ],
+        activeId: 0,
+        normalClass: [
+          "app15-normal",
+        ]
+      },
+      computed: {},
+      methods: {
+        pushFunc() {
+          currentId = this.Persons[this.Persons.length - 1].id;
+          this.Persons.push({
+            id: ++currentId,
+            name: 'New Name ' + currentId
+          });// 在数组尾部插入若干元素
+        },
+        popFunc() { },// 删除数组最后一个元素
+        shiftFunc() { },// 删除数组第一个元素
+        unshiftFunc() { },// 在数组头部插入若干元素
+        spliceFunc() {
+          // 删除、插入或替换元素，第一个参数是操作开始位置下标（下标元素含于内）
+          // 删除：第二个参数传入删除元素个数，如果没有传入，则默认删除后面所有元素
+          // 替换：如果有超过三个参数，第二个参数等于后面参数个数，则将第三个参数起视为从操作下标起的替换元素
+          // 插入：如果替换时第二个参数为0，则是插入操作
+          this.Persons.splice(1);
+        },
+        sortFunc() {
+          this.Persons.sort(sortBy('id', true));
+          // this.Persons.sort(function (a, b) {
+          //   return a.id - b.id;
+          // })
+        },
+        reverseFunc() {
+          this.Persons.reverse();
+        },
+        vueSetFunc() {
+          Vue.set(this.Persons, 0, { id: 1, name: 'Cheng DaHu' })
+        },
+        liClick(index) { this.activeId = index; },
+      },
+    });
+
+    function sortBy(prop, reverse) {
+      if (reverse == undefined)
+        reverse = 1;
+      else
+        reverse = reverse ? 1 : -1;
+      return (a, b) => {
+        ac = a[prop];
+        bc = b[prop];
+        if (ac < bc)
+          return reverse * -1;
+        else if (ac > bc)
+          return reverse * 1;
+        return 0;
+      }
+    }
+  </script>
+  <style type='text/css'>
+    .app15-normal {
+      font-size: 1.1rem;
+      width: 300px;
+      list-style-type: none;
+    }
+
+    .app15-normal:hover {
+      cursor: pointer;
+    }
+
+    .app15-bg {
+      background: linear-gradient(to right, coral, #fff 90%);
+    }
+  </style>
+
+  <div id='app16'>
+    <hr>
+    <h2>app16 购物车案例</h2>
+    <div v-if="books.length">
+      <table>
+        <thead>
+          <th></th>
+          <th>书籍名称</th>
+          <th>出版日期</th>
+          <th>书本单价</th>
+          <th>购买数量</th>
+          <th>操作</th>
+        </thead>
+        <tbody>
+          <tr v-for="(book,index) in books">
+            <!-- <td v-for="v in book">{{v}}</td> -->
+            <td>{{book.id}}</td>
+            <td>{{book.title}}</td>
+            <td>{{book.date}}</td>
+            <!-- <td>￥{{book.price.toFixed(2)}}</td> -->
+            <!-- <td>{{showPrice(book.price)}}</td> -->
+            <td>{{book.price|showPriceFilter}}</td>
+            <td>
+              <button @click="decrement(index)" :disabled="book.count<=1">-</button>
+              {{book.count}}
+              <button @click="increment(index)">+</button>
+            </td>
+            <td>
+              <button @click="removeBookFunc(index)">删除</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p>总价格：{{totalPrice|showPriceFilter}}</p>
+    </div>
+    <p v-else>购物车为空</p>
+    <pre>
+      // 1
+      // for (let i = 0; i < this.books.length; i++)
+      //   total += this.books[i].count * this.books[i].price;
+
+      // 2
+      // for (let i in this.books)
+      //   total += this.books[i].count * this.books[i].price;
+
+      // 3
+      // for (let b of this.books)
+      //   total += b.count * b.price;
+      // return total;
+
+      // 4 filter/map/reduce
+      // filter：的回调函数必须返回boolean，true则加入新数组，false则过滤掉
+      // map：遍历数组每个元素传入回调函数，返回值加入新数组
+      // reduce：对数组元素进行汇总，相乘或相加
+
+      // return this.books.filter((b) => {
+      //   return b.count >= 1;
+      // }).map((b) => {
+      //   return b.count * b.price;
+      // }).reduce((pre, c) => {
+      //   return pre + c;
+      // }, 0);
+
+      return this.books.filter((b) => b.count >= 1)
+        .map((b) => b.count * b.price)
+        .reduce((pre, c) => pre + c, 0);// 0是pre的默认值
+    </pre>
+  </div>
+  <script type='text/javascript'>
+    const app16vm = new Vue({
+      el: '#app16',
+      data: {
+        books: [{
+          id: 1,
+          title: '《第一本书》',
+          date: '2019-12-23',
+          price: 28.90,
+          count: 1,
+        }, {
+          id: 2,
+          title: '《庆余年》',
+          date: '2299-12-31',
+          price: 58.03,
+          count: 1,
+        }, {
+          id: 3,
+          title: '《大明风华》',
+          date: '1449-11-10',
+          price: 82.50,
+          count: 1,
+        }, {
+          id: 4,
+          title: '《ALLX游记》',
+          date: '1997-01-12',
+          price: 148.04,
+          count: 1,
+        }, {
+          id: 5,
+          title: '《略略略》',
+          date: '1212-12-01',
+          price: 38.45,
+          count: 1,
+        },
+        ],
+      },
+      computed: {
+        totalPrice() {
+          let total = 0;
+          // for (let b in/of books)
+          // reduce
+
+          // 1
+          // for (let i = 0; i < this.books.length; i++)
+          //   total += this.books[i].count * this.books[i].price;
+
+          // 2
+          // for (let i in this.books)
+          //   total += this.books[i].count * this.books[i].price;
+
+          // 3
+          // for (let b of this.books)
+          //   total += b.count * b.price;
+          // return total;
+
+          // 4 filter/map/reduce
+          // filter：的回调函数必须返回boolean，true则加入新数组，false则过滤掉
+          // map：遍历数组每个元素传入回调函数，返回值加入新数组
+          // reduce：对数组元素进行汇总，相乘或相加
+
+          // return this.books.filter((b) => {
+          //   return b.count >= 1;
+          // }).map((b) => {
+          //   return b.count * b.price;
+          // }).reduce((pre, c) => {
+          //   return pre + c;
+          // }, 0);
+
+          return this.books.filter((b) => b.count >= 1)
+            .map((b) => b.count * b.price)
+            .reduce((pre, c) => pre + c, 0);
+        },
+      },
+      methods: {
+        showPriceFunc(p) {
+          return "￥" + p.toFixed(2);
+        },
+        increment(index) {
+          this.books[index].count++;
+        },
+        decrement(index) {
+          this.books[index].count--;
+        },
+        removeBookFunc(index) {
+          this.books.splice(index, 1);
+        },
+      },
+      filters: {
+        showPriceFilter(p) {
+          return "￥" + p.toFixed(2);
+        }
+      },
+    });
+  </script>
+  <style type='text/css'>
+    #app16 table {
+      margin: 0 auto;
+      border: 1px solid #e9e9e9;
+      border-collapse: collapse;
+      border-spacing: 0;
+
+    }
+
+    #app16 th,
+    #app16 td {
+      padding: 8px 16px;
+      border: 1px solid #e9e9e9;
+      /* text-align: left; */
+    }
+
+    #app16 th {
+      background-color: #f7f7f7;
+      color: #5c6b77;
+      font-weight: 600;
+    }
+
+    #app16 th {
+      background-color: darkseagreen;
+      color: #fff;
+    }
+
+    #app16 tr:nth-child(odd) {
+      background-color: rgb(234, 241, 243);
+    }
+
+    #app16 tr:nth-child(even) {
+      background-color: #fff;
+    }
+
+    #app16 tr td:nth-child(2) {
+      font-family: "KaiTi", "Times New Roman";
+    }
+  </style>
+
+  <div id='app17'>
+    <hr>
+    <h2>app17 v-model 简单例子</h2>
+    <!-- input 的 name 属性作为表单提交的 key -->
+    <!-- label 的 for 是针对 id 的 -->
+    <label for="name">姓名：
+      <input type="text" name="name" id="name" v-model='app17name'>
+      {{app17name}}
+    </label>
+    <p>
+      <label for="male">男：
+        <input type="radio" name="male" id="male" value="male" v-model="app17gender">
+      </label>
+      <label for="female">女：
+        <input type="radio" name="female" id="female" value="female" v-model="app17gender">
+      </label>
+      （性别为：{{app17gender}}）
+    </p>
+    <p>
+      <label for="license">
+        <input type="checkbox" name="license" id="license" v-model="app17isAgree">同意协议
+      </label>
+      <button :disabled="!app17isAgree" @click="nextStep()">下一步</button>
+      <span>（app17isAgree: {{app17isAgree}}）单个checkbox是布尔值</span>
+    </p>
+    <p>
+      <input type="checkbox" name="hobby" value="唱" v-model="app17hobbies">唱
+      <input type="checkbox" name="hobby" value="跳" v-model="app17hobbies">跳
+      <input type="checkbox" name="hobby" value="Rap" v-model="app17hobbies">Rap
+      <input type="checkbox" name="hobby" value="篮球" v-model="app17hobbies">篮球
+      <span>（app17hobbies: {{app17hobbies}}）多个checkbox是数组</span>
+    </p>
+    <p>
+      <select name="app17select" id="app17select" v-model="app17cxkselect">
+        <option value="唱">唱</option>
+        <option value="跳">跳</option>
+        <option value="Rap">Rap</option>
+        <option value="篮球">篮球</option>
+      </select>
+      <span>蔡徐坤可以：{{app17cxkselect}}</span>
+    </p>
+    <p>
+      <select name="app17selects" id="app17selects" v-model="app17cxkselects" multiple>
+        <option value="唱">唱</option>
+        <option value="跳">跳</option>
+        <option value="Rap">Rap</option>
+        <option value="篮球">篮球</option>
+      </select>
+      <span>(按住Ctrl)蔡徐坤可以：{{app17cxkselects}}</span>
+    </p>
+    <p>
+      <!-- 此种label写法不用写for-id -->
+      <!-- 或者动态绑定 :for 与 :id -->
+      <label v-for="v in app17values">
+        <input type="checkbox" :value="v" v-model="app17customValues">{{v}}
+      </label>
+      (app17customValues:{{app17customValues}})
+    </p>
+
+  </div>
+  <script type='text/javascript'>
+    const app17vm = new Vue({
+      el: '#app17',
+      data: {
+        app17name: '蔡徐坤',
+        app17gender: 'male',
+        app17isAgree: false,
+        app17hobbies: [],// 在此写入的值视为默认值
+        app17cxkselect: '篮球',
+        app17cxkselects: [],
+        app17values: ['Cheng ChangHu', 'Allx Cheng', 'Huang Cheng', 'Tiger Cheng'],
+        app17customValues: [],
+      },
+      computed: {},
+      methods: {
+        nextStep() {
+          console.log('下一步');
+        },
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <div id='app18'>
+    <hr>
+    <h2>app18 v-model 的修饰符</h2>
+    <p>
+      <input type="text" v-model.lazy="app18msg">
+      {{app18msg}}(敲回车或失去焦点才改变，懒加载)
+    </p>
+    <p>
+      <input type="number" v-model="app18age">
+      {{app18age}}--{{typeof(app18age)}}(默认输入都是string)
+    </p>
+    <p>
+      <input type="number" v-model.number="app18ageN">
+      {{app18ageN}}--{{typeof(app18ageN)}}(默认输入都是number)
+    </p>
+    <p>
+      <input type="text" v-model.trim="app18trimMsg">
+      {{app18trimMsg}}(去除两边的空格)
+    </p>
+  </div>
+  <script type='text/javascript'>
+    const app18vm = new Vue({
+      el: '#app18',
+      data: {
+        app18msg: '',
+        app18age: 0,
+        app18ageN: 0,
+        app18trimMsg: '',
+      },
+      computed: {},
+      methods: {},
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <div id='app19'>
+    <hr>
+    <h2>app19 简单组件</h2>
+    <app19-cpn></app19-cpn>
+    <app19-cpn></app19-cpn>
+  </div>
+  <script type='text/javascript'>
+    // 1、创建组件构造器对象
+    // 2、注册组件
+    // 3、使用组件
+
+    // 1
+    const cpnConstructor = Vue.extend({
+      template: `
+        <div>
+          <h3>标题</h3>
+          <p>内容1</p>  
+          <p>内容2</p>  
+        </div>
+      `,
+    });
+
+    // 2、全局组件(注册到Vue上的，对所有vm都可见)
+    Vue.component('app19-cpn', cpnConstructor);// 使用时的html标签名，组件的构造器
+
+    // 3
+
+    const app19vm = new Vue({
+      el: '#app19',
+      data: {},
+      computed: {},
+      methods: {},
+      components: {
+        // 局部组件，仅对本vm可见
+        // key(使用组件时的标签名):value(组件构造器)
+      }
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <div id='app20'>
+    <hr>
+    <h2>app20 父子组件</h2>
+    <app20-cpn-p></app20-cpn-p>
+    <app20-cpn-p></app20-cpn-p>
+  </div>
+  <script type='text/javascript'>
+
+    const cpnCs = Vue.extend({
+      template: `
+        <div>
+          <h5>子组件标题</h5>  
+          <p>子组件内容</p>
+        </div>
+      `,
+    });
+
+    const cpnCp = Vue.extend({
+      template: `
+        <div>
+          <h3>父组件标题</h3>  
+          <p>父组件内容</p>
+          <app20cpns></app20cpns>
+          <app20cpns></app20cpns>
+        </div>
+      `,
+      components: {
+        // 父组件的产生，组件注册不会传递，使用父组件时，父组件已经编译完成
+        app20cpns: cpnCs,
+      }
+    });
+
+    // root 组件
+    const app20vm = new Vue({
+      el: '#app20',
+      data: {},
+      computed: {},
+      methods: {},
+      components: {
+        // 使用组件时的标签名必须小写 cpnp ，可以加短横线 'cpn-p'
+        // cpns: cpnCs,
+        'app20-cpn-p': cpnCp,
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <div id='app21'>
+    <hr>
+    <h2>app21 语法糖注册组件</h2>
+    <p>
+      把之前的组件构造器对象（extend的参数对象）直接传入需要构造器的地方。
+    </p>
+  </div>
+  <script type='text/javascript'>
+
+    const app21vm = new Vue({
+      el: '#app21',
+      data: {},
+      computed: {},
+      methods: {},
+    });
+  </script>
+  <style type='text/css'></style>
+
+
+  <script type="text/x-template" id='app22cpn'>
+    <div>
+      <h3>组件标题 type="text/x-template"</h3>
+      <p>分离组件 type="text/x-template"</p>
+    </div>
+  </script>
+
+  <div id='app22'>
+    <hr>
+    <h2>app22 组件分离写法1</h2>
+    <app22cpn></app22cpn>
+    <app22cpn></app22cpn>
+  </div>
+  <script type='text/javascript'>
+    Vue.component('app22cpn', {
+      template: '#app22cpn'
+    });
+
+    const app22vm = new Vue({
+      el: '#app22',
+      data: {},
+      computed: {},
+      methods: {},
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <template id="app23template">
+    <div>
+      <h3>组件标题2
+        <code>< template ></code>
+      </h3>
+      <p>分离组件2 template</p>
+    </div>
+  </template>
+  <div id='app23'>
+    <hr>
+    <h2>app23 组件分离写法2</h2>
+    <app23template></app23template>
+    <app23template></app23template>
+  </div>
+  <script type='text/javascript'>
+    Vue.component('app23template', {
+      template: '#app23template',
+    });
+    const app23vm = new Vue({
+      el: '#app23',
+      data: {},
+      computed: {},
+      methods: {},
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <template id="app24template">
+    <div>
+      <h3>{{app24title}}</h3>
+      <p v-html="app24content">
+        <!-- {{app24content}} -->
+      </p>
+    </div>
+  </template>
+
+  <div id='app24'>
+    <hr>
+    <h2>app24 组件的数据data</h2>
+    <p>组件不可以访问Vue实例的数据data，组件有自己的HTMl模板，也有自己的数据data。</p>
+    <app24-cpn></app24-cpn>
+    <app24-cpn></app24-cpn>
+  </div>
+  <script type='text/javascript'>
+    Vue.component('app24-cpn', {
+      template: '#app24template',
+      data() {// 组件的data需为一个函数，返回对象中有存有组件使用的数据
+        return {
+          app24title: '组件自己的data',
+          app24content:
+            '<p>组件的data需为一个函数，返回的<strong>new匿名对象</strong>中有存有组件使用的数据。'
+            + '因为组件可以复用，<strong>不同的组件实例</strong>需要不同的内存地址，'
+            + '避免操作一个组件的数据操作影响该组件复用时的显示。</p>'
+            + '也可以做到相互影响，先声明一个对象，再在return时返回同一个对象(别这样做)。',
+        };
+      },
+    });
+    const app24vm = new Vue({
+      el: '#app24',
+      data: {},
+      computed: {},
+      methods: {},
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <template id="app25template">
+    <div>
+      <h4>{{smsg}}</h4>
+      <ol>
+        <li v-for="h in shobbies">{{h}}</li>
+      </ol>
+      <p>{{sdefaulttest}}</p>
+      <p>{{sChengChangHu}}</p>
+    </div>
+  </template>
+  <div id='app25'>
+    <hr>
+    <h2>app25 父子组件之间的通信1</h2>
+    <p>为减少与后台的通信，通常会一次请求，再传递给子组件。Vue实例可以视为根root组件。</p>
+    <p><strong>pass props</strong></p>
+    <p><strong>$emit Events</strong></p>
+    <app25cpn :smsg="pmsg" :shobbies="phobbies" :s-cheng-chang-hu="pChengChangHu"></app25cpn>
+    <p>在子组件里的props中的键如果是驼峰，在html标签的属性中会被自动转为短线连接的小写，
+      sMsg -> s-msg，但在html标签内容中则不会转变。</p>
+  </div>
+  <script type='text/javascript'>
+    const app25cpn = {
+      template: '#app25template',
+      data() {
+        return {};
+      },
+      // props: ['smsg', 'shobbies'],// 数组形式
+      // props: {// 使用对象可以做到类型限制
+      //   smsg: String,
+      //   shobbies: Array,
+      // },
+      props: {
+        smsg: {
+          type: String,// 类型限制
+          default: 'default value',// 默认值
+        },
+        shobbies: {
+          type: Array,
+          // Object或Array时，默认值必须是工厂函数返回的对象
+          default() {
+            return [];
+          },
+          required: true,// 必须传入的值
+        },
+        sdefaulttest: {
+          type: String,
+          default: 'default test, Object或Array时，默认值必须是工厂函数返回的对象',
+        },
+        sChengChangHu: {
+          type: Object,
+          default() {
+            return {};
+          },
+        },
+      },
+    }
+    const app25vm = new Vue({
+      el: '#app25',
+      data: {
+        pmsg: 'parent component msg',
+        phobbies: ['sing', 'jump', 'rap', 'basketball'],
+        pChengChangHu: {
+          name: "黄橙",
+          propeties: ['伟大', '无私', '正经'],
+          age: 128,
+          homeland: '安徽桐城',
+        },
+      },
+      computed: {},
+      methods: {},
+      components: {
+        app25cpn,// 增强写法
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <template id="app26template">
+    <p>
+      <button v-for="c in categories" @click="categoryClick(c)">
+        {{c.name}}
+      </button>
+    </p>
+  </template>
+  <div id='app26'>
+    <hr>
+    <h2>app26 父子组件之间的通信2</h2>
+    <app26cpn @c-category-click="app26cpnclick"></app26cpn>
+    <p>
+      在子组件内发射自定义事件给父组件，
+      第一个参数是发射事件名(最好别是驼峰，跟props一样的道理)，其后跟上参数
+      在父组件中使用时如果不写明参数，则默认为后续参数
+      click默认是event
+    </p>
+  </div>
+  <script type='text/javascript'>
+    const app26cpn = {
+      template: "#app26template",
+      data() {
+        return {
+          categories: [
+            { id: 'category1', name: "热门推荐" },
+            { id: 'category2', name: "手机数码" },
+            { id: 'category3', name: "家用电器" },
+            { id: 'category4', name: "电脑办公" },
+          ],
+        };
+      },
+      methods: {
+        categoryClick(c) {
+          console.log(c);
+          console.log('子组件内发射点击事件给父组件');
+          // 在子组件内发射自定义事件给父组件，
+          // 第一个参数是发射事件名(最好别是驼峰，跟props一样的道理)，其后跟上参数
+          // 在父组件中使用时如果不写明参数，则默认为后续参数
+          // click默认是event
+          this.$emit('c-category-click', c);
+        },
+      },
+    }
+    const app26vm = new Vue({
+      el: '#app26',
+      data: {},
+      computed: {},
+      methods: {
+        app26cpnclick(c) {
+          console.log('父组件收到--' + c.name);
+        },
+      },
+      components: {
+        app26cpn,
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <template id="app27cpn">
+    <div>
+      <h4>app27cnum: {{app27cnum}}</h4>
+      <h4>app27cDataNum: {{app27cDataNum}}</h4>
+      <!-- <input type="number" :value="cnum"> -->
+      <!-- <input type="number" v-model="cDataNum"> -->
+      <!-- v-model = v-bind:value + v-on:input -->
+      <input type="number" :value="app27cDataNum" @input="numInput($event)">
+
+      <h4>app27cnum2: {{app27cnum2}}</h4>
+      <h4>app27cDataNum2: {{app27cDataNum2}}</h4>
+      <input type="number" :value="app27cDataNum2" @input="num2Input($event)">
+
+      <h4>app27cmsg: {{app27cmsg}}</h4>
+      <h4>app27cDataMsg: {{app27cDataMsg}}</h4>
+      <!-- 默认传入的参数就是 $event -->
+      <input type="text" :value="app27cDataMsg" @input="msgInput">
+    </div>
+  </template>
+  <div id='app27'>
+    <hr>
+    <h2>app27 父子通信的复杂案例</h2>
+    <p></p>
+    <p>
+      <app27cpn :app27cnum="app27pnum" :app27cnum2="app27pnum2" :app27cmsg="app27pmsg" @num-change="numChange"
+        @num2-change="num2Change" @msg-change="msgChange">
+      </app27cpn>
+    </p>
+    <p>
+      当子组件听过$emit想父组件传递数据时，不应该在父组件中使用
+      子组件标签监听@事件时在父组件接受事件后加括号，会产生错误，默认子组件的数据都会传递。
+    </p>
+    <p>v-model = v-bind:value + v-on:input</p>
+  </div>
+  <script type='text/javascript'>
+    const app27vm = new Vue({
+      el: '#app27',
+      data: {
+        app27pnum: 1,
+        app27pnum2: 1,
+        app27pmsg: '蔡徐坤',
+      },
+      computed: {},
+      methods: {
+        numChange(value) {
+          console.log("父组件 numChange：" + value);
+          this.app27pnum = parseFloat(value);
+        },
+        num2Change(value) {
+          console.log("父组件 num2Change：" + value);
+          this.app27pnum2 = parseFloat(value);
+        },
+        msgChange(value) {
+          console.log("父组件 msgChange：" + value);
+          this.app27pmsg = value;
+        },
+      },
+      components: {
+        app27cpn: {
+          template: '#app27cpn',
+          props: {
+            app27cnum: Number,
+            app27cnum2: Number,
+            app27cmsg: String,
+          },
+          data() {
+            return {
+              app27cDataNum: this.app27cnum,// 使用父组件传来的props来初始化
+              app27cDataNum2: this.app27cnum2,
+              app27cDataMsg: this.app27cmsg,
+            }
+          },
+          methods: {
+            numInput(event) {
+              // 1、将input找那个的值放到data域中
+              this.app27cDataNum = parseFloat(event.target.value);
+              console.log('子组件 numInput：' + this.app27cDataNum + ", " + event.target.value);
+
+              // 2、发射事件让父组件修改data域
+              this.$emit('num-change', event.target.value);
+
+              // 3、同时修改app27cDataNum2
+              this.app27cDataNum2 = this.app27cDataNum * 2;
+              this.$emit('num2-change', this.app27cDataNum2);
+            },
+            num2Input(event) {
+              // 1、将input找那个的值放到data域中
+              this.app27cDataNum2 = parseFloat(event.target.value);
+              console.log('子组件 num2Input：' + this.app27cDataNum2 + ", " + event.target.value);
+
+              // 2、发射事件让父组件修改data域
+              this.$emit('num2-change', event.target.value);
+
+              // 3、同时修改app27cDataNum
+              this.app27cDataNum = this.app27cDataNum2 / 2;
+              this.$emit('num-change', this.app27cDataNum);
+            },
+            msgInput(event) {
+              this.app27cDataMsg = event.target.value;
+              console.log('子组件 msgInput：' + this.app27cDataMsg + ", " + event.target.value);
+              this.$emit('msg-change', event.target.value);
+            },
+          },
+        },
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <template id="app28template">
+    <div>
+      <h4>我是App28子组件</h4>
+      <button @click="app28CbtnClick">按钮</button>
+    </div>
+  </template>
+  <div id='app28'>
+    <hr>
+    <h2>app28 父子组件的访问方式</h2>
+    <p>$children, $refs; $parent</p>
+    <app28cpn></app28cpn>
+    <app28cpn ref="app28reftest"></app28cpn>
+    <app28cpn></app28cpn>
+    <button @click="app28BtnClick">按钮</button>
+    <p>应该避免父子互相访问，降低耦合度</p>
+  </div>
+  <script type='text/javascript'>
+    const app28vm = new Vue({
+      el: '#app28',
+      data: {},
+      computed: {},
+      methods: {
+        app28BtnClick() {
+          // 1、$children 不常用，因为如果组件前插入就打乱了之前的通过下标选择的组件
+          // console.log(this.$children);// for (let c of this.$children)
+          // this.$children[0].showMsg();
+
+          // 2、$refs 常用
+          console.log(this.$refs.app28reftest);
+        },
+      },
+      components: {
+        app28cpn: {
+          template: '#app28template',
+          methods: {
+            app28CbtnClick() {
+              // 1、$parent 访问父组件
+              console.log(this.$parent);
+
+              // 2、$root 访问vue实例(根组件)
+            },
+            showMsg() {
+              console.log('子组件事件');
+            },
+          },
+        },
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <template id="app29template">
+    <div>
+      <slot><i>(slot标签里的内容视为默认值，如果没有给定则显示)</i></slot>
+      <i>(ALLX组件)</i>
+    </div>
+  </template>
+  <div id='app29'>
+    <hr>
+    <h2>app29 slot插槽简单使用</h2>
+    <p>插槽可以使得组件更具有扩展性，求同存异，异-插槽</p>
+    <app29cpn>
+      <button>按钮</button>
+    </app29cpn>
+    <app29cpn>
+      <p>Tiger Cheng</p>
+      <span>如果有插槽里有多个标签则都替换</span>
+    </app29cpn>
+    <app29cpn></app29cpn>
+    <app29cpn></app29cpn>
+  </div>
+  <script type='text/javascript'>
+    const app29vm = new Vue({
+      el: '#app29',
+      data: {},
+      computed: {},
+      methods: {},
+      components: {
+        app29cpn: {
+          template: '#app29template',
+        },
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <template id='app30template'>
+    <div>
+      <slot name="app30left"><span>左边</span></slot>
+      <slot name="app30center"><span>中间</span></slot>
+      <slot name="app30right"><span>右边</span></slot>
+    </div>
+  </template>
+  <div id='app30'>
+    <hr>
+    <h2>app30 具名插槽的使用</h2>
+    <p>特别选择替换某个插槽的内容</p>
+    <app30cpn></app30cpn>
+    <app30cpn>
+      <button slot="app30left">返回</button>
+    </app30cpn>
+    <app30cpn>
+      <span slot="app30center">用户界面</span>
+    </app30cpn>
+    <app30cpn>
+      <button slot="app30right">操作</button>
+    </app30cpn>
+    <app30cpn>
+      <button slot="app30left">返回</button>
+      <span slot="app30center">用户界面</span>
+      <button slot="app30right">操作</button>
+    </app30cpn>
+    <p>使用 v-slot:app30right 替换旧版本的 slot="app30right"</p>
+  </div>
+  <script type='text/javascript'>
+    const app30vm = new Vue({
+      el: '#app30',
+      data: {},
+      computed: {},
+      methods: {},
+      components: {
+        app30cpn: {
+          template: '#app30template',
+        },
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <template id='app31template'>
+    <div>
+      <slot :langdata="app31clangs">
+        <ul>
+          <li v-for="l in app31clangs">{{l}}</li>
+        </ul>
+      </slot>
+      <i>(ALLX组件)</i>
+      <i v-show="app31isShow">不可见</i>
+    </div>
+  </template>
+  <div id='app31'>
+    <hr>
+    <h2>app31 slot编译作用域</h2>
+    <app31cpn v-show="app31isShow"></app31cpn>
+    <app31cpn></app31cpn>
+    <app31cpn>
+      <template slot-scope="slot">
+        <span v-for="l in slot.langdata">{{l}}、</span>
+        <i>(vue 2.5 之前要用template，之后可以换成别的)</i>
+      </template>
+    </app31cpn>
+    <app31cpn>
+      <div slot-scope="slot">
+        <span v-for="l in slot.langdata">{{l}}*</span>
+        <i>(vue 2.5 之前要用template，之后可以换成别的)</i>
+      </div>
+    </app31cpn>
+
+    <app31cpn>
+      <div slot-scope="slot">
+        <span>{{slot.langdata.join(' | ')}}</span>
+        <i>(vue 2.5 之前要用template，之后可以换成别的)</i>
+      </div>
+    </app31cpn>
+    <app31cpn>
+      <template v-slot:default="slotProps">
+        {{slotProps.langdata.join(' || ')}}
+        <i><strong>(vue 2.6 之后要用v-slot)</strong></i>
+      </template>
+    </app31cpn>
+    <p>组件的作用域严格区分，因为子组件编译后猜对父组件可见，编译时父组件的数据不可见。</p>
+    <p>父组件替换插槽的标签，但是内容由子组件来提供。</p>
+  </div>
+  <script type='text/javascript'>
+    const app31vm = new Vue({
+      el: '#app31',
+      data: {
+        app31isShow: true,
+      },
+      computed: {},
+      methods: {},
+      components: {
+        app31cpn: {
+          template: '#app31template',
+          data() {
+            return {
+              app31isShow: false,
+              app31clangs: ['javascript', 'java', "c#", 'python', 'c++', 'typescript'],
+            }
+          },
+        },
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <template id='app32template'>
+  </template>
+  <div id='app32'>
+    <hr>
+    <h2>app32 ES6模块导入导出(模块化开发)</h2>
+    <p><code>1、&lt;script src="aaa.js" type="module"&gt;</code></p>
+    <p><code>2、&lt;script src="bbb.js" type="module"&gt;</code></p>
+    <p>
+      <code>3、aaa.js中可以导入：<br>
+        &nbsp;&nbsp;1)let flag=true; export {flag};<br>
+        &nbsp;&nbsp;2)export let flag=true;<br>
+        &nbsp;&nbsp;3)export function sum(){};<br>
+        &nbsp;&nbsp;4)export class Person(){};<br>
+        &nbsp;&nbsp;5)export function Person(){};<br>
+        &nbsp;&nbsp;6)export default flag; (一个文件只能有一个默认导出)
+      </code>
+    </p>
+    <p>
+      <code>4、bbb.js中可以导入：<br>
+        &nbsp;&nbsp;1)import {flag} from './aaa.js'; <br>
+        &nbsp;&nbsp;2)import flagaaa from './aaa.js'; (导入默认导出时可以重命名)<br>
+        &nbsp;&nbsp;3)import * as AAA from './aaa.js'; (命名导出对象为AAA，导出的内容就是该对象的属性和方法)
+      </code>
+    </p>
+  </div>
+  <script type='text/javascript'>
+    const app32vm = new Vue({
+      el: '#app32',
+      data: {},
+      computed: {},
+      methods: {},
+      components: {
+        app32cpn: {
+          template: '#app32template',
+        },
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <template id='app33template'>
+  </template>
+  <div id='app33'>
+    <hr>
+    <h2>app33 webpack简单使用</h2>
+    <p>
+      file:///G:/VueStudy/webpack-test/ 自己看file:///G:/VueStudy/webpack-test/index.html
+    </p>
+    <pre>
+      Webpack的安装：依赖于node环境
+        node --version/-v：查看node版本
+        npm --version/-v：查看npm版本
+        node安装步骤：
+          https://nodejs.org/zh-cn/ 下载LTS版本
+          点击安装，C:\Program Files\nodejs\ 默认路径
+          安装Node，会自带npm
+        安装全局webpack：npm install webpack@3.6.0 -g（没有局部webpack就找全局webpack）
+          或者：npm install webpack -g 安装最新版 
+          或者：npm install webpack@3.6.0 --save-dev 安装局部webpack开发时依赖
+      前端模块化webpack使用：
+        1、webpack ./src/main.js ./dist/bundle.js
+          第一个参数是入口js文件（根js文件），第二个参数是打包后的js文件
+          打包之后在html中引用打包后的bundle.js文件即可
+        2、webpack
+          使用npm init 创建package.json，或许可能引用一些npm包，在其中配置
+          创建webpack.config.js文件，在其中配置webpack命令，
+            entry入口，output打包文件所在
+              path需得是绝对路径，可以使用npm的path来动态获取（path.resolve(__dirname, 'dist')）
+              filename就是打包后文件名
+        3、npm run build
+          再增加一层映射，在package.json的script中添加："build": "webpack"
+          则在命令行中可以输入：npm run build 进行打包
+          此时会优先调用局部webpack来进行打包(开发时依赖、运行时依赖)
+          （安装局部webpack：npm install webpack@3.6.0 --save-dev
+          全局会加上 -g 或 --global 
+          安装局部webpack之后会在package.json的devDependencies中出现开发时依赖的webpack及版本
+          而运行时依赖则在dependencies中）
+          在终端输入的webpack都是执行全局的webpack
+        4、loader使用(css、less、scss、图片等也可视为一个模块统一打包)
+          1）安装对应的loader：例如：npm install --save-dev css-loader，在官网找对应的loader；
+          2）配置webpack.config.js，module.exports中添加：
+            module: {
+              rules: [
+                {
+                  test: /\.css$/,
+                  use: ['style-loader', 'css-loader']
+                }
+              ]
+            }
+          3）css-loader只负责css加载，style-loader负责样式添加到DOM，
+            所以添加两个，webpack读取多个loader时从右向左调用
+        5、图片同样需要loader：npm install url-loader --save-dev
+          1）图片大小小于所设置的limits时，图片会被转成base64的字符串再显示
+            否则使用file-loader进行加载（无需配置，只需下载），但是此时需要配置打包后的图片地址
+          2）在webpack.config.js的output加入：publicPath: 'dist/'，
+            此时所有的url相关资源文件都会在打包后加上这个路径，
+            因为这时候图片文件会被单独作为一个文件打包进dist文件夹，开发时候的相对路径就使用不了了，
+            （开发时使用HtmlWebpackPlugin插件会将index.html也打包进dist文件夹）
+            但是部署后肯相对路径又变了，还是需要动态调整
+          3）因为在loader的同时会对图片重命名，避免重复会被命名为32位的hash值
+            也就可以在loader的同时传入参数：name: 'img/[name].[hash:8].[ext]',
+            则可以自定义图片名和文件路径
+        6、ES6语法处理，转为ES5，babel配置
+          安装：npm install --save-dev babel-loader@7 babel-core babel-preset-es2015
+          官网上看吧
+        7、webpack中配置Vue
+          模块化开发vue，不用再引用vue源文件了，单独开发每个vue组件
+          安装Vue：npm install vue --save(不再只是开发时依赖了)
+          vue会发布多个个版本的vue：
+            runtime-only：代码中，不可以有任何的template
+            runtime-compiler：代码中，可以有template
+          解决：在webpack.config.js中单独配置vue的指定版本（'vue$': 'vue/dist/vue.esm.js'）
+          vue文件需要再配置loader和compiler：
+            安装：npm install --save-dev vue-loader vue-template-compiler
+            可能会报错，那么就修改vue-loader的版本到低版本13.0.0，再运行：npm install 重新安装依赖\
+            可能会没用，百度是最好的老师
+        8、webpack中的plugin
+            如：版本声明插件（webpack.config.js）：
+              const webpack = require('webpack');
+              ...
+              plugins: [
+                new webpack.BannerPlugin('这个代码是伟大、无私、正经的 黄橙先生所写')
+              ],
+        9、打包html的plugin：
+            自动生成index.html文件（指定模板）；
+            将打包的js文件，自动通过script标签插入到body中。
+            安装：npm install --save-dev html-webpack-plugin
+            修改webpack.config.js：
+              const HtmlWebpackPlugin = require('html-webpack-plugin');
+              ...
+              plugins: [
+                ...
+                new HtmlWebpackPlugin({
+                  template: 'index.html',
+                }),
+              ],
+        10、js压缩plugin（高版本的webpack自带压缩）370kb-->137kb 也不可读了
+          安装：npm install uglifyjs-webpack-plugin@1.1.1 --save-dev
+          使用：
+            const UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin');
+            ...
+            plugins: [
+              ...
+              new UglifyjsWebpackPlugin(),
+            ],
+        11、webpack搭建本地服务器
+          开发时的所有更改都会在内存中，使用npm run build才会存入硬盘
+          安装：npm install webpack-dev-server@2.9.3 --save-dev
+          设置服务的文件夹及方式（webpack.config.js）：
+            devServer: {
+              contentBase: './dist',
+              inline: true,
+              // port:8080,// 默认8080端口
+            }
+          启动本地服务器：webpack-dev-server(会默认找寻全局的，但此时是本地安装)
+          所以可以配置(package.json)的脚本："dev": "webpack-dev-server"
+          此时：npm run dev 就会优先找寻本地的webpack-dev-server
+          这时候，页面的改动不再需要重新：npm run build，就可以展现在界面上
+          最终需要部署的时候再执行：npm run build
+            1）加上--open可以使得网页自动打开
+            2）开发时不要压缩js，部署时不需要开发时的配置
+        12、webpack.config.js的分离，开发、生产
+          1）分离：
+            build文件夹下：
+              base.config.js：存放开发和编译都需要的依赖
+              dev.config.js：存放开发
+              prod.config.js：存放编译
+          2）合并（需要合并base与dev、base与prod）：
+            安装：npm install webpack-merge --save-dev
+            如：
+              const WebpackMerge = require('webpack-merge');
+              const baseConfig = require('./base.config');
+              module.exports = WebpackMerge(baseConfig, {
+                plugins: [
+                  new UglifyjsWebpackPlugin(),// base 不需要
+                ],
+              });// 合并base与prod
+          3）删除webpack.config.js（本项目就没删除了，避免之前的看不懂），配置package.json文件的脚本：
+              "scripts": {
+                ...
+                "build": "webpack --config ./build/prod.config.js",
+                "dev": "webpack-dev-server --open --config ./build/dev.config.js"
+              },
+            但此时，运行npm run build后，打包后的文件会出现在 /build/dist 文件夹内
+            于是，需要重新配置 base.config.js 的输出路径：
+              path: path.resolve(__dirname, '../dist'),// 动态获取绝对路径
+    </pre>
+  </div>
+  <script type='text/javascript'>
+    const app33vm = new Vue({
+      el: '#app33',
+      data: {},
+      computed: {},
+      methods: {},
+      components: {
+        app33cpn: {
+          template: '#app33template',
+        },
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <template id='app34template'>
+  </template>
+  <div id='app34'>
+    <hr>
+    <h2>app34 webpack的plugin插件</h2>
+    <p>loader是必要的，而plugin可以使得项目更加美化</p>
+    <pre>
+      const webpack = require('webpack');
+      ...
+      plugins: [
+        new webpack.BannerPlugin('这个代码是伟大、无私、正经的 黄橙先生所写')
+      ],
+    </pre>
+  </div>
+  <script type='text/javascript'>
+    const app34vm = new Vue({
+      el: '#app34',
+      data: {},
+      computed: {},
+      methods: {},
+      components: {
+        app34cpn: {
+          template: '#app34template',
+        },
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <template id='app35template'>
+  </template>
+  <div id='app35'>
+    <hr>
+    <h2>app35 搭建本地服务器</h2>
+  </div>
+  <script type='text/javascript'>
+    const app35vm = new Vue({
+      el: '#app35',
+      data: {},
+      computed: {},
+      methods: {},
+      components: {
+        app35cpn: {
+          template: '#app35template',
+        },
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <template id='app36template'>
+  </template>
+  <div id='app36'>
+    <hr>
+    <h2>app36 Vue脚手架</h2>
+    <pre>
+      1、命令行界面：Vue CLI（Command-Line Interface）
+        自动生成目录结构、配置等（Vue开发环境、webpack配置）
+        使用前提：node（node -v、npm -v查看版本）、webpack（webpack -v查看版本）
+        Vue CLI会自动安装局部的webpack
+      2、Vue CLI的使用
+        安装：npm install -g @vue/cli（脚手架3）（vue --version）
+        拉取 cli2 版本：npm install -g @vue/cli-init
+      3、CLI2 的初始化项目：
+        vue init webpack my-project(这里更像是文件夹的名字)
+        有一个vue版本的选择，这里需要注意
+        Vue全家桶：vuecore + vue-router + vuex
+      4、CLI2的目录结构：
+      5、package.json 与 package.lock.json
+        前一个中的版本：~指最后两位可变，^指最后一位可变
+        后一个中的版本：实际安装的版本
+      6、ESLint ES代码规范
+        挺难用的，建议别用，代码格式不对就编译不通过
+        <strong>停用ESLint：config->index.js->useEslint:false</strong>
+      7、runtimeCompiler与runtimeOnly
+        runtimeCompiler：temaplate -> abstract syntax tree -> reander -> vitual dom -> UI
+        runtimeOnly: reander -> vitual dom -> UI
+        所以下面的runtimeOnly性能更高且Vue的代码量更少，尽量选择runtimeOnly
+      8、使用render函数
+          template:'</App>',
+          components:{App}
+        ==>
+          render:function(createElement){
+            // 1、普通用法：createElement('标签',{标签的属性},['标签的内容'])
+            return createElement('h2',{class:'box'},['hello world',createElement('button',['按钮'])]);
+            // 使用返回的元素替换掉el的元素
+
+            // 2、传入组件对象，此时就不需要template的编译环节了
+            return createElement(App);
+          }
+        在运行的时候，template会由vue-template-compiler编译成render函数
+      9、Vue CLI3 
+        cli3是基于webpack4，cli2基于webpack3
+        0配置 提供可视化配置
+      10、CLi3使用
+        创建项目：vue create 项目名称（后续步骤空格选中）
+          配置文件在c:\Users\Administrator下的.vuerc文件里（大多数全局配置文件也都在这个文件夹下）
+        运行：npm run serve，在package.json中自己看运行命令，其余配置文件都被隐藏掉，只剩几个简单的
+      11、CLI3的配置
+        1）使用图形化界面：vue ui
+        2）隐藏到：nodemodule--@vue--cli-service--webpack.config.js
+        3）自己创建vue.config.js：在其中写入自己需要的配置
+      12、箭头函数里的this
+        指向上一层作用域里的this，即箭头函数本身不是一个严格的作用域
+    </pre>
+  </div>
+  <script type='text/javascript'>
+    const app36vm = new Vue({
+      el: '#app36',
+      data: {},
+      computed: {},
+      methods: {},
+      components: {
+        app36cpn: {
+          template: '#app36template',
+        },
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <template id='app37template'>
+  </template>
+  <div id='app37'>
+    <hr>
+    <h2>app37 前端路由</h2>
+    <pre>
+      1、以cli2为示例
+        安装vue cli2：npm install -g @vue/cli-init
+        选择runtime-only，选择router
+      2、前后端发展
+        1）后端渲染、后端路由阶段 ==> jsp等，后端接收路由，处理再返回前端的只是html+css
+        2）前后端分离阶段（前端渲染） ==> ajax等，api接口服务器+静态资源服务器，
+          浏览器先访问静态服务器获取html+css+js，再异步访问API服务器获取数据
+      3、单页面富应用阶段（前端路由） ==> SPA（Single Page Application）
+        整个网页只有一个 html+css+js 的页面，改变url的时候，页面不刷新
+      4、改变url但不刷新
+        1）改变url的hash：location.hash="new url" （前面会有个#）
+        2）html5里的history.pushState：history.pushState({},'','new url')
+          还可以history.back()回退
+          或者history.go(n)：n=-1~回退1个但不出栈，n=-2~回退2个但不出栈，n=1~前进1个
+          history.forward()=history.go(1)
+        3）history.replaceState({},'','new url')，不可以history.back()回退
+      5、使用vue-router插件
+        1）通过Vue.use(插件)，安装插件：Vue.use(VueRouter)
+        2）创建路由对象：
+          const routes = [];
+          const router = new VueRouter({
+            // 配置路由和组件之间的映射关系
+            routes,
+          });
+        3）将router对象传入到Vue实例中：
+          导出router：export default router
+          导入使用，导入的时候如果导入某个目录，会直接寻找index文件
+          使用路由：&lt;router-link to="home"&gt; , &lt;router-view&gt;
+        路由切换时改变的是router-view挂载的内容
+        注意设置默认路由，缺省重定向或者'/'
+        默认情况下是hash模式，带着#，设为history模式：mode: 'history'
+      6、router-link属性
+        to：指定跳转的路径
+        tag：指定渲染成什么组件，a、button、li、
+        replace：指定使用history.replaceState，避免来回回退
+        active-class：当前激活状态的样式
+      7、通过代码控制路由跳转
+        this.$router.push("/home"); // pushState
+        this.$router.replace("/home"); // replace
+      8、动态路由 use/:userId 获取：$route.params.userId
+      9、路由懒加载：用到时再加载
+        打包后的js文件太大，一次请求加载时可能较久，影响用户体验，需要懒加载
+        CLI2的打包后，会将css、js分开，js分为三种：业务代码、运行时底层支撑、第三方服务
+        一个路由所指向的组件打包一个js文件
+        使用：
+          import User from '../components/User';
+          const routes = [
+            {
+              path: '/home',
+              component: Home
+            },]
+        :==>
+          const Home = () => import('../components/Home');
+          const routes = [
+            {
+              path: '/home',
+              component: Home
+            },]
+      10、嵌套路由
+        创建对应的子组件，在路由映射中配置子路由；使用&lt;router-view&gt;
+        嵌套子路由的to需要写上完整的路径：/home/news
+          const HomeNews = () => import('../components/HomeNews');
+          children: [
+            {
+              path: '',
+              redirect: 'news'
+            },
+            {
+              path: 'news',//不需要'/'
+              component: HomeNews
+            },
+            ...
+          ]
+          ...
+          &lt;router-link to="/home/news"&gt;新闻&lt;/router-link&gt;
+          &lt;router-view&gt;&lt;/router-view&gt;
+      11、路由参数传递：params与query
+        params：/router/:id 或 :to="'/router/'+id" :==> $route.params.id
+        query：/router 或 /router/?id=123 :==> $route.query.name
+        URL：协议://主机:端口/路径?查询
+        URL：scheme://host:port/path?query#fragment
+        大量参数的时候使用query，就一个参数的话就params
+      12、$route 与 $router
+        route：路径，router：路由器
+        $route：当前活跃的路径，$router：所有路径及路径跳转的管理
+        所有的组件对象都继承自Vue类的原型
+      13、导航守卫：监听来回跳转，动态修改标题
+        传统方法：在created时进行操作，例如：document.title="用户"
+        路由跳转监听：全局导航守卫
+        例子：
+          // 前置钩子、前置守卫，可以判断是否登录后操作等
+          router.beforeEach((to, from, next) => {
+            // to、from都是route对象
+            document.title = to.matched[0].meta.title;// 如果有嵌套就自己输出to找一下
+          
+            next();// 必须调用
+          });
+          
+          // 后置钩子
+          router.afterEach((to, from) => {
+            // 此时不需要主动调用next
+          });
+        以上都是全局守卫，还有路由独享守卫、组件内守卫（官网自己看）
+      14、keep-alive
+        所有路径匹配到的视图组件都会被缓存，避免频繁创建和销毁
+        是Vue的内置组件，可以使得被包含的组件保留状态，或避免重新渲染
+          &lt;keep-alive&gt;&lt;router-view /&gt;&lt;/keep-alive&gt;
+        此时，activated与deactivated是有效地
+        属性：
+          include：字符串或正则（name属性），匹配才缓存 :==> exclude="Profile,User"
+          exclude：匹配不缓存
+    </pre>
+  </div>
+  <script type='text/javascript'>
+    const app37vm = new Vue({
+      el: '#app37',
+      data: {},
+      computed: {},
+      methods: {},
+      components: {
+        app37cpn: {
+          template: '#app37template',
+        },
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <template id='app38template'>
+  </template>
+  <div id='app38'>
+    <hr>
+    <h2>app38 tabbar案例</h2>
+    <pre>
+      给文件夹起别名：webpack.base.conf.js (CLI2)
+        alias: {
+          '@': resolve('src'),
+          'assets': resolve('src/assets'),
+          'components': resolve('src/components'),
+          'views': resolve('src/views'),
+        }
+          ...
+        src="~assets/img/tabbar/home1.png"
+        import TabBarItem from "components/tabbar/TabBarItem";
+    </pre>
+  </div>
+  <script type='text/javascript'>
+    const app38vm = new Vue({
+      el: '#app38',
+      data: {},
+      computed: {},
+      methods: {},
+      components: {
+        app38cpn: {
+          template: '#app38template',
+        },
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <template id='app39template'>
+  </template>
+  <div id='app39'>
+    <hr>
+    <h2>app39 Promise基本使用</h2>
+    <pre>
+      1、Promise是异步编程解决方案，链式编程
+        如：网络请求
+        new -> 构造函数（保存状态信息；执行传入函数）
+        执行传入的回调函数的时候，会传入两个参数：resolve、reject
+          成功 - resolve(data) - then((data)=>{})
+          失败 - reject(error) - catch((err)=>{})
+          :==>
+            new Promise((resolve, reject) => {
+              resolve(data);
+              reject(err);
+            }).then(data => {
+              console.log(data);              
+            }).catch(err => {
+              console.log(err);
+            });
+      2、状态
+        pending：等待
+        fullfill：满足，如果主动调用resolve，则转为此状态，且回调then
+        reject：满足，如果主动调用reject，则转为此状态，且回调catch
+    </pre>
+  </div>
+  <script type='text/javascript'>
+    const app39vm = new Vue({
+      el: '#app39',
+      data: {},
+      computed: {},
+      methods: {},
+      components: {
+        app39cpn: {
+          template: '#app39template',
+        },
+      },
+    });
+
+    // 1、使用setTimeout
+    setTimeout(() => {
+      console.log('hello allx');
+    }, 1000);
+
+    // 参数：函数，resolve、reject都是函数
+    new Promise((resolve, reject) => {
+      console.log('hello allx1');
+      setTimeout(() => {
+        // console.log('hello allx');
+        resolve();
+      }, 1000);
+    }).then(() => {
+      console.log('hello allx2');
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve();
+        }, 1000);
+      })
+    }).then(() => {
+      console.log('hello allx3');
+    }).catch(err => {
+      console.log(err);
+    });
+
+    // new Promise(resolve=>resolve(result)) 简写
+    new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('tiger')
+      }, 1000);
+    }).then(res => {
+      // 1)第一次处理
+      console.log(res, ' 第一次处理');
+
+      // 2)对结果进行处理
+      return Promise.resolve(res + 'cheng');
+    }).then(res => {
+      // 3)第二次处理
+      console.log(res, " 第二次处理");
+
+      // 4)对结果进行处理
+      return Promise.resolve(res + ' ALLX');
+    }).then(res => {
+      // 5)第三次处理
+      console.log(res, ' 第三次处理');
+    });
+
+    // 继续简写
+    new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('tiger')
+      }, 1000);
+    }).then(res => {
+      // 1)第一次处理
+      console.log(res, ' 第一次处理（继续简写）');
+
+      // 2)对结果进行处理
+      return res + 'cheng';
+    }).then(res => {
+      // 3)第二次处理
+      console.log(res, " 第二次处理（继续简写）");
+
+      // 4)对结果进行处理
+      return res + ' ALLX';
+    }).then(res => {
+      // 5)第三次处理
+      console.log(res, ' 第三次处理（继续简写）');
+    })
+
+    // 简写err
+    new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('tiger')
+      }, 1000);
+    }).then(res => {
+      // 1)第一次处理
+      console.log(res, ' 第一次处理（简写err）');
+
+      // 2)对结果进行处理
+      // return res + 'cheng';
+
+      // 失败
+      // return Promise.reject('这有一个错误');
+
+      // 或者
+      throw '这有一个throw错误'
+    }).then(res => {
+      // 3)第二次处理
+      console.log(res, " 第二次处理（简写err）");
+
+      // 4)对结果进行处理
+      return res + ' ALLX';
+    }).then(res => {
+      // 5)第三次处理
+      console.log(res, ' 第三次处理（简写err）');
+    }).catch(err => {
+      console.log(err);
+    })
+
+    // Promise.all
+    Promise.all([
+      new Promise((resolve, reject) => {
+        // $ajax({
+        //   url:'url1',
+        //   success:function(data){
+        //     resolve(data)
+        //   }
+        // })
+        setTimeout(() => {
+          resolve('result1');
+        }, 2000);
+      }),
+      new Promise((resolve, reject) => {
+        // $ajax({
+        //   url:'url2',
+        //   success:function(data){
+        //     resolve(data)
+        //   }
+        // })
+        setTimeout(() => {
+          resolve('result2');
+        }, 1000);
+      }),
+    ]).then(results => {
+      // results[0]-- > url1 data
+      // results[1]-- > url2 data
+      console.log(results);
+    });
+
+  </script>
+  <style type='text/css'></style>
+
+  <template id='app40template'>
+  </template>
+  <div id='app40'>
+    <hr>
+    <h2>app40 Vuex集中式存储管理</h2>
+    <pre>
+      1、Vuex是为Vue应用程序开发的状态管理模式，集中式存储管理，响应式，插件
+      2、多个状态在多个界面需要共享
+        用户登录状态、头像、昵称、地理信息等、商品收藏等
+      3、使用 CLI2 tabbar
+        安装：npm install vuex --save
+        使用：安装、创建store对象、导出store对象、注册store对象、使用store对象
+        浏览器添加devtools插件，火狐或谷歌，比较方便调试
+        mutations可以跟踪修改的状态，不推荐直接修改
+      4、state单一状态树、单一数据源
+        建议只创建一个store对象
+      5、getters基本使用
+        类似于computed
+      6、mutation状态更新--vuex的store状态更新的唯一方式：提交mutation
+          incrementN(state, n) {
+            // payload 载荷
+            state.counter += n;
+          }
+        还有种特殊的提交风格
+        注意事项：
+          1）state的属性需要提前初始化，新加的属性并不能在界面上响应
+            state['address']='Anhui' :==> Vue.set(state.info,'address','Anhui')
+            delete state.info.address :==> Vue.delete(state.info.address)
+          2）类型常量，在对象里的属性使用 
+              {
+                increment:...
+              }
+            :==>
+              const INCREMENT = 'increment'
+              ...
+              {
+                [INCREMENT]:...
+              }
+      7、actions异步操作
+        如果在mutations中进行异步操作，实际对象的值会改变，但是devtools监听不到对象的变化，
+        所以需要使用actions
+          &lt;button @click="updateCounter()"&gt;异步更新Counter为1&lt;/button&gt;
+          ...
+          updateCounter() {
+            // 1、简单版本
+            // this.$store.dispatch("sec3Change", "这是传入的参数");
+      
+            // 2、传入回调函数对象，但是需要传入的信息与回调函数混杂，不优雅
+            // this.$store.dispatch("sec3Change", {
+            //   msg: "传入的参数",
+            //   success() {
+            //     console.log("异步操作结束");
+            //   }
+            // });
+      
+            // 3、使用Promise
+            this.$store.dispatch("sec3Change", "这是传入的参数").then(res => {
+              console.log(res);
+              console.log("这里写上后续步骤");
+            });
+          }
+          ...
+          actions: {
+            // 传入参数：上下文-->store
+            sec3Change(context, payload) {
+              // 模拟异步操作
+        
+              // setTimeout(() => {
+              //   context.commit('changeCounter');
+              //   // 1、简单版本
+              //   // console.log(payload);
+        
+              //   // 2、回调函数封装进参数对象
+              //   console.log(payload.msg);
+              //   payload.success();
+              // }, 2000);
+        
+              // 3、Promise
+              return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                  context.commit('changeCounter');
+                  console.log(payload);
+                  resolve('Promise resolve 完成');
+                }, 2000);
+              });
+            },
+          },
+          ...
+          mutations: {
+            // 方法
+            ...
+            changeCounter(state) {
+              state.counter = 1;
+            },
+          },
+      8、modules讲一个store再细分模块
+          const b={...}
+          modules: {
+            a: {
+              state: {},
+              mutations: {},
+              actions: {},
+              getters: {},
+              modules: {}
+            },
+            b,
+            ...
+          },
+        子模块里的方法名不可与父模块重名，因为都是$store.commit('methodName',payload)
+        子模块与父模块的使用一样
+          getters: {
+            useRoot(sate, getters, rootState) {
+              return rootState.users[0];
+            }
+          },
+        子模块actions中的context.commit()只针对本子模块，不涉及上级父模块
+      9、将文件进行拆分，mutations、getters、actions、modules
+    </pre>
+  </div>
+  <script type='text/javascript'>
+    const app40vm = new Vue({
+      el: '#app40',
+      data: {},
+      computed: {},
+      methods: {},
+      components: {
+        app40cpn: {
+          template: '#app40template',
+        },
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <template id='app41template'>
+  </template>
+  <div id='app41'>
+    <hr>
+    <h2>app41 axios网络请求</h2>
+    <pre>
+      （MinGW-W64：使得windows的命令行像linux一样）
+      1、选择：
+        ·传统的基于XMLHttpRequest（XHR）
+        ·jquery-ajax
+        ·插件Vue-resource
+        ·axios（浏览器中发送XHR请求，node中发送http请求）
+      2、tabbar案例、http://httpbin.org/
+        安装：npm install axios --save 
+      3、node express 后台搭建
+        1）安装node、npm（检查版本：node -v，npm -v）
+        2）创建文件夹、进入文件夹、初始化npm（mkdir myapp、cd myapp、npm init）
+        3）安装express：npm install express --save
+        4）安装express应用生成器：npm install express-generator -g
+        5）创建express应用：express tabbar-server --view=pug
+        6）进入应用目录，安装node包：cd tabbar-server、npm install
+        7）运行应用（windows）：SET DEBUG=tabbar-server:* & npm start
+          上面的命令在创建项目之后在终端会显示出来以提示用户
+          将命令写入tabbar-server应用中的package.json：
+            "scripts": {
+              "dev": "SET DEBUG=tabbar-server:* & npm start",
+              ...
+            },
+        8）如果想要express文件内容更改会及时响应到界面（无需重启）
+          安装nodemon插件：npm install --save-dev nodemon 
+            或 npm install -g nodemon（全局）
+          使用：
+            "scripts": {
+              "start": "node ./bin/www",
+              "nodemonstart": "nodemon ./bin/www",
+              "dev": "SET DEBUG=tabbar-server:* & npm run nodemonstart"
+            },
+            ...
+            npm run dev
+        9）express默认会使用视图引擎，如何避免引擎渲染？
+            1）// app.use('/', indexRouter);
+              // 这里注销掉上面的默认路由，启用下面的静态路径，
+              // 就可以使用html，而不是通过express的视图引擎渲染页面
+              app.use('/', express.static(__dirname + "/dist"));
+              其中dist文件夹就是vue项目打包进的文件夹
+              以上只是权宜之计，具体应该如何操作有待商榷
+            2）在主目录下安装ejs：npm install ejs --save
+              在app.js文件顶部添加引用：var ejs = require('ejs');
+              修改：
+                app.engine('.html', ejs.__express) // 设置视图引擎后缀，为.html
+                app.set('view engine', 'html'); // 设置视图引擎为html
+              在views下新建index.html，重新启动服务
+        10）设置允许跨域访问该服务.
+          app.all('*', function (req, res, next) {
+            res.header('Access-Control-Allow-Origin', '*');
+            //Access-Control-Allow-Headers ,可根据浏览器的F12查看,把对应的粘贴在这里就行
+            res.header('Access-Control-Allow-Headers', 'Content-Type');
+            res.header('Access-Control-Allow-Methods', '*');
+            res.header('Content-Type', 'application/json;charset=utf-8');
+            next();
+          });
+      4、axios基本使用，axios是Promise
+        axios({
+          url: "http://localhost:3000/json" //{ "name": "Allx Cheng" }
+        }).then(res => {
+          console.log(res);
+        });
+      5、axios发送并发请求（Promise.all）
+        axios.all([
+          axios({
+            url: "http://localhost:3000/qurl?name=allx&pageNum=3&pageSize=30",
+          }),
+          axios({
+            url: "http://localhost:3000/qurl",
+          })
+        ])
+        .then(results => {
+          console.log(results);
+        });
+      6、axios全局配置
+        axios.defaults.baseURL = "http://localhost:3000";
+      7、axios参数：
+        url, method, baseURL, transformRequest, transformResponse, headers, params(get),
+        data(post), 
+        （post传数据，get传参数）
+      8、axios的实例
+          const instance1 = axios.create({
+            baseURL: "http://localhost:3000",
+            timeout: 5000
+            headers: {}
+          });
+          instance1({
+            url: "/qurl?name=allx&pageNum=3&pageSize=30",
+            method: "get"
+          }).then(res => {
+            console.log("axios实例：", res);
+          });
+        实例可以避免全局统一配置，每个实例可以单独配置
+      9、axios模块封装
+        使用第三方外部模块最好自己进行封装，避免第三方框架不再进行维护，改动工程量较大
+          export function request1(config) {
+            const instance = axios.create({
+              baseURL: 'http://localhost:3000',
+              timeout: 5000
+            });
+            return instance(config);
+          }
+          ...
+          import {request1} from './network/request'
+          ...
+          created() {
+            request1({
+              url: "/qurl?name=allx&pageNum=3&pageSize=30"
+            })
+              .then(res => (this.res = res))
+              .catch(err => console.log(err));
+          }
+      10、axios拦截器
+    </pre>
+  </div>
+  <script type='text/javascript'>
+    const app41vm = new Vue({
+      el: '#app41',
+      data: {},
+      computed: {},
+      methods: {},
+      components: {
+        app41cpn: {
+          template: '#app41template',
+        },
+      },
+    });
+  </script>
+  <style type='text/css'></style>
+
+  <!-- -----------------------------目录----------------------------- -->
+  <div class="catalog-box" id="catalog">
+    <ol>
+      <!-- <li><a href="#app1">app1vm vue简单例子1</a></li>
+            <li><a href="#app24">app24vm 组件的数据data</a></li> -->
+      <li v-for="(c,index) in reverseCatalogs">
+        <a :href="getCatalogId(index)">app{{ index + 1}}vm {{ c }}</a>
+      </li>
+    </ol>
+  </div>
+  <script type="text/javascript">
+    const catalogs = [
+      'axios网络请求',
+      'Vuex集中式存储管理',
+      'Promise基本使用',
+      'tabbar案例',
+      '前端路由',
+      'Vue脚手架',
+      '搭建本地服务器',
+      'webpack的plugin插件',
+      'webpack简单使用',
+      'ES6模块导入导出(模块化开发)',
+      'slot编译作用域',
+      '具名插槽的使用',
+      'slot插槽简单使用',
+      '父子组件的访问方式',
+      '父子通信的复杂案例',
+      '父子组件之间的通信2',
+      '父子组件之间的通信1',
+      '组件的数据data',
+      '组件分离写法2',
+      '组件分离写法1',
+      '语法糖注册组件',
+      '父子组件',
+      '简单组件',
+      'v-model 的修饰符',
+      'v-model 简单例子',
+      '购物车案例',
+      'v-for 的 key 的存在',
+      '用户切换登录的案例',
+      'computed 实现 v-if',
+      '局部组件 简单例子',
+      'props 全局组件 简单例子',
+      'v-model 简单例子',
+      'methods 简单例子',
+      'v-for 简单例子',
+      'v-if v-else-if v-show 简单例子',
+      'v-bind class style 简单例子',
+      'v-if v-bind v-on 简单例子',
+      'v-once简单例子',
+      'vue生命周期',
+      'vue简单例子2',
+      'vue简单例子1',
+    ];
+    const catalogVM = new Vue({
+      el: '#catalog',
+      data: {
+        catalogs,// 对象增强写法
+        currId: 1,
+      },
+      computed: {
+        reverseCatalogs() {
+          return this.catalogs.reverse();
+        },
+      },
+      methods: {
+        getCatalogId(index) {
+          return '#app' + (index + 1);
+        },
+      },
+    });
+  </script>
+
+</body>
+
+</html>
