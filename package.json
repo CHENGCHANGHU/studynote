@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "scripts": {
     "test": "node -v && npm -v",
-    "gitinit":"git init",
-    "gitlocal":"git add . && git commit -m",
-    "gitremote":"git push"
+    "gitinit": "git init",
+    "gitlocal": "git add . && git commit -m",
+    "gitremote": "git push && start https://chengchanghu.github.io/studynote/"
   }
 }
