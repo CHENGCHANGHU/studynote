@@ -1,0 +1,1999 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <title>JavaWeb</title>
+  <!-- 对于制作原型或学习，你可以这样使用最新版本： -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+  <style type='text/css'>
+    /* * {
+      padding: 0;
+      margin: 0;
+    } */
+
+    * {
+      font-family: "Microsoft YaHei";
+    }
+
+    .catalog-box {
+      display: inline-block;
+      position: fixed;
+      top: 5%;
+      right: 10px;
+      height: 90%;
+      width: 300px;
+      overflow-y: scroll;
+      background-color: rgb(244, 244, 244);
+      box-shadow: 2px 2px 5px #ddd;
+    }
+
+    .catalog-box li {
+      line-height: 25px;
+    }
+
+    .sticky-title {
+      position: sticky;
+      top: 0;
+      left: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      text-align: center;
+      height: 40px;
+      line-height: 40px;
+      font-size: 24px;
+      letter-spacing: 3px;
+      font-weight: bold;
+      width: 700px;
+      margin: 0 auto;
+      z-index: 9999;
+    }
+
+    h2 {
+      margin: 0;
+      position: sticky;
+      top: 0;
+      /* background-color: lightcoral; */
+      background: linear-gradient(to right, rgb(240, 163, 163), #fff 30%);
+      height: 40px;
+      line-height: 40px;
+      /* display: inline-block; */
+      padding-left: 10px;
+      box-sizing: border-box;
+      color: #333;
+    }
+
+    h2::before {
+      content: "# ";
+    }
+
+    pre,
+    strong {
+      font-size: 1.2rem;
+      font-family: 'KaiTi';
+      background-color: rgba(0, 0, 0, 0.9);
+      color: coral;
+      /* background: url('bgtile.png'); */
+    }
+  </style>
+</head>
+
+
+<body>
+  <div class="sticky-title">
+    伟大、无私、正经的 黄橙 先生存笔记于此
+  </div>
+
+  <div id="java1">
+    <h2>java1 mybatis框架由来</h2>
+    <pre>
+      1、三层架构
+        表现层：展示数据
+        业务层：业务处理
+        持久层：数据库交互
+      2、持久层技术解决方案
+        jdbc：connection、prepareStatement、ResultSet
+        Spring的JdbcTemplate：jdbc的简单封装
+        apache的DBUtils：简单封装
+        以上都不是框架，jdbc只是规范，然后两个是工具类
+    </pre>
+  </div>
+
+  <div id='java2'>
+    <h2>java2 mybatis概述</h2>
+    <pre>
+      1、java的持久层框架
+        封装了jdbc操作的很多细节，
+        关注sql语句本身，无需关注加载驱动、创建连接、创建statement等过程，
+        使用ORM思想，实现结果集的封装
+      2、ORM，Object Relational Mapping 对象关系映射
+        把数据库表和实体类及实体类的属性对应起来，操作实体类即操作数据库表
+        实体类的属性应该与数据库表字段保持一致
+    </pre>
+  </div>
+
+  <div id='java3'>
+    <h2>java3 mybatis入门</h2>
+    <pre>
+      1、环境搭建
+
+    </pre>
+  </div>
+
+  <div id='java3'>
+    <h2>java3 java注解</h2>
+    <pre>
+      1、框架：
+        半成品软件，可以在框架的基础进行软件开发，
+        简化coding
+      2、反射：框架设计的灵魂
+        将类的各个组成部分封装成其他对象
+      3、java在计算机中的三个阶段：
+        1）source源代码阶段（硬盘）
+          Person.java类文件 -> javac编译 -> Person.class字节码文件
+        2）Class类对象阶段（硬盘->内存）
+          ClassLoader类加载器将字节码文件加载进内存
+          此时，在内存中会有一个对象描述这个字节码文件
+          --Class类 对象（有一个Class类）
+            成员变量 Feild[] fields、
+            构造方法 Constructor[] contructors、
+            成员方法 Method[] methods
+          通过Class类对象的行为来真正地创建一个Person类对象
+        3）runtime运行时阶段（内存）
+          new出一个Person对象
+      4、Class类对象阶段的成员变量、构造函数、成员方法就是使用反射机制
+        1）在程序运行中可以操作这些对象
+          如：idea创建一个对象后调用，提示的成员方法
+        2）可以解耦，提高程序可扩展性
+      5、获取Class对象的方式：（三个阶段）
+        1）Class.forName('完整类名（含包路径）')--全类名
+          将字节码文件加载进内存，返回Class对象
+          多用于配置文件，将类名定义在配置文件中，读取文件，加载类
+        2）类名.class
+          通过类名的属性class来获取
+          多用于参数的传递
+        3）对象.getClass()
+          getClass()定义在Object类中（所有类的父类）
+          多用于对象获取字节码的方式
+        同一个字节码文件（*.class）在一次程序运行过程中，只会被加载一次
+        以上三种获取的Class对象都是同一个
+      6、使用Class对象，获取功能：成员变量们、构造方法们、成员方法们、类名
+        Class personClass=Person.class;
+        ...
+        personClass.getFields();所有public修饰的成员变量
+        personClass.getField("ChinaA");
+          Field操作：设置值set、获取值get
+        ...
+        personClass.getDeclaredFields();获取所有成员变量，不熬率修饰符
+        chinaC.setAccessible(true);// 暴力反射
+          忽略访问权限修饰符的检查
+        ...
+        personClass.getConstructor(String.class, int.class);
+          创建对象
+          personClass.newInstance();直接创建空参对象
+        c.newInstance("Allx", 23);
+        ...
+        personClass.getMethod("eat");
+        eat_method.invoke(p);
+          执行方法（方法名和参数列表才能确定一个方法）
+        eat_method2.invoke(p, "大便");
+        ...
+        personClass.getMethods();
+          不仅仅有定义的方法，还有继承的方法
+          m.getName()获取方法名     
+        ...         
+        log(personClass.getName());
+          获取类名
+      7、反射案例
+        一个‘框架’，可以帮助创建任意类的对象，并且执行其中任意方法
+        /**
+        * 可以创建任意类的对象，执行任意类的方法
+        * 不能改变本类的任何代码
+        * 1、配置文件
+        * 2、反射
+        * 步骤：
+        * 1）将需要创建的对象的全类名和需要执行的方法定义在配置文件中
+        * 2）在程序中加载读取配置文件
+        * 3）使用反射技术来加载类文件进内存
+        * 4）创建对象
+        * 5）执行方法
+        */
+
+        //    1、创建Properties对象
+            Properties pro = new Properties();
+        //    2、加载配置文件，转换成集合
+        //    获取class目录下的配置文件
+            ClassLoader classLoader = ReflectFrame.class.getClassLoader();
+            InputStream is = classLoader.getResourceAsStream("prop.properties");
+            pro.load(is);
+        //    3、获取配置文件中定义的数据
+            String className = pro.getProperty("className");
+            String methodName = pro.getProperty("methodName");
+        //    4、加载该类进入内存
+            Class cls = Class.forName(className);
+        //    5、创建对象
+            Object obj = cls.newInstance();
+        //    6、获取方法对象
+            Method method = cls.getMethod(methodName);
+        //    7、执行对象
+            method.invoke(obj);
+
+        修改配置文件比修改源代码更好，避免上线后重启啥的
+      8、注解
+        注释--给程序员看的，注解--描述程序，给计算机看的
+        功能：编写doc文档、代码分析、编译检查
+        使用：@注解名称
+        代码分析：通过代码里的标识的注解对代码进行分析（反射）
+        jdk中预定义的注解、自定义注解、程序中使用
+      9、jdk中预定义的注解
+        @Override：检测被注解标注的方法是否是继承自父类，安全检查
+        @Deprecated：表示已过时，不推荐，那个方法上的横线
+        @SuppressWarning：压制警告，避免编辑器一堆警告看着不爽
+          @SuppressWarning("all")   
+      10、自定义注解
+        格式：
+          元注解
+          public @interface 注解名称{
+            属性列表
+          }
+        本质：就是一个接口，默认继承Annotation接口
+          public interface MyAnno extends java.lang.annotation.Annotation{}
+        注解属性：接口中定义的抽象成员方法
+          1）属性的返回值类型：基本数据类型、String、枚举、注解、以上类型的数组
+          2）定义了属性，在使用时需要给属性赋值，或者使用默认赋值
+            String name() default "Allx";  
+            @MyAnno(show="hhhh",name="Allx")
+            如果是有一个属性，且为value，则使用时可以省略直接写值
+            枚举赋值：Person.p1，
+            数组赋值：{"Allx","hhhhhhhh"}，如果就一个值，大括号可以省略
+      11、元注解：用于描述注解的注解
+        @Target：描述注解能够作用的位置
+          ElementType：
+            TYPE：可以作用于类上
+            METHOD：可以作用于方法上
+            FIELD：可以作用于子成员变量
+        @Retention：描述注解被保留的阶段
+          @Retention(RetentionPolicy.RUNTIME)：
+            当前被描述的注解，会保留到class字节码文件中，
+            并可被JVM读取到
+        @Document：描述注解是否需要被抽取到api文档中
+        @Inherited：是否可以被被注解标注的类的子类继承
+          注解父类，子类自动继承
+      12、在程序中使用（解析）注解
+        获取注解中定义的属性值，可以使用注解简化配置文件
+        步骤：
+          1）获取注解定义处的被注解对象（Class、Method、Field）
+          2）获取指定的注解对象，getAnnotation（Class）
+          3）调用注解中的抽象方法获取注解属性值
+            /**
+            * 本质：在内存中生成该注解接口的子类实现对象
+            * public class ProImpl implements Pro{
+            *   public String className(){
+            *     return "com.java.anno.Demo1";
+            *   }
+            *
+            *   public String methodName(){
+            *     return "show";
+            *   }
+            * }
+            */
+      13、简单的注解测试框架
+        //1、创建计算器对象
+        //2、获取字节码文件对象
+        //3、获取所有方法
+        //4、判断方法上是否有@Check注解
+        //5、有，执行
+        //6、捕获异常
+      14、小结
+        大多数时候，只是使用注解，而不是自定义注解
+        注解给编译器和解析程序（CheckFrame）用
+        注解不是程序的一部分，像是一个标签
+    </pre>
+  </div>
+
+  <div id='java4'>
+    <h2>java4 数据库</h2>
+    <pre>
+      1、数据库基本概念，DataBase，DB
+        用于存储和管理数据的仓库（持久化）
+          持久化存储数据，本质：文件系统
+          方便存储和管理
+          提供统一的方式操作数据库
+      2、常见的数据库软件（概念->软件实现）
+        Oracle、MySQL--Oracle的
+        SQL Server--微软的
+        DB2--常用于银行系统
+        SQLite--小型
+      3、MySQL数据库软件
+        安装
+        卸载
+          找到MySQL的安装目录，
+          卸载要卸载干净，数据目录下的文件要清楚干净
+        配置（端口3306）
+          MySQL服务--注册到window服务列表
+            服务启动：
+              手动
+              cmd：services.msc打开服务窗口
+              net stop mysql（管理员cmd）、net start 服务名称
+      4、MySQL登录和退出
+        1）本地
+          mysql -uroot -proot（用户名和密码）
+            或者mysql -uroot -p 再输入密码，就是密文了，安全
+          exit
+        2）远程
+          mysql -h127.0.0.1 -uroot -proot（主机ip、用户、密码）
+          exit或者quit
+        3）麻烦
+          mysql --host=127.0.0.1 --user=root --password=root
+      5、MySQL的安装目录结构
+        1）安装目录：C:\Program Files\MySQL\MySQL Server 8.0
+          （将bin目录添加到环境变量）
+          my.ini：MySQL的配置文件，在这里可以看到MySQL的配置文件，也可以修改
+        2）数据目录：C:\ProgramData\MySQL\MySQL Server 8.0
+          MySQL服务器=计算机硬件+数据库服务软件
+          主机ip-->计算机-->端口-->软件服务
+          数据库--文件夹
+          数据库表--数据库文件夹下的文件
+          数据记录--数据库表里一条条的记录
+      6、SQL：Structured Query Language 结构化查询语言
+        本质：定义了操作所有关系型数据库的规则（Relation DBMS）
+        每一种数据库操作不一样的地方是为方言
+      7、SQL通用语法
+        1）单行或多行书写，分号结尾
+        2）使用空格或tab增强语句可读性
+        3）SQL语句不区分大小写，关键字建议大写
+        4）三种注释：
+          单行注释：-- 注释内容（俩杠一空格）
+            或者 # 注释内容（MySQL特有，空格不再必要）
+          多行注释：/* 注释内容 */
+      8、SQL分类
+        1）DDL（Data Definition Language）数据定义语言
+          操作数据库、表、列等
+        2）DML（Data Manipulation Language）数据操作语言
+          增删改表中数据记录
+        3）DQL（Data Query Language）数据查询语言
+          查询表中记录
+        4）DCL（Data Control Language）数据控制语言
+          授权
+      9、DDL，操作数据库、表
+        操作数据库：CRUD
+          1）C（Create）：创建
+            创建数据库：create database 数据库名称; 不可重名
+              先查询判断有没有，后创建：
+                create database if not exists 数据库名称; 
+            创建某字符集的数据库：
+              create database 数据库名称 character set 字符集;
+            创建db1，判断再选定字符集：
+              create database if not exists db1 character set gbk;
+          2）R（Retrieve）：查询
+            查询所有数据库的名称：show databases;
+              （有三个不要乱动，只动自己创建的数据库）
+            查询创建某个数据库的SQL语句：show carete database 数据库名称;
+              可以看到字符集啥
+          3）U（Update）：修改
+            修改数据库的字符集：
+              alter database 数据库名称 character set 字符集;
+              utf8、gbk
+          4）D（Delete）：删除
+            删除数据库：
+              drop database 数据库名称;
+            删除前判断存在再删除：
+              drop if exists database 数据库名称;
+          5）使用数据库
+            查询当前正在使用的数据库名称：select database();
+            使用数据库：use 数据库名称;
+        操作表：
+          1）C（Create）：创建
+            语法：
+              create table 表名(
+                列名1 数据类型1,
+                列名2 数据类型2,
+                ...
+                列名n 数据类型n
+              );
+              最后一列不需要逗号
+            数据类型：
+              int：整数，age int,
+              double：浮点数，score double(5,2), 最多5位，小数点后2位
+              date：日期，只包含年月日，yyyy-MM-dd
+              datetime：日期，年月日时分秒，yyyy-MM-dd HH:mm:ss
+              timestamp：时间戳类型，年月日时分秒，yyyy-MM-dd HH:mm:ss
+                时间戳如果未赋值或赋值为null，则默认使用当前系统时间来自动赋值
+              varchar：字符串，name varchar(20), 最大20个字符
+                chengchanghu：12字符，程昌虎：3字符
+            大型数据不建议存入数据库，存入路径，方便加载就好
+            创建表：
+              create table student(
+                id int,
+                name varchar(32),
+                age int,
+                score double(4,1),
+                birthday date,
+                insert_time timestamp
+              );
+            复制表：
+              create table 表名 like 被复制表名;
+          2）R（Retrieve）：查询
+            查询某个数据库中所有表的名称：show tables;
+            查询表结构：desc 表名;（字段、主键、空等）            
+          3）U（Update）：修改
+            修改表名：alter table 表名 rename to 新的表名;
+            修改表的字符集：
+              show create table 表名; 查看字符集
+              alter table 表名 character set 字符集;
+            添加一列：alter table 表名 add 列名 数据类型;
+            修改列名、类型：
+              alter table 表名 change 列名 新列名 新数据类型;
+              alter table 表名 modify 列名 新数据类型;
+            删除列：alter table 表名 drop 列名;
+          4）D（Delete）：删除
+            删除表：drop table 表名;
+            删除表前判断：drop table 表名 if exists;
+      10、图形化操作界面
+      11、DML：增删改表中数据
+        1）添加数据
+          insert into 表名(列名1,列名2,...,列名n)
+            values(值1,值2,...,值n);
+          列名与值一一对应
+          若表名后无列名，则默认给所有列添加
+          无列名时，自增主键可以使用null填充占位
+          除了数字类型，其他类型需要引号（单或双）
+        2）删除数据
+          delete from 表名 [where 条件];
+          如果不加条件，则删除所有记录，一条条的删除，效率低
+          truncate table 表名; 删除表，然后再创建一个一样的空表，效率
+        3）修改数据
+          update 表名 set 列名1=值1, 列名2=值2,... [where 条件];
+          如果没有加上条件，则会修改所有记录
+      12、DQL：查询表中记录：select * from 表名;
+        排序查询：oerder by 子句
+          order by 排序字段1 排序方式1, 排序字段2 排序方式2,...
+          排序方式：ASC升序、DESC降序，默认为升序
+          如果排序1一样，则按照排序2
+          select * from student order by math ASC, english ASC;
+        聚合函数：将一列数据(排除掉空值)作为一个整体，进行纵向的计算
+          count：计算个数
+            select count(name) from student;
+              select count(*) from student;
+              select count(ifnull(english,0)) from student;
+          max：计算最大值
+            select max(math) from student;
+          min：计算最小值
+          sum：计算和
+            select sum(math) from student;
+          avg：计算平均值
+            select avg(math) from student;
+        分组查询：group by 分组字段;
+          select gender,avg(math),count(id) from student group by gender;
+          分组之后查询字段：分组字段、聚合函数
+          限制参与分组的条件：
+            select gender,avg(math),count(id) from student 
+              where math>70 group by gender;
+          分组之后还有限定条件：
+            select gender,avg(math),count(id) from student 
+              where math>70 group by gender having count(id)>3;
+          where 在分组之前进行限定，不满足则不参与分组
+          having 在分组之后限定，不满足则不会被查询出来
+          where 不可跟聚合函数，having 可以跟聚合函数
+          别名：
+            select gender,avg(math),count(id) num from student 
+                where math>70 group by gender having num>3;
+        分页查询：limit 开始的索引,每页查询的条数;
+          select * from student limit 0,3;-- 第一页
+          select * from student limit 3,3;-- 第二页
+          公式：开始的索引=（当前页码-1）*每页条数
+          最后一页有多少条就显示多少条
+          limit分页操作是一个方言 MySQL--limit
+        查询语法：
+          select 字段列表 from 表名列表 
+            where 条件列表 group by 分组字段
+            having 分组之后的条件限定
+            order by 排序
+            limit 分页限定
+        基础查询：
+          多个字段的查询
+            select 字段1，字段2 from student；
+            （所有-->*，不建议）
+          去除重复的结果集（多个字段时，只要有不同，就留下）
+            select distinct 字段 from student；
+          计算列
+            select name,math,english,math+english from student;
+            如果有null参与，则计算结果为null
+            select name,math,english,math+ifnull(english,0)
+              from student;
+            ifnull（表达式1，表达式2）
+              表达式1：那个字段需要判断是否判断null
+              表达式2：如果为null的替换值
+          起别名as，也可以省略as
+            select name,math,english,math+ifnull(english,0) as 总分
+              from student;
+        条件查询：where子句后跟条件
+          运算符: 
+            &gt;, &lt;, &lt;=, &gt;=, =, !=, &lt;&gt;
+              =,等于
+              !=, &lt;&gt;都会不等于
+            between...and...
+            in(集合)：集合里面逗号隔开
+            like：模糊查询
+              占位符：_单个任意字符，%任意多个字符
+              select * from student where name like '程%';-- 姓程
+              select * from student where name like '___';-- 三个字
+              select * from student where name like '%程%';-- 包含程
+            is null：null不可以使用=, !=来判断
+              is not null -- 不为空
+            and 或 &&
+            or 或 ||
+            not 或 |
+      13、数据库约束
+        对表中数据进行限定，保证数据的正确性、有效性和完整性
+        分类：
+          非空约束 not null
+            创建表时添加约束：...,name varchar(32) not null,...
+            删除非空约束：（修改列）
+              alter table 表名 modify name varchar(32);
+            添加非空约束：（修改列）
+              alter table 表名 modify name varchar(32) not null;
+          唯一约束 unique
+            值不能重复，但是null值不重复
+            创建表时添加约束：...,phone varchar(20) unique,...
+            删除唯一约束：
+              alter table 表名 drop index phone;
+              唯一约束--唯一索引
+            添加唯一约束：
+              alter table 表名 modify phone varchar(20) unique;
+          主键约束 primary key
+            非空且唯一，一张表只能有一个字段为主键
+            表中记录的唯一标识
+            创建表时添加约束：...,id int primary key,...
+            删除主键约束：
+              alter table 表名 drop index primary key;
+              只会有一个主键
+            添加主键约束：
+              alter table 表名 modify id primary key;
+          自动增长：某数值列，默认可以自增，auto_increment，常用于主键
+            创建表时添加约束：...,id int primary key auto_increment,...
+              数据只在上一条记录上自增
+            删除自动增长：
+              alter table 表名 modify id int;
+                主键删不掉，但自增会删除掉
+            添加自动增长：
+              alter table 表名 modify id int auto_increment;
+          外键约束 foreign key
+            创建表时，添加外键：
+              ...外键列 constraint 外键名称 foreign key （外键列名称）
+                references 主表名称（主表列主键）...
+              
+                employee表
+                ...,constraint emp_dep_fk foreign key (dep_id) 
+                  references department(id),...
+                （constraint emp_dep_fk可省略，系统分配一个唯一的）
+            删除外键：
+              alter table employee drop foreign key emp_dep_fk;
+            添加外键
+              alter table employee add constraint emp_dep_fk foreign key (dep_id) 
+                references department(id)
+            外键可以为null，但不可以是不存在的值
+            级联操作
+              添加级联更新外键
+              ...,constraint emp_dep_fk foreign key (dep_id) 
+                references department(id) on update cascade,...
+              添加级联删除：on delete cascade
+      14、数据库的设计
+        1）多表之间的关系
+          一对一：人与身份证，逆反都是一对一
+            任意一方添加外键指向另一方的主键，且让外键唯一unique
+          一对多（多对一）：部门和员工
+            在多方建立外键，指向一方主键
+          多对多：学生与课程
+            建立中间表，中间表至少包含两个字段，这两个字段作为外键
+              分别指向两个表的主键
+            联合主键：...,primary key(rid,cid),...
+        2）数据库设计范式
+          1NF、2NF、3NF、BCNF、4NF、5NF
+          范式越高，冗余越小
+          第一范式（1NF）：每一列都是不可分割的原子数据项
+            拆分可拆分的列
+            存在严重的数据冗余
+            数据添加时，添加部分数据，可能会数据不合法，
+            删除也存在问题
+          第二范式（2NF）：在1NF的基础上，非码属性必须完全依赖候选码，
+            消除非主属性对主码的部分函数依赖
+            函数依赖：A-->B，A属性值（属性组）可以唯一确定B的值，则B依赖于A
+            完全函数依赖：A-->B，A为属性组，B的确定需要依赖A中所有属性，则B完全依赖A
+            部分函数依赖：A-->B，A为属性组，B的确定需要A的某些值即可，则B部分依赖A
+            传递函数依赖：A-->B,B-->C,都是前者唯一确定后者，则C传递依赖于A
+            码：如果一张表中，一个属性或属性组被其他所有属性所完全依赖，
+              则称这个属性或属性组为该表的码
+            主属性：码中的所有属性
+            非主属性：除过码属性组的属性
+          第三范式（3NF）：在2NF基础上，非主属性不依赖于其他非主属性
+            消除传递依赖
+      15、数据库备份与还原
+        保证数据安全
+        命令行：
+          备份：mysqldump -u用户名 -p密码 数据库名称 > 保存的文件路径/db.sql
+          还原：
+            登录数据库、创建数据库、使用数据库
+            执行文件：source 保存的文件路径/db.sql
+        图形化工具：自己学去
+      16、多表查询
+        select * from 表1,表2;
+          -- 此时查询出来的结果集称为笛卡尔集，所有组合
+          需要消除无用的结果集
+        1）内连接查询
+          ·隐式内连接：where条件消除无用数据
+            select * from emp,dept where emp.'dept_id'=dept.'id';
+            select emp.name,dept.name from emp,dept where emp.'dept_id'=dept.'id';
+              加入表名限定
+            select t1.name,t2.name from emp t1,dept t2 where t1.'dept_id'=t2.'id';
+              起别名
+          ·显式内连接：
+            select 字段列表 from 表名1 inner join 表名2 on 条件
+            select * from emp inner join dept on emp.'dept_id'=dept.'id'
+              inner 可以省略，也可以起别名
+          ·内连接查询：
+            从哪些表取数据、条件是什么、查询哪些字段
+            交集部分
+        2）外连接查询
+          ·左外连接
+            select 字段列表 from 表1 left [outer] join 表2 on 条件;
+              outer可以省略
+            查询的是左边的表的所有数据及其交集部分
+          ·右外连接
+            select 字段列表 from 表1 right [outer] join 表2 on 条件;
+            查询的是右边的表的所有数据及其交集部分
+        3）子查询：查询中嵌套查询，嵌套查询即为子查询
+            select max(score) from student;
+            select * from student where score=98;
+          :==>
+            select * from student 
+              where score=(select max(score) from student);
+          1）子查询结果是单行单列：子查询作为条件参与运算
+            如：查询在平均成绩之下的学生
+          2）子查询结果是多行单列：可以作为条件参与运算（in）
+            如：查询‘财务部’和‘市场部’所有员工信息
+          3）子查询结果是多行多列：当做虚拟表参与查询，起上别名，与其他表连接
+            如：查询员工入职时间在****之后的员工和其部门信息
+        也可以给一张表起两个别名，进行自关联
+      17、事务
+        概念：如果一个包含多个步骤的业务操作，
+            被事务管理，那么这些操作要么同时成功，要么同时失败
+              如：A转账给B，先A扣钱，再B加钱
+        操作：
+          案例：
+            create table account(
+              id int primary key auto_increment,
+                name varchar(32),
+                balance double
+            );
+            insert into account (name,balance) values ('Allx',1000),('Tiger',2000);
+            Allx给Tiger转500元：Allx-500、Tiger+500
+            update account set balance=balance-500 where name="Allx";
+            update account set balance=balance+500 where name="Tiger";
+            还原到1000：update account set balance=1000;
+
+            使用事务来管理：
+              start transaction;
+              update account set balance=balance-500 where name="Allx";
+              update account set balance=balance+500 where name="Tiger";
+              如果出错：rollback;
+              没有问题：commit; -- 此时事务也就结束了
+          1）开启事务：start transaction;
+          2）回滚：rollback;
+          3）提交：commit;
+        MySQL中事务默认提交（Oracle默认手动提交）
+        一条DML（增删改）语句会自动提交一次事务
+        手动开启的事务，需要手动提交
+        查看事务的默认提交方式：select @@autocommit; 
+          1代表自动提交，0代表手动提交
+        修改事务提交方式：set @@autocommit=0;
+      18、事务的四大特征
+        原子性：不可分割的最小单位
+        持久性：事务提交或回滚，数据会被持久化更新
+        隔离性：多个事务之间，相互独立
+        一致性：事务操作前后，数据总量不变
+      19、事务的隔离级别
+        多个事务相互独立，多个事务操作同一数据，会有问题，
+        不同的隔离界别可以解决这些问题
+        问题：
+          1）脏读：一个事务读取到另一个事务中未提交的数据
+          2）不可重复读：在同一个事务中，两次读取到的数据不一样
+          3）幻读（虚读）：一个事务操作（DML）数据表中所有记录，另一个事务添加了一条记录
+            则第一个事务查询不到自己的修改
+        隔离级别：
+          1）read uncommitted：读未提交，123的问题
+          2）read committed：读已提交，23的问题（Oracle默认）
+          3）repeated read：可重复读，3的问题（MySQL默认）
+          4）serializable：串行化，没有问题
+            一张表在被操作时，其他事务不可操作该表，贞操锁
+        隔离级别越大，安全性越高，但效率越低
+        数据库查询隔离级别：select @@tx_isolation;
+        数据库设置隔离级别：
+          set global transaction isolation level 级别字符串;
+          （就是上面的四个字符串，重新连接才会生效）
+      20、DCL：管理用户，授权，控制权限
+        1）管理用户
+          查询：切换到mysql数据库，查询user表
+            use mysql;
+            select * from user;
+              host中通配符%表示可以在任意主机使用用户登录数据库
+          添加：create user '用户名'@'主机名' identified by '密码';
+          删除：drop user '用户名'@'主机名';
+          修改用户密码：
+            ·update user set password=password('新密码')
+              where user='用户名';
+            ·set password for '用户名'@'主机名'=password('新密码');
+          忘记root密码的解决：
+            ·cmd（管理员） --> net stop mysql（停止服务）
+            ·使用无验证方式启动mysql服务：  
+              mysqld --skip-grant-tables
+            ·打开新的cmd --> mysql 进入数据库，修改密码
+            ·关掉两个cmd，打开任务管理器，手动关闭mysqld进程
+            ·管理员启动mysql服务，新密码登录
+        2）管理权限
+          查询：show grants for '用户名'@'主机名'; 
+          授予：grant 权限列表 on 数据库.表名 to '用户名'@'主机名'; 
+            在任意数据库任意表上授予所有权限：
+              grant all on *.* to '用户名'@'主机名'; 
+          撤销：revoke 权限列表 on 数据库.表名 from '用户名'@'主机名';
+    </pre>
+  </div>
+
+  <div id='java5'>
+    <h2>java5 JDBC</h2>
+    <pre>
+      1、JDBC，Java DataBase Connectivity，Java数据库连接
+        Java官方定义的操作所有关系型数据库的规则（接口）
+        数据库厂商自己实现这些接口的实现类（数据库驱动）
+        我们使用JDBC接口编程，真正执行的代码是驱动jar包中的实现类
+      2、简单使用：
+        导入驱动jar包：复制到项目下、add as library
+        注册驱动：Class.forName('com.mysql.jdbc.Driver')
+        获取数据库连接对象Connection:
+          Connection conn=DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/数据库名称",
+            "用户名","密码"
+          )
+        定义sql：String sql="sql语句";
+        获取sql语句的对象Statement:
+          Statement stat = conn.createStatement();
+        执行sql，接受返回结果:
+          Result result=stat.excute**(sql);
+        处理结果
+        释放资源:
+          stat.close();
+          conn.close();
+      3、DriverManager 驱动管理对象
+        1）注册驱动
+          com.mysql.jdbc.Driver中有静态代码块，加载进内存即会调用
+          mysql5之后不用再注册驱动，可以省略
+        2）获取数据库连接
+          Connection conn=DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/数据库名称",
+            "用户名","密码"
+          )
+          如果连接的是本机sql服务，默认端口3306，那么ip和端口可以省略
+      4、Connection 数据库连接对象
+        获取执行sql对象
+        管理事务：
+          开启：setAutoCommit()，设置参数为false即开启事务
+          提交：commit()
+          回滚：rollback()
+      5、Statement 执行sql的对象
+        conn.createStatement()
+        执行静态SQL，并返回结果对象
+          execute：执行任意sql
+          executeUpdate：执行DML语句（增删改表中记录语句）、DDL语句
+            返回值：DML影响的行计数，可以通过影响行数，判断是否成功
+              DDL无返回值
+          executeQuery：执行DQL（select）语句
+            返回值：ResultSet对象
+      6、ResultSet 结果集对象：封装查询结果，即是一个游标
+        next方法：游标向下移动一行，判断当前行是否有数据并返回布尔值
+          游标默认在第一行记录上面
+        getXxx方法：获取数据，Xxx代表数据类型，如：getInt()
+          接收参数：（重载）
+            int：代表列的编号，从1开始
+            String：代表列名
+        结果集对象也需要释放
+        使用方法：
+          while(rs.next()){// 判断是否有数据
+            String s = rs.getString('name');
+            System.out.println(s);
+          }
+      7、PreparedStatement 执行sql的对象，是Statement的子类
+        执行预编译SQL（动态）
+        sql注入问题：登录的用户随便，密码为：a' or 'a' = 'a
+          在拼接sql时有一些sql的特殊关键字参与字符串的拼接，造成安全问题
+        解决：使用PrepareStatement对象
+        预编译SQL：参数使用占位符?
+          定义SQL：sql的参数使用?
+          Connection.prepareStatement(String sql)
+          给?赋值：setXxx(参数1,参数2)
+            参数1：？的位置编号，从1开始
+            参数2：？的值
+          执行：不需要再传sql语句
+        后期都会使用这种方式，防止sql注入，效率更高
+      8、抽取JDBC的工具类
+        抽取注册驱动
+        抽取方法获取连接对象
+          这时可以使用配置文件、静态代码块
+          （静态代码块在类加载时执行一次就不再执行）
+          static{
+            // 静态操作，只能操作静态变量
+          }
+        抽取方法释放资源
+      9、键盘输入
+        Scanner sc=new Scanner(System.in);
+        String name=sc.nextLine();
+        String pwd=sc.nextLine();
+      10、JDBC控制事务
+        1）执行sql操作之前：
+          Connection.setAutoCommit(autoCommit)// 参数false 开启事务
+        2）当所有sql都只需完提交事务
+          Connection.commit()
+        3）在catch中回滚事务
+          Connection.rollback()
+    </pre>
+  </div>
+
+  <div id='java6'>
+    <h2>java6 数据库连接池</h2>
+    <pre>
+      1、获取数据库连接是向系统申请资源，申请、释放都比较耗时
+        每次数据库操作都得申请和释放（来一个客人，招聘一个服务员，客人一走就开除）
+        搞一个容器，申请很多连接对象，使用容器的连接对象，用完还回去
+        数据库连接池技术
+      2、数据库连接池：一个容器，存放数据库连接的容器
+        当系统初始化好，容器被创建，容器会申请一些连接对象，
+        当用户访问数据库时，从容器获取连接对象，用户访问完，归还连接对象
+        ·节约资源
+        ·用户访问高效
+      3、实现，DataSource
+        类似JDBC，由sun公司提供标准接口，具体的数据库厂商提供驱动并实现
+        获取连接：getConnection()
+        归还连接：如果连接对象来自连接池，则conn.close()只是归还连接对象，不再关闭
+        数据库连接池技术：C3P0（老旧）、Druid（德鲁伊，阿里巴巴，高效）
+      4、C3P0连接池
+        1）导入jar包，和依赖jar包（不要忘记数据库驱动jar包）
+        2）不推荐硬编码，配置文件更好
+          定义配置文件：
+            名称：c3p0.properties 或者 c3p0-config.xml
+            路径：直接将文件放在src（类路径）下
+        3）创建核心对象，数据库连接池对象，ComboPooledDataSource
+        4）获取连接：getConnection()
+        如：
+          DataSource ds=new ComboPooledDataSource();
+          Connection conn=ds.getConnection();
+          System.out.println(conn);
+        连接超时时间：如果规定时间内未获取到连接对象，就报错
+        数据池最大连接，需要看数据库能提供的最大连接数
+        C3P0可以通过配置连接不同的数据库
+        创建空构造函数的连接池，则使用默认配置
+        也可以传入指定名称（xml里的name属性值）连接不同的数据库
+      5、Druid
+        1）导入jar包
+        2）定义配置文件
+          properties形式，可以放在任意目录下，任意名称，手动加载
+          properties里#是注释
+        3）加载配置文件
+        4）获取数据库连接池对象
+          通过工厂类获取：DruidDataSourceFactory
+        5）获取连接
+        如：
+          Properties pro=new Properties();
+          InputStream is=DruidDemo.class.getClassLoader().getResourceAsStream('druid.properties');
+          pro.load(is);
+          DataSource ds=DruidDataSourceFactory.createDataSource(pro);
+          Connection conn=ds.getConnection();
+          System.out.println(conn);
+      6、Druid工具类
+        提供：静态代码块（加载配置文件、初始化连接池）、获取连接方法、释放资源方法、
+          获取连接池方法
+    </pre>
+  </div>
+
+  <div id='java7'>
+    <h2>java7 Spring JDBC：JDBCTemplate</h2>
+    <pre>
+      Spring提供的JDBC简单封装JDBCTemplate对象
+      导入jar包
+      创建JDBCTemplate对象，依赖于DataSource
+        JDBCTemplate template=new JDBCTemplate(ds)
+      调用JDBCTemplate的方法完成CRUD
+        update()：DML，增删改
+        queryForMap()：查询结果并封装为Map
+          结果长度只能是1，列名为key，值为value，将这条记录封装为一个map集合
+        queryForList()：查询结果并封装为List
+          将每一条记录封装为一个map集合，再将map集合装载到List中
+        query()：查询结果并封装为JavaBean
+          template.query(sql,
+            new RowMapper&lt;Person&gt;(){
+              @Override
+              public Person mapRow(ResultSet rs,int i){
+                Person p=new Person();
+                String name=rs.getString("name");
+                ...
+                p.setName(name);
+                ...
+                return p;
+              }
+            });
+          :==>
+          List&lt;Person&gt; pl= template.query(sql,
+            new BeanPropertyRowMapper&lt;Person&gt;(Person.class));
+        queryForObject()：查询结果并封装为Object
+          Long total=template.queryForObject(sql,Long.class);
+            第二个参数是需要返回的类型（常为聚合函数的返回值）
+            常用于聚合函数
+      如： 
+        JDBCTemplate template=new JDBCTemplate(JDBCUtils.getDataSource());
+        String sql="";
+        Result res=templte.update(sql语句,prepareStatement的参数列表);
+        不用归还连接，自动归还
+      （JUnit单元测试，可以让方法独立执行，添加注解@Test）
+      int是基本数据类型，不可以接受null，而引用类型Integer可以接受null
+    </pre>
+  </div>
+
+  <div id='java8'>
+    <h2>java8 前端三剑客</h2>
+    <pre>
+      1、JavaWeb：使用Java语言开发基于互联网的项目
+      2、软件架构
+        C/S：Client/Server 客户端/服务器端
+          在用户本地有一个客户端程序，远程有一个服务器程序
+          优点：用户体验好（比如游戏）
+          缺点：安装，部署，开发，维护麻烦
+        <b>B/S：Browser/Server 浏览器端/服务器端</b>
+          只需要一个浏览器，通过网址（url），访问不同的服务器端程序
+          优点：安装，部署，开发，维护简单
+          缺点：如果应用过大，用户体验会有影响；
+            对硬件要求过高（局限于硬件）
+      3、B/S详解
+        客户端通过相应的网址，访问服务器端资源
+        资源有静态资源和动态资源
+        静态资源：使用静态网页开发技术（Html、Css、Javascript）发布的资源
+          所有用户访问得到的结果一致，如：文本、图片、音视频、Html、Css、Javascript
+          如果请求静态资源，name服务器将静态资源直接发送给服务器，
+            浏览器内置了静态资源的解析引擎，进行静态资源的展示
+        动态资源：使用动态网页技术开发的资源
+          所有用户访问得到的结果可能不一样，如jsp/servlet，php，asp等
+          如果用户请求动态资源，那么服务器会执行动态资源，转为静态资源
+            再发送给浏览器
+      4、html、css、js三剑客
+        1）Hyper Text Markup Language 超文本标记语言
+          标记语言不是编程语言
+          .html或者.htm文件（后者是因为以前后缀只有三位，现在可以多位）
+          围堵标签、自闭合标签
+          标签建议小写
+          table：
+            cellpadding：定义内容与单元格之间的距离
+            cellspacing：定义单元格之间的距离
+          caption：表格标题
+          rowspan：跨行
+          colspan：跨列
+          表单项中的数据要想被提交，必须指定name属性
+          radio：单选，多个单选需要相同的name，以value区分
+          checkbox：多选，相同的name，以value区分，checked
+          name属性对提交表单后获取值有用，id是用于html页面发现元素
+          file：选择文件
+          hidden：隐藏域，用于提交一些信息
+          color：取色器
+          date：日期
+          datetime-local：日期和时间
+          select option：下拉列表，name value，selected
+        2）Cascading Style Sheets：层叠样式表
+          层叠：多个样式在一个html元素上，同时生效
+          引入：
+            在style标签内：@import "style.css";
+        3）javascript：客户端脚本语言
+          每一个浏览器都有js解析引擎，无需编译
+          JavaScript=ECMAScript+JS自己特有的（DOM、BOM）
+          Function对象：
+            创建：var fun =new Function(形式参数列表，方法体);
+              function(形式参数列表){方法体}
+              var 方法名=function(形式参数列表){方法体}
+            属性：
+              length：形参个数
+            在JS中，方法的调用只与方法名有关，和参数列表无关
+            在方法声明中有一个隐藏的内置对象（数组）
+              argument，封装所有的实际参数
+          Array对象：
+            创建：var arr=new Array(元素列表)
+              var arr=new Array(数组长度)
+              var arr=[元素列表]
+            方法：
+              join(参数)：将数组元素以指定分隔符拼接为字符串
+          Date对象：
+            创建：var date=new Date();
+            方法：
+              toLocalString()：返回当前时间对应的时间本地字符串格式
+              getTime()：获取毫秒值
+          Math对象：不用创建直接使用
+            方法：
+              PI：圆周率
+              random()：0-1间的随机数[0,1)
+              ceil()、floor()、round()
+          RegExp正则表达式对象：
+            正则表达式：定义字符串的组成规则
+              单个字符：[]
+                如：[a] [ab] [a-zA-Z0-9_]
+                \d：单个数字字符[0-9_]
+                \w：单个单词字符[a-zA-Z0-9_]
+              量词符号：
+                *：出现0次或多次
+                ?：出现0次或1次
+                +：出现1次或多次
+                如：\w*
+                {m,n}：数量大于等于m小于等于n
+                  m如果缺省：{,n}至多n次
+                  n如果缺省：{m,}至少m次
+              开始：^
+              结束：$
+            创建：
+              var reg=new RegExp("正则表达式");//注意转义
+              var reg=/正则表达式/;
+            方法：
+              test(参数字符串)：验证指定的字符串是否符合正则表达式定义的规则
+                返回布尔值
+          Global对象：全局对象
+            Global中的对象不需要对象就可以直接调用：方法名()
+            方法：
+              encodeURI()：URL编码
+              decodeURI()：URL解码
+              encodeURIComponent()：URL编码，编码的字符更多
+              decodeURIComponent()：URL解码，编码的字符更多
+              parseInt()：将字符串转为数字，只转变前边数字部分
+              isNaN(需要判断的变量)：NaN六亲不认，自己也不认
+              eval(字符串)：将javascript字符串转为javascript代码来执行
+      5、BOM：Browser Object Model，浏览器对象模型
+        将浏览器的各个部分封装成对象
+        包含：Navigator浏览器对象、Window浏览器窗口对象、Location地址栏对象
+            History历史记录对象、Screen显示器屏幕对象、DOM对象
+        1）Window：不用创建直接使用
+          window.方法名()，也可以省略window
+          方法：
+            alert()：显示一段消息和一个确认按钮的警告框
+            confirm()：一段消息及确认按钮、取消按钮的对话框
+              确认则返回true，取消返回false
+            prompt()：输入框，返回用户输入的内容
+            open()：打开一个新的浏览器窗口，返回一个该window对象
+            close()：关闭浏览器窗口，谁调用关闭谁（window对象）
+            setTimeout()：在指定毫秒数后执行代码，返回一个定时器标识
+            clearTimeout()：取消setTimeout()方法设置的定时器
+            setInterval()：循环定时器，返回一个循环定时器标识
+            clearInterval()：取消循环定时器
+          属性：获取其他BOM对象
+            History、Location、Navigator、Screen、
+            获取DOM对象：document
+        2）Location：地址栏对象
+          创建：使用window来获取，window.location
+          方法：
+            reload()：重新加载当前页面，刷新
+          属性：
+            href：设置或返回完整的url，设置url后会进去该url
+        3）
+      6、DOM：Document Object Model，文档对象模型
+        控制html文档的内容，将标记语言文档的各个组成部分封装为对象
+        使用这些对象，对标记语言文档进行CRUD操作
+        html文档 :==> DOM树模型
+        核心DOM、XML DOM、HTML DOM
+        核心DOM对象：
+          方法：（创建其他DOM对象）
+            createAttribute()、createComment()、createElement()
+            createTextNode()
+        Element对象：
+          创建：通过document来获取和创建
+          方法：removeAttribute()删除属性
+            setAttribute()设置属性
+        Node对象：节点对象，其他5个的父节点
+          方法：CRUD DOM树模型
+            appendChild()：向节点子节点列表尾部添加新的子节点
+            removeChild()：删除并返回当前子节点的指定子节点
+            replaceChild()：用新节点替换一个子节点
+          【超链接功能：
+            可以被点击、样式；点击后跳转到href指定的url
+            href='javascript:void(0)'：点击但不跳转】
+          属性：parentNode()：获取父节点
+        HTML DOM：
+          属性：
+            innerHTML：标签体内容的设置与获取
+            style：修改样式
+            className：标签的class属性设置与获取
+        事件监听机制：
+          事件：各种页面事件
+            onclick：单击事件
+            ondblclick：双击事件
+            onblur：失去焦点，常用于表单验证
+            onfocus：获得焦点
+            onload：一张页面或图像加载完成，window.onload
+            onmousedown：鼠标被按下，传入参数event
+              event.button：0左键，1滚轮，2右键
+            onmouseup：鼠标松开
+            onmousemove：鼠标被移动
+            onmouseover：鼠标移动到元素之上
+            onmouseout：鼠标移动到元素之外
+            onkeydown：键盘被按下，传入event
+              event.keyCode：那个键位
+            onkeyup：键盘被松开
+            onkeypress：键盘被按下并松开
+            onchange：域的内容被改变
+            onselect：文本被选中
+            onsubmit：表单确认，返回false可以阻止表单提交
+            onreset：表单重置
+          事件源：元素组件
+          监听器：代码
+          注册监听：将事件、事件源、监听器结合在一起，
+            当事件源发声某事件，则触发监听器代码
+      7、Bootstrap：前端开发框架
+        响应式布局依赖于栅格系统，一行均分为12个格子，可以设置元素占几格
+        容器：相当于table
+        行：相当于行tr
+        元素：col-设备代号-格子数目，超过12格自动换行
+          设备代号：xs（手机）、sm（平板）、md（笔记本）、lg（桌面显示器）
+          向上兼容，如果设备宽度小于设备代码，默认一个元素一行
+        导航条、分页条、轮播图
+    </pre>
+  </div>
+
+  <div id='java9'>
+    <h2>java9 XML</h2>
+    <pre>
+      1、Extensible Markup Language，可扩展标记语言
+        可扩展：标签都是自定义的
+        与HTML的区别：亲兄弟（W3C，万维网联盟）但XML语法严格
+        功能：存储数据、配置文件、网络中传输
+      2、语法：
+        1）基本语法（可以使用浏览器打开检查有无错误）
+          后缀名：.xml
+          第一行必须为文档声明，前面都不能有空格、空行
+          xml文档中有且仅有一个根标签
+          属性值必须使用引号，单双都行
+          标签必须结束或自闭合
+          xml标签区分大小写
+          如：
+            &lt;? xml version='1.0' ?&gt;
+            &lt;users&gt;
+              &lt;user id='1'&gt;
+                &lt;name&gt;Allx&lt;/name&gt;
+                &lt;age&gt;112&lt;/age&gt;
+                &lt;gender&gt;male&lt;/gender&gt;
+              &lt;/user&gt;
+              &lt;user id='2'&gt;
+                &lt;name&gt;Tiger&lt;/name&gt;
+                &lt;age&gt;32&lt;/age&gt;
+                &lt;gender&gt;male&lt;/gender&gt;
+              &lt;/user&gt;
+            &lt;/users&gt;
+        2）组成部分
+          文档声明 &lt;? xml 属性列表 ?&gt;
+            version：版本号，必须有
+            encoding：编码方式，告知解析引擎当前文档使用的字符集
+            standalone：是否独立，yes或no
+      3、用户、软件使用者编写xml，软件解析xml
+        用户--程序员，软件--框架
+        说明文档：规定xml的书写规则----约束文档（软件提供）
+      4、约束文档
+        DTD：简单的约束技术，Scheme：复杂的约束技术
+        1）DTD
+          引入DTD约束到xml中
+            内部dtd：将约束规则定义在xml中
+            外部dtd：将约束规则定义在外部的dtd文档中
+              本地-&lt;!DOCTYPE 根标签名 SYSTEM "dtd文件位置"&gt;
+              本地-&lt;!DOCTYPE 根标签名 PUBLIC "dtd文件名字" "dtd文件位置URL"&gt;
+        2）Scheme：对内容也有限定，.xsd文件
+          引入：引入xsi前缀、引入命名空间、添加前缀（空前缀则默认）
+      5、XML解析：操作xml文档，读取其中数据到内存中
+        1）解析（读取到内存中）
+          xml解析思想：
+            DOM：将标记语言一次性加载进内存，在内存中形成DOM树
+              操作方便，可以对文档进行CRUD的所有操作
+              但：一次性加载所有数据，消耗内存
+            SAX：逐行读取，基于事件驱动，读一行释放一行
+              不占内存，适合小内存设备
+              但：只能读取，不能增删改
+            服务端-DOM，移动端-SAX
+          解析器：JAXP（sun公司，DOM和SAX）、DOM4J（非常优秀，DOM）、Jsoup（DOM）
+            PULL（SAX）
+        2）Jsoup：可以解析xml和html
+          导入jar包（复制、添加为库包）
+          获取Document对象（继承自Element对象）
+          获取对应的标签Element对象
+          获取数据
+          如：
+            String path=JsoupDemo.class.getClassLoader().getResource("**.xml").getPath();
+            Document doc=Jsoup.parse(new File(path),"utf-8");
+            Elements eles=doc.getElementsByTag("name");
+            Element e=eles.get(0);
+            String name=e.text();
+          传入url解析html可以用作爬虫
+        2）写入（内存数据持久化）
+    </pre>
+  </div>
+
+  <div id='java10'>
+    <h2>java10 web服务器软件</h2>
+    <pre>
+      服务器：安装了服务器软件的计算机
+      服务器软件：接受用户请求，处理请求，做出响应
+      web服务器软件：部署web项目，让用户可以通过浏览器来访问这些项目
+      常见的java相关的web服务器软件：
+        webLogic：Oracle，大型的JavaEE服务器，收费
+          （JavaEE，java在企业级开发中使用的技术规范总和）
+        webSphere：IBM，大型的JavaEE服务器，收费
+        JBOSS：JBOSS，大型的JavaEE服务器，收费
+        Tomcat：Apache基金组织，中小型JavaEE服务器，开源免费
+      Tomcat
+        下载
+        安装：官网下载压缩包、解压，安装完成（目录无中文）
+        卸载：删除目录即可
+        启动：双击 bin > startup.bat，本地8080端口即可访问
+          可能的问题：
+            cmd一闪而过：
+              原因：没有正确配置JAVA_HOME环境变量
+              解决方案：正确配置JAVA_HOME环境变量，Tomcat是纯java编写
+            启动报错：在日志文件找到调试信息
+              暴力：找到占用的端口号，杀死对应的进程
+                netstat -ano
+              温柔：修改自身端口号（默认8080）
+                conf文件夹下的server.xml里的connector里的port属性
+                &lt;Connector port="8080" protocol="HTTP/1.1" 
+                  connectionTimeout="20000"
+                  redirectPort="8443" /&gt;
+                一般会将默认端口改为80，,80端口是http协议的默认端口
+                  访问时就可以不用写端口号了
+        关闭:
+          正常关闭：
+            bin/hutdown.bat
+            Ctrl+c
+          强制关闭：关闭窗口
+        配置:
+          部署项目的方式：
+            ·直接将项目放置到webapps的目录下
+              如：/hello：项目的访问路径，虚拟目录
+              简化部署：将项目打包成.war包，将war包放置到webapps目录下，
+                war包会自动解压缩，删除war包也会自动删除项目
+            ·配置conf/server.xml
+              在Host标签内加入：
+                &lt;Context docBase="D:\hello" path="/hehe"&gt;
+                前面的docBase是项目存放路径，后面path是虚拟目录
+            ·在conf\Catalina\localhost创建任意名称的xml文件
+              文件中写上：
+                &lt;Context docBase="D:\hello"&gt;
+              虚拟目录：xml文件的名称
+              热部署，推荐，给xml文件改个名，就访问不到了
+          静态项目：（静态资源）
+          动态项目：（动态资源）
+            java动态项目目录结构：
+              -根目录
+                -WEB-INF目录
+                  -web.xml：web项目的核心配置文件
+                  -classes目录：放置字节码文件的目录
+                  -lib目录：放置依赖的jar包
+          将Tomcat集成到idea中，创建JavaEE项目，部署项目：
+            集成idea：-Run -edit configurations -defaults -Tomcat Server
+              -Local -Server -Configuration -Tomcat安装目录（D:\webserver\apache-tomcat-8.5.50）
+            创建及部署：-File -New -Module -Java Enterprise -JavaEE7 -Web Application -3.1版本
+            修改下tomcat，edit configurations，update resource，热部署
+        目录结构：
+          bin：可执行文件
+          config：配置文件
+          lib：依赖jar包
+          logs：日志文件
+          temp：临时文件
+          webapps：存放web项目
+          work：存放运行时的数据
+    </pre>
+  </div>
+
+  <div id='java11'>
+    <h2>java11 Servlet接口</h2>
+    <pre>
+      1、server applet：运行在服务器端的小程序
+      2、动态用户的请求返回是不一样的
+        有逻辑性--java代码--java类
+        java类依赖于服务器才能运行，没有主方法，也就是tomcat来执行
+          需要遵循一定的规则才能被tomcat识别并调用
+          java中规则即接口--servlet
+      3、Servlet就是一个接口，定义了java类被浏览器访问（tomcat识别）的规则
+        将来需要自定义一个类，实现servlet接口，复写方法
+      4、快速入门： 
+        1）创建JavaEE项目
+        2）定义一个类，实现Servlet接口
+          public class ServletDemo1 implements Servlet
+        3）实现接口中的抽象方法
+          注意这个方法：
+            // 提供服务的方法，浏览器请求一次就调用一次
+            @Override
+            public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+              System.out.println("hello allx");
+            }
+        4）配置Servlet
+          在WEB-INF\web.xml根标签中写上：
+            &lt;!--配置Servlet--&gt;
+            &lt;servlet&gt;
+              &lt;servlet-name&gt;demo1&lt;/servlet-name&gt;
+              &lt;servlet-class&gt;
+                com.javaee.tiger.web.Servlet.ServletDemo1
+              &lt;/servlet-class&gt;
+            &lt;/servlet&gt;
+            &lt;servlet-mapping&gt;
+              &lt;servlet-name&gt;demo1&lt;/servlet-name&gt;
+              &lt;url-pattern&gt;/demo1&lt;/url-pattern&gt;
+            &lt;/servlet-mapping&gt;
+          Servlet名，全类名，虚拟目录名
+          可以配置项目的虚拟目录，在editconfig中的部署下有个虚拟目录
+      5、执行原理：
+        url = 主机 + 端口 + 虚拟项目路径 + 资源路径
+        资源路径 =-= url-pattern =-= servlet-name =-= 全类名
+        全类名反射
+        tomcat将全类名对应的字节码文件加载进内存，Class.forName()
+        tomcat创建对象，cls.newInstance()
+        tomcat调用方法，service()
+      6、servlet的方法：
+        1）init方法：初始化方法
+          在servlet被创建时执行，只执行一次，加载资源
+          可以配置web.xml来指定在不同的时机执行：（servlet标签下）
+            load-on-startup标签：
+              负数：第一次被访问创建
+              0或正数：服务器启动时创建
+          Servlet在内存中只存在一个对象，单例
+            多个用户同时访问，可能同时存在线程安全问题
+            解决方法：尽量不要在servlet实现类中定义成员变量
+              即使定义了，也不要对其修改值
+        2）service方法：
+          在每一次servlet被访问时都执行，执行多次
+        3）destroy方法：
+          在服务器被正常关闭时执行一次，Servlet销毁之前执行，释放资源
+        4）servletConfig方法：
+            获取servletConfig对象
+        5）getServletInfo方法：
+            获取Servlet信息：
+              版本、作者等等
+      7、Servlet3.0及以上
+        支持注解配置，可以不需要web.xml了
+        1）定义Servlet实现类
+        2）复写方法
+        3）在Servlet实现类上使用@WebServlet注解，进行资源路径配置
+          @WebServlet(urlPatterns = "/demo")
+          @WebServlet(value="/demo")
+          @WebServlet("/demo")
+          （Ctrl+左键查看注解实现，注解就一个value就可以省略）
+    </pre>
+  </div>
+
+  <div id='java12'>
+    <h2>java12 Idea与Tomcat的配置</h2>
+    <pre>
+      1、idea会为每一个tomcat部署的项目单独建立一份配置文件
+        查看log：Catalina_BASE...
+      2、工作空间项目 和 tomcat web项目
+        tomcat真正访问的是“tomcat web项目”，“tomcat web项目”对应着
+          “工作空间项目”web目录的所有资源
+        WEB-INF目录下的文件不能被浏览器直接访问
+      3、tomcat调试，debug才能断点调试
+    </pre>
+  </div>
+
+  <div id='java13'>
+    <h2>java13 Servlet体系结构</h2>
+    <pre>
+      1、Servlet接口-GenericServlet抽象类-HttpServlet抽象类
+        爷孙
+      2、GenericServlet抽象类
+        只抽象了service方法，将其他四个方法做了默认空实现
+      3、HttpServlet抽象类（封装http协议）
+        做好了不同http请求方式的分发，分别调用doGet、doPost方法等
+        简化操作，只需复写doGet、doPost方法等
+        浏览器直接请求是get方式
+      4、Servlet相关配置
+        urlpattern：Servlet访问路径
+          一个Servlet可以对应多个访问路径（资源路径）
+          路径定义规则
+            /xxx：
+            /xxx/xxx：多层路径，路径结构
+            *.do：不能加/
+    </pre>
+  </div>
+
+  <div id='java14'>
+    <h2>java14 HTTP协议</h2>
+    <pre>
+      1、概念：Hyper Text Transfer Protocol
+        超文本传输协议
+        定义了客户端与服务器通信时的数据格式
+      2、特点：
+        基于TCP/IP的高级协议，安全
+        默认端口是80
+        基于请求响应模型，一次请求对应一次响应
+        无状态协议，每次请求之间相互独立，不能交互数据
+      3、历史版本：
+        1.0：每次响应都会建立新的连接
+        1.1：会复用连接
+      4、请求消息数据格式
+        1）请求行
+          请求方式 请求URL 请求协议/版本
+          GET  /login.html  HTTP/1.1
+          请求方式：有7中，常用2种
+            GET：请求参数在请求行中（url后）
+              请求URL长度有限制
+              不太安全
+            POST：请求参数在请求体中
+              请求URL长度无限制
+              相对安全
+        2）请求头：客户端告诉浏览器的信息
+          请求头名称：请求头值
+          键值对格式
+          常见请求头：
+            User-Agent：浏览器告诉服务器，使用的浏览器版本信息
+              可以在服务器端获取该头信息，解决浏览器兼容问题
+            Accept：接受的数据格式
+            Refer：告诉服务器，当前请求从哪里来，
+              如果是从超链接来的，就存放该超链接页面的地址
+                否则为null
+              防盗链，做统计工作
+            Connection：keep-alive（可复用）
+        3）请求空行：分割请求头和请求体
+          空行
+        4）请求体（正文）：封装post请求消息的请求参数
+          如果是post，才会有，get不会有
+          参数名：参数值
+      5、Request对象（Servlet类参数）
+        1）request与response的原理
+          ·tomcat根据资源路径，创建对应的Servlet实现类对象
+          ·tomcat创建request、response对象，分别封装请求消息数据和返回消息
+          ·tomcat将request、response对象传递给service方法，并调用service方法
+          ·程序员可以通过request对象获取请求数据，通过response对象设置响应数据
+          ·服务器在给浏览器做出响应之前，会从response取出响应消息进行封装
+        2）Request继承体系结构
+          -- ServletRequest 接口
+          -- HttpServletRequest 接口
+          -- org.apache.catalina.connector.RequestFacade 实现类
+        3）功能：
+          ·获取请求消息
+            请求行
+              GET /user/login?user=allx&pwd=123 HTTP/1.1
+              方法：
+                获取请求方式GET：getMethod()
+                获取虚拟目录/user：getContextPath()
+                获取Servlet路径（资源路径）/login：getServletPath()
+                获取get方式请求参数user=allx&pwd=123：getQueryString()
+                获取请求URI：getRequestURI()--/user/login
+                  getRequestURL()--http://127.0.0.1:80/user/login
+                  URL：统一资源定位符
+                  URI：统一资源标识符
+                获取协议及版本HTTP/1.1：getProtocol()
+                获取客户机ip地址：getRemoteAddr()
+            请求头
+              getHeader(name)：通过请求头的名称获取请求头的值，name不区分大小写
+              getHeaderNames()：获取所有的请求头名称，就是个迭代器
+                hasMoreElement()，nextElement()
+            请求体
+              只有POST方式才有请求体，在请求体中封装了POST请求参数
+              步骤：
+                ·获取流对象：
+                  字节流：getInputStream()，可以操作所有类型数据
+                  字符流：getReader()，只能操作字符数据
+                ·从流对象中获取数据
+          ·其他功能
+            获取请求参数（通用方式，GET、POST都可以）：
+              getParameters(name)：根据参数名获取参数值
+              getParameterValues(name)：根据参数名获取参数值数组
+                一个键对应多个值，复选框
+              getParameterNames()：获取所有参数名，迭代器
+              getParameterMap()：获取所有参数的Map集合
+                ParameterMap.keySet()、ParameterMap.get(value)
+              【可以代码就写一份，在另一个请求方式doGET或doPOST】
+              中文乱码问题：tomcat8解决了get方式乱码
+                post方式：设置流的字符集
+                  request.setCharacterEncoding("utf-8")
+            请求转发：在服务器内部的资源跳转方式
+              步骤：
+                通过request对象获取请求转发器对象：getRequestDispatcher(path)
+                使用转发器对象进行转发：forward(request,response)
+              特点：
+                浏览器地址栏路径不发生变化
+                只能转发到服务器内部资源
+                转发只有一次请求
+            共享数据
+              域对象：有作用范围的对象，可以在范围之内共享数据
+              request域：代表一次请求的范围，一般用于请求转发的多个资源中共享数据
+                方法：(request.)
+                  setAttribute(name,obj)：存储数据
+                  getAttribute(name)：通过键获取值
+                  removeAttribute(name)：通过键获移除键值对
+            获取ServletContext
+              request.getServletContext()
+      6、login案例分析
+        login.html -- LoginServlet -- UserDAO（Database Access Object）
+        在DAO中操作数据库
+        LoginServlet：
+          设置编码、获取用户和密码、使用DAO查询、判断并返回
+          FailServlet，SuccessServlet（存用户信息到request域、展示用户信息）
+      7、开发
+        1）创建项目，创建html页面，配置文件，导入jar包
+          jar包在https://mvnrepository.com/下载
+        2）创建数据库:
+          create database javaservletlogindemo;
+          use javaservletlogindemo;
+          select database();
+          create table user(
+            id int primary key auto_increment,
+              username varchar(32) unique not null,
+              password varchar(32) not null
+          );
+          select * from user;
+        3）创建User实体类
+          需要提供空参数的构造函数
+        4）创建UserDao，提供login方法
+          template.queryForObject为了避免没有返回值时的误操作，
+            会抛出EmptyResultDataAccessException异常
+        5）进行单元测试@Test，需要导入junit的jar包
+        6）编写LoginServlet实现类
+          //1、设置编码
+          req.setCharacterEncoding("utf-8");
+          //2、获取请求参数
+          String username = req.getParameter("username");
+          String password = req.getParameter("password");
+          //3、封装user对象
+          User loginUser = new User(username, password);
+          //4、调用UserDao的login方法
+          UserDao dao = new UserDao();
+          User user = dao.login(loginUser);
+          //5、判断user
+          if (user != null) {
+            //登录成功
+            //存储数据
+            req.setAttribute("user", user);
+            req.getRequestDispatcher("/successservlet").forward(req, resp);
+          } else {
+            //登录失败
+            req.getRequestDispatcher("/failservlet").forward(req, resp);
+          }
+        7）form表单的action为：
+          虚拟目录 + servlet的资源路径
+        8）配置tomcat，添加新的tomcat，添加虚拟目录
+          tomcat和jvm端口不能跟已有的冲突，分别设为8088,1098
+      8、BeanUtils工具类，简化        
+        下载jar包，导入并添加为库
+        使用：
+          //2、获取所有参数
+          Map<String,String[]> map=req.getParameterMap();
+          //3、创建User对象
+          User loginUser = new User();
+          //3.1使用BeanUtils(apache)封装
+          try {
+            BeanUtils.populate(loginUser,map);
+          } catch (IllegalAccessException e) {
+            e.printStackTrace();
+          } catch (InvocationTargetException e) {
+            e.printStackTrace();
+          }
+        封装JavaBean，JavaBean是标准的Java类，类必须使用public修饰，
+          必须提供空参数构造器，成员变量必须使用private修饰，
+          提供public的setter和getter方法。
+          封装数据
+        成员变量：
+        属性：setter和getter方法截取后的产物
+          如：private int num;
+            public void setNNN(int N){
+              this.num=N;
+            }
+          成员变量是num，属性是nNN
+          BeanUtils通过属性来操作成员变量
+        方法：(BeanUtils.)
+          setProperty(JavaBean类对象，属性名，属性值)
+          getProperty(JavaBean类对象，属性名)
+          populate(Object obj，Map map)：
+            将map集合的键值对信息，封装到对应的JavaBean中
+      9、Http响应消息：服务器端发给客户端的数据
+        响应行：协议/版本 响应状态码 状态码描述
+          响应状态码：服务器告诉浏览器本次响应的状态，都是三位数字
+            1xx：服务器接收客户端消息，但没有接收完，等待一段时间，发送1xx
+            2xx：成功，如：200
+            3xx：重定向，如：302（重定向）、304（访问浏览器本地缓存）
+              每张图片都是一次访问
+            4xx：客户端错误，如：404（请求路径没有对应的资源）、
+              405（请求方式没有对应的处理方法doGet等）
+            5xx：服务器端错误，如：500（服务器内部异常）
+        响应头：【头名称：值】
+          Content-Type：服务器告诉客户端本次响应体数据格式以及编码格式
+            text/html;chrset=UTF-8
+          Content-disposition：服务器告诉客户端以何种格式打开响应体数据
+            in-line：默认值，在当前页面内打开
+            attachment;filename-xxx：以附件形式打开响应体，文件下载
+        响应空行
+        响应体：传输的数据
+      10、Response对象
+        功能：设置响应消息
+          响应行：设置状态码：setStatus(int)
+          响应头：setHeader(String name,String value)
+          响应体：（步骤）
+            获取输出流：
+              字符输出流：PrintWriter getWriter()
+              字节输出流：ServletOutputStream getOutputStream()
+            使用输出流，将数据输出到客户端浏览器
+        重定向：资源跳转的方式，url路径会被改变
+          浏览器请求资源A，A告诉浏览器重定向（302），且告知资源B的路径，
+            响应头location:B资源路径
+        简单的重定向：resp.sendRedirect("/logindemo/responsedemo2");
+        转发特点：forward
+          转发地址栏路径不变；转发只能访问当前服务器下的资源；
+          转发是一次请求（可以使用request对象类共享数据）
+        重定向特点：redirect
+          重定向地址栏路径变；重定向可以访问服务器下的资源；
+          重定向是两次请求（不能使用request对象类共享数据）
+        路径的写法：
+          1）分类：
+            相对：不可以确定唯一资源，./index.html
+            绝对：通过路径确定唯一的资源
+              如：http://localhost/logindemo/respnsedemo /logindemo/respnsedemo
+              【servlet的实现类最终都会在虚拟目录下，也就是在web目录下】
+              如果是客户端要用，那就需要虚拟目录；服务端，不需要虚拟目录
+              虚拟目录：项目的访问路径
+          2）动态获取虚拟目录：String ctxPath=req.getContextPath()
+        编码问题：
+          //获取流对象之前设置流的字符编码
+          resp.setCharacterEncoding("UTF-8");      
+          //需要设置响应头，中文，告诉浏览器使用何种编码解码，此时还可以不省略setCharacterEncoding
+          resp.setHeader("Content-Type", "text/*;charset=UTF-8");
+        简单编码方式：resp.setContentType("text/*;charset=UTF-8");
+        验证码案例：本质是图片，防止恶意表单注册，程序里动态生成
+          时间戳来避免获取缓存，从而不更改图片
+      11、ServletContext对象：代表整个web应用，可以和程序的容器来通信
+        获取：（以下两种获取的是一样的）
+          req.getServletContext()（通过request对象）
+          this.getServletContext()（通过HttpServlet的继承类对象）
+        功能：
+          获取MIME类型
+            MIME类型：在互联网通信过程中定义的一种文件数据类型
+              大类型/小类型：text/html、image/jpeg（jpg类似htm）
+            getMimeType(String file)
+          域对象：共享数据
+            setAttribute(String name,Object value)
+            getAttribute(String name)
+            removeAttribute(String name)
+            ServletContext对象范围：
+              共享所有用户请求的数据，慎用，生命周期也长
+          获取文件的真实（服务器、运行）路径
+            web项目==>tomcat服务器、本地工作空间
+            getRealPath(String path)
+              如：getRealPath("/b.txt")（web目录下）
+              如：getRealPath("/WEB-INF/c.txt")（web/WEB-INF目录下）
+              如：getRealPath("/WEB-INF/classes/a.txt")（src目录下）
+                因为src目录下的文件会被部署到web/WEB-INF/classes目录
+                classLoader只能获取classes下的文件，不能获取web下的
+            找到真实路径再通过文件流进行加载解析
+    </pre>
+  </div>
+
+  <div id='java15'>
+    <h2>java15 文件下载案例</h2>
+    <pre>
+      1、需求：
+        页面显示超链接
+        点击超链接弹出下载提示框
+        完成页面下载
+      2、分析：
+        超链接指向的资源如果能解析，则在浏览器中展示，如果不能，则弹出下载提示
+        需求是任何资源都必须弹出下载提示框
+        所以使用响应头设置资源的打开方式：以附件形式
+          content-disposition:attachment;filename=xxx
+      3、步骤：
+        定义页面，编辑超链接href属性，指向Servlet，并且传递资源名称filename
+        定义Servlet
+          获取文件名称
+          使用字节输入流加载文件进内存（需要文件真实路径）
+          指定response的响应头：content-disposition:attachment;filename=xxx
+          将数据写到response的输出流
+      4、中文文件名乱码
+        获取客户端使用的浏览器版本信息（user-agent）
+        根据不同的版本信息，设置filename的编码方式不同
+    </pre>
+  </div>
+
+  <div id='java16'>
+    <h2>java16 会话技术</h2>
+    <pre>
+      1、会话：一次会话中包含多次请求和响应
+        一次会话：浏览器第一次给服务器发送请求，建立会话，直到一方断开为止
+        功能：在一次会话的范围内的多次请求间共享数据(还得是同一个浏览器)
+        方式：
+          客户端会话技术：Cookie
+          服务器端会话技术：Session
+      2、Cookie：将数据保存在客户端
+        快速入门：
+          1）创建Cookie对象，绑定数据
+            new Cookie(name,value)
+          2）发送Cookie对象
+            response.addCookie(cookie)
+          3）获取Cookie对象，拿到数据
+            Cookie[] cs=request.getCookies()
+            if(cs!=null){
+              for(Cookie c:cs){
+                c.getName();
+                c.getValue();
+              }
+            }
+        原理：
+          响应头里：set-cookie:msg=allx
+          请求头里：cookie:msg=allx
+          访问服务器，服务器设置一个cookie对象随着response返回客户端，
+            客户端下次访问，将cookie放在request中，再请求服务器
+      3、Cookie细节：
+        1）一次可以发送多个cookie，多调用几次addCookie(cookie)
+        2）默认情况下，浏览器关闭后，cookie数据被清除
+          持久化存储：在发送Cookie之前设置cookie存活时间
+            setMAxAge(int seconds)：
+              正数：将cookie数据写到硬盘的文件中，持久化存储，存活时间
+              负数；默认值
+              零：删除cookie信息（存活时间为0）
+        3）tomcat8之后版本cookie支持中文数据，8之前采用url编码
+            但对于特殊字符如空格，仍不支持，还是要url编码解码
+        4）假设在一个tomcat服务器中，部署了多个web项目，多个虚拟目录
+            默认情况下，cookie不能被共享
+            setPath(path)：设置cookie的获取范围，默认是被设置成当前的虚拟目录
+            setPath("/")：这样设置就可以共享了
+          不同的tomcat服务器共享cookie
+            setDomain(path)：如果设置一级域名相同，多个服务器也可以共享cookie
+            setDomain(".baidu.com")：贴吧和百科即可共享cookie
+      4、Cookie特点
+        存储数据在客户端浏览器，并不安全
+        浏览器对单个cookie的大小有限制（4KB），且对同一域名下的cookie总数有限制（20）
+        作用:
+          Cookie一般用于存储少量不敏感数据
+          在不登录的情况下，完成服务器对客户端的身份识别
+      5、Cookie案例
+        需求：访问一个Servlet，如果是第一次访问，则提示：您好，欢迎您首次访问
+          如果不是第一次访问，则提示：欢迎回来，您上次访问时间为：XXXX-xx-xx
+        分析：采用cookie，判断是否有lastTime的cookie
+      6、JSP入门：Java Server Pages，耦合度太高
+        JSP本质上就是一个Servlet
+        请求index.jsp --> _index.java --> _index.class（Servlet）响应
+      7、Session服务器端会话技术
+        在一次会话的多次请求间共享数据，将数据保存在服务器端的对象中
+        HttpSession域对象(request.getSession())：
+          setAttribute(String name,Object obj)
+          getAttribute(String name)
+          removeAttribute(String name)
+          getId()
+        Session原理：依赖于Cookie
+          第一次获取Session，创建新的Session对象，有唯一ID，响应中带上
+            这个ID的Cookie：JSESSIONID，下次请求自动带上这个ID
+        Session细节：
+          客户端关闭，服务器端不关闭，Session会改变
+            解决：手动创建一个活得久的Cookie存储JSESSIONID发会客户端
+          客户端不关闭，服务器端关闭，Session会改变
+            Session对象不是同一个，但必须要确保数据不丢失
+              Session的钝化：服务器关闭前，将Session对象系列化到硬盘上
+                序列化
+              Session的活化：服务器启动后，将Session文件转化为内存中的Session对象
+                反序列化
+            Tomcat自动完成了，idea可以钝化，但活化不了
+          Session销毁时间：
+            服务器关闭、Session对象调用invalidate()、session默认失效时间（30min）
+          Session特点：
+            用于存储一次会话的多次请求间的请求数据，存在服务器端（会话域）
+            Session可以存任意类型、大小的数据（重定向）
+            Session相对安全
+            Session主菜，Cookie小饼干
+      8、登录案例
+        先判断验证码，避免数据库开销
+        验证码图片是一次请求，提交表单又是一次请求，所以使用Session
+        如果验证码错误：提示用户、转发到登录页面
+        如果验证码无误：判断用户名和密码（数据库）
+          登录成功：存储数据到Session，重定向到成功界面
+          登录失败：转发到登录界面
+    </pre>
+  </div>
+
+  <div id='java17'>
+    <h2>java17 MVC开发模式</h2>
+    <pre>
+      1、早期只有servlet，只能使用response输出标签数据，非常麻烦
+      2、后来jsp出现，简化了servlet的开发
+        但过度使用jsp，在jsp中写大量java
+        导致项目难以维护和分工
+      3、随后，java web借鉴MVC开发模式，使得程序设计更加合理
+      4、MVC：
+        M-Model：模型（JavaBean）
+          业务逻辑操作（查询数据库、操作对象）
+        V-View：视图（JSP）
+          展示数据
+        C-Controller：控制器（Servlet）
+          获取用户端的输入
+          调用模型完成业务操作，取得返回数据
+          将数据交给视图展示
+        优点：耦合性低、方便维护、利于分工协作
+        缺点：项目架构变得更加复杂
+      5、EL表达式 Expression Language
+        作用：替换和简化jsp页面中java代码的编写
+        语法：$(表达式)
+        细节：
+          jsp默认支持EL表达式
+          或者\$(表达式)，忽略EL表达式
+        调用JavaBean上的属性
+          u.name属性 --> u.getName()
+      6、JSTL，JavaServer Pages Tag Library，JSP标准标签库
+      7、三层架构：软件设计架构
+        1）表示层（界面层）：用户通过界面上的组件和服务器进行交互，web层
+          接受用户参数，封装数据，调用业务逻辑层完成处理，转发jsp页面完成显示
+          com.allx.项目名.web
+          SpringMVC框架
+        2）业务逻辑层：处理业务逻辑，service层
+          组合dao的简单方法
+          com.allx.项目名.service
+          Spring框架
+        3）数据访问层：操作数据存储文件，dao层
+          最基本的CRUD操作，解耦
+          com.allx.项目名.dao
+          MyBatis框架
+        浏览器 =-= web层 =-= service层 =-= dao层 =-= DB数据库
+        SSM：三个框架
+      8、案例：用户信息列表展示
+        需求：用户信息的增删改查
+        设计：
+          技术选型：
+            Servlet + JSP + MySQL + JDBCTemplate + Druid + BeanUtils + Tomcat
+          数据库设计：
+            create database usercruddemo; -- 创建数据库
+            use usercruddemo; -- 使用数据库
+            create table user( -- 创建表
+              id int primary key auto_increment, -- 主键ID
+              name varchar(20) not null, -- 姓名
+              gender varchar(5), -- 性别
+              age int, -- 年龄
+              address varchar(32), -- 地址
+              qq varchar(20), -- QQ号
+              email varchar(50) -- 邮箱
+            );
+        开发：
+          环境搭建：
+            创建数据库环境
+            创建项目，导入需要的jar包
+          编码：
+            面向接口编程：UserService service=new UserServiceImpl()
+              接口与实现类
+        测试：
+        部署运维：
+    </pre>
+  </div>
+
+  <div id='java18'>
+    <h2>java18 案例：用户信息列表展示</h2>
+    <pre>
+      1、需求：用户信息的增删改查
+      2、设计：
+        技术选型：
+          Servlet + JSP + MySQL + JDBCTemplate + Druid + BeanUtils + Tomcat
+        数据库设计：
+          create database usercruddemo; -- 创建数据库
+          use usercruddemo; -- 使用数据库
+          create table user( -- 创建表
+            id int primary key auto_increment, -- 主键ID
+            name varchar(20) not null, -- 姓名
+            gender varchar(5), -- 性别
+            age int, -- 年龄
+            address varchar(32), -- 地址
+            qq varchar(20), -- QQ号
+            email varchar(50) -- 邮箱
+          );
+      3、开发：
+        环境搭建：
+          创建数据库环境
+          创建项目，导入需要的jar包
+        编码：
+          面向接口编程：UserService service=new UserServiceImpl()
+            接口与实现类
+      4、测试：
+      5、部署运维：
+    </pre>
+  </div>
+
+  <div id='java19'>
+    <h2>java19 前后端配置</h2>
+    <pre>
+      1、前端
+        1）安装node：
+          https://nodejs.org/zh-cn/ 下载LTS版本
+          点击安装，C:\Program Files\nodejs\ 默认路径
+          安装Node，会自带npm
+          node --version/-v：查看node版本
+          npm --version/-v：查看npm版本
+          安装淘宝镜像：
+            npm install -g cnpm-registry=https://registry.npm.taobao.org
+            cnpm install [name] 
+        2）安装webpack：依赖于node环境
+          安装全局webpack：npm install webpack@3.6.0 -g（没有局部webpack就找全局webpack）
+          或者：npm install webpack -g 安装最新版 
+          或者：npm install webpack@3.6.0 --save-dev 安装局部webpack开发时依赖
+          webpack --version/-v：查看webpack版本
+        3）安装Vue-CLI（Command-Line Interface）：（快速搭建Vue开发环境以及对应的webpack配置）
+          依赖webpack（没有本地的就使用全局的）、node
+          安装：npm install -g @vue/cli （全局）
+            指定安装3.2.1：npm install -g --force @vue/cli@3.2.1（强制覆盖）
+          vue -V/--version：查看vue版本
+          卸载：将install改为uninstall就是卸载
+        4）
+      2、后端
+        1）下载jdk（会自动安装jre）
+          配置环境变量，创建新的环境变量JAVA_HOME为D:\Java20200119\jdk，
+            增加Path变量条目：%JAVA_HOME%\bin
+        2）下载tomcat（依赖jdk环境，因为是纯java编写的）
+          详细参阅<a href="#java10">java10 web服务器软件</a>
+        3）idea配置Tomcat
+          Run -- Edit Configurations -- + -- Tomcat Server -- Local -- 
+            取名字、新端口、新JVM端口、URL默认打开页、deployment下的fix和虚拟目录
+      3、git代码仓库（<a href="https://www.git-scm.com/book/zh/v2">git学习（中文）</a>）
+        -- 点+号，创建新仓库 
+        -- 如果有readme就不用再要readme了，否则就自己加一个，gitigonre（需要忽略的文件夹）也是同理，
+          一般忽略依赖包的文件夹，许可协议选个MIT就好，或者别人使用必须声明就用Apache，点击创建
+        -- 关联本地工作目录与远程仓库
+          -- ·将远程仓库clone到本地：git clone https://github.com/CHENGCHANGHU/marketdemo.git
+              删除其中除git文件夹的其他文件，reamdme、gitignore文件看情况
+              将工作目录下不冲突的需要仓库管理的文件复制到clone下来的文件夹内
+             ·git init：将当前目录初始化为本地git仓库，
+              git pull market master --allow-unrelated-histories：强制添加不相关的历史到本地仓库
+              git remote add market https://github.com/CHENGCHANGHU/marketdemo.git：将本地仓库关联到远程仓库并取别名
+              git push -u market master：提交本地仓库到远程仓库
+          -- git add .、git commit -m "一些描述文字" ：将代码提交到本地仓库
+          -- git push：提交到远程仓库
+    </pre>
+  </div>
+
+  <!-- -----------------------------目录----------------------------- -->
+  <div class="catalog-box" id="catalog">
+    <ol>
+      <!-- <li><a href="#app1">app1vm vue简单例子1</a></li>
+            <li><a href="#app24">app24vm 组件的数据data</a></li> -->
+      <li v-for="(c,index) in reverseCatalogs">
+        <a :href="getCatalogId(index)">java{{ index + 1}} {{ c }}</a>
+      </li>
+    </ol>
+  </div>
+  <script type="text/javascript">
+    const catalogs = [
+      '前后端配置',
+      '案例：用户信息列表展示',
+      'MVC开发模式',
+      '会话技术',
+      '文件下载案例',
+      'HTTP协议',
+      'Servlet体系结构',
+      'Idea与Tomcat的配置',
+      'Servlet接口',
+      'web服务器软件',
+      'XML',
+      '前端三剑客',
+      'Spring JDBC：JDBC template',
+      '数据库连接池',
+      'JDBC',
+      '数据库',
+      "java注解",
+      'mybatis概述',
+      "mybatis框架由来",
+    ];
+    const catalogVM = new Vue({
+      el: '#catalog',
+      data: {
+        catalogs,// 对象增强写法
+        currId: 1,
+      },
+      computed: {
+        reverseCatalogs() {
+          return this.catalogs.reverse();
+        },
+      },
+      methods: {
+        getCatalogId(index) {
+          return '#java' + (index + 1);
+        },
+      },
+    });
+  </script>
+
+</body>
+
+</html>
