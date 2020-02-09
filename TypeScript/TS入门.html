@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <title>TypeScript入门学习</title>
+    <link rel="stylesheet" href="../styles/common.css" />
+    <!-- 对于制作原型或学习，你可以这样使用最新版本： -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div class="sticky-title">
+        伟大、无私、正经的 黄橙 先生存笔记于此
+    </div>
+    <div class="content-container">
+        <div class="chapter-box">
+
+            <div class="chapter" id="ts1">
+                <h2>ts1 TypeScript下载安装</h2>
+                <pre>
+  1、确保安装了nodejs，node -v 查看node版本，npm -v 查看npm版本
+  2、安装全局TypeScript：npm install -g typescript
+    npm install -g typescript@3.3.3：指定安装版本
+    tsc -V：查看安装的TypeScript版本
+  3、简单使用
+    编写一个后缀名为ts的文件，在文件努力下使用：
+      tsc 文件名.ts
+    进行编译，得到同文件名的js文件，再使用：
+      node 文件名.js
+    运行js文件，获得结果
+</pre>
+            </div>
+
+            <div class="chapter" id="ts2">
+                <h2>ts2 TypeScript类型</h2>
+                <pre>
+  1、基础类型
+    布尔值、数字、字符串、数组、元组tuple、枚举、any、void、null与undefined、never
+    object、类型断言
+  2、布尔值
+    let isDone: boolean = false|true;
+  3、数字
+    let decimal: number = 6; -- 十进制
+    let hex: number = 0xf00d; -- 十六进制
+    let binary: number = 0b1010; -- 二进制
+    let octal: number = 0o744; -- 八进制
+  4、字符串
+    let color: string = "blue";
+    color = 'red';
+    字符串模板：跨越多行，还可以使用 ${ expr } 替换其中的值
+      let fullName: string = `Bob Bobbington`;
+      let age: number = 37;
+      let sentence: string = `Hello, my name is ${ fullName }.
+      
+      I'll be ${ age + 1 } years old next month.`;
+  5、数组：两种方式
+    let list: number[] = [1, 2, 3];
+    let list: Array&lt;number&gt; = [1, 2, 3];
+  6、元组
+    // Declare a tuple type
+    let x: [string, number];
+    // Initialize it
+    x = ["hello", 10]; // OK
+    // Initialize it incorrectly
+    x = [10, "hello"]; // Error
+    console.log(x[0].substring(1)); // OK
+  7、枚举：默认从0开始编号，可以使用编号来调用枚举Color[2]
+    enum Color {Red, Green, Blue}
+    let c: Color = Color.Green;
+
+    enum Color {Red = 1, Green, Blue}
+    let c: Color = Color.Green;
+
+    enum Color {Red = 1, Green = 2, Blue = 4}
+    let c: Color = Color.Green;
+
+    enum Color {Red = 1, Green, Blue}
+    let colorName: string = Color[2];
+    console.log(colorName); // Displays 'Green' as its value is 2 above
+  8、any：不指定具体数据类型，任意类型都可，避免类型检查
+    let notSure: any = 4;
+    notSure = "maybe a string instead";
+    notSure = false; // okay, definitely a boolean
+
+    let list: any[] = [1, true, "free"];
+    list[1] = 100;
+  9、void：any的对立类型，常用于函数返回值类型，如果指定变量为void，那么只能赋值null或undefined
+    function warnUser(): void {
+      console.log("This is my warning message");
+    }
+  10、null和undefined：是所有类型的子类型，可以赋值给所有类型
+    tsc test.ts --strictNullChecks：此时就不可以赋值给其他类型了，编译报错
+  11、never：函数返回赋值，函数不能返回或者报错
+    // Function returning never must have unreachable end point
+    function error(message: string): never {
+        throw new Error(message);
+    }
+    
+    // Inferred return type is never
+    function fail() {
+        return error("Something failed");
+    }
+    
+    // Function returning never must have unreachable end point
+    function infiniteLoop(): never {
+        while (true) {
+        }
+    }
+  12、object：声明非原始类型（原始类型：number, string, boolean, bigint, symbol, null, or undefined）
+  13、类型断言（强制类型转换）
+    let someValue: any = "this is a string";
+    尖括号：let strLength: number = (<string>someValue).length;（JSX时不可用）
+    as语法：let strLength: number = (someValue as string).length;
+</pre>
+            </div>
+
+            <div class="chapter" id="ts3">
+                <h2>ts3 TypeScript变量声明</h2>
+                <pre>
+  1、var声明：全局变量
+  2、let声明：具有块级作用域
+  3、const声明：常量，将对象声明为const，对象中的属性还是能变的
+  4、解构：变量声明的语法糖（Destructuring）
+    let input = [1, 2];
+    let [first, second] = input;
+
+    let [first, ...rest] = [1, 2, 3, 4];
+    console.log(first); // outputs 1
+    console.log(rest); // outputs [ 2, 3, 4 ]
+  5、展开：...扩展运算符（浅拷贝）
+  6、接口
+</pre>
+            </div>
+
+            <div class="chapter" id="ts4">
+                <h2>ts4 介绍、下载、安装、编译、配置</h2>
+                <pre>
+  1、vscode配置ts自动编译
+    1）创建tsconfig.json文件，使用：tsc --init生成tsconfig.json配置文件
+      解压缩："outDir": "./js", 输出文件夹的配置
+    2）点击菜单，终端-运行任务，tsc：监视tsconfig.json，自动生成代码
+      如果报：系统无法运行脚本的错误，
+      若要在本地计算机上运行您编写的未签名脚本和来自其他用户的签名脚本，
+      则使用管理员身份运行Windows PowerShell
+      执行：get-ExecutionPolicy，检查执行策略
+      执行：set-ExecutionPolicy RemoteSigned，变更执行策略为RemoteSigned
+  2、Hbuilder：工具-插件安装
+</pre>
+            </div>
+
+            <div class="chapter" id="ts5">
+                <h2>ts5 ts中的数据类型</h2>
+                <pre>
+  ts中为了使编写的代码更规范，更有利于维护，增加了类型校验
+  写ts代码时必须指定类型
+  数组类型有两种定义方式，数组里的元素具有同一种基本类型
+  元组类型是数组类型的一种，只是可以指定不同元素为不同类型
+  枚举类型将有特定语义的词与数值绑定对应，用以表示相应的状态
+    enum 枚举名{
+      标识符[=整型常数],
+      标识符[=整型常数],
+      ...
+      标识符[=整型常数]
+    }
+    enum Flag {success=1,fail=2};
+    let s:Flag=Flag.success;
+  任意类型可以赋值给dom节点，避免编译报错
+  null和undefined 是其他类型的子类型
+    变量定义了未赋值就是undefined
+    一个变量可能是number类型，也可能是null，也可能是undefined
+      let num:number|null|undefined
+  方法没有返回值就可以定义成void类型
+  never类型（包含null和undefined）是其他类型的子类型
+</pre>
+            </div>
+
+            <div class="chapter" id="ts6">
+                <h2>ts6 ts中的函数</h2>
+                <pre>
+  1、函数声明法
+    function run():string{
+      return "run";
+    }
+  2、匿名函数法
+    let run2=function():string{
+      return "run";
+    }
+  3、方法传参（匿名函数差不多）
+    function getInfo(name:string,age:number):string{
+      return `${name} --- ${age}`;
+    }
+    可选参数：在形参后加个问号？，但是可选参数必须配置到参数列表的最后面，可以多个可选参数
+      function getInfo(name:string,age?:number):string{
+        if(age){
+          return `${name} --- ${age}`;
+        }else{
+          return `${name} --- 年龄保密`;
+        }        
+      }
+    默认参数：形参后面直接等号加默认值，默认参数也是可选参数，需要放在后面，依次赋值
+      function getInfo(name:string,age:number=30):string{
+        return `${name} --- ${age}`;
+      }
+    剩余参数：三点运算符，也可以在剩余参数之前还有其他参数
+      function sum(...params:number[]):number{
+        return params.reduce((pre,res)=>{
+          return pre+res;
+        },0);
+      }
+  4、函数重载：通过同一个函数提供多个函数类型定义来实现不同函数功能
+    function getInfo(name: string): string;
+    function getInfo(age: number): number;
+    function getInfo(info: any): any {
+      if (typeof info === 'number') {
+        return `年龄是：${info}`;
+      } else if (typeof info === 'string') {
+        return `姓名是：${info}`;
+      }
+    }
+    如果只有第三个函数，那么传入boolean类型也不会报错，同时消耗性能更大
+  5、箭头函数：
+    箭头函数里面的this指向上下文
+</pre>
+            </div>
+
+            <div class="chapter" id="ts7">
+                <h2>ts7 ts中的类</h2>
+                <pre>
+  1、ts中定义类：
+    class Person{
+      name:string;// 属性，省略public关键词
+      constructor(name:string){// 构造函数，实例化的时候会触发
+        this.name=name;
+      }
+      display():void{
+        console.log(`我的名字是：${this.name}`)
+      }
+    }
+  2、类的继承
+    class Student extends Person{
+      constructor(name:string){
+        super(name);// 初始化父类的构造函数
+      }
+    }
+  3、类里面的修饰符，public、protected、private
+    属性如果不加修饰符，默认public
+    class Person{
+      public tyep:string;
+      protected hands:string;
+      private addr:string;
+    }
+  4、静态属性、静态方法，使用static关键字
+    定义在类上，不需要实例化的类对象即可调用，使用类名来调用
+    静态方法只能调用静态属性，静态属性定义后就要赋值，不然就是undefined
+    class Person{
+      static type:string="person";
+      static staticName():void{
+        console.log(`static function ${Person.type}`);
+      }
+    }
+  5、多态：父类定义方法但不实现，让继承的子类实现，每一个子类有不同的实现
+    多态属于继承
+  6、抽象类和抽象方法：用来定义标准
+    抽象类的抽象方法必须在子类中实现，抽象方法只能在抽象类中定义
+    抽象类不能直接被实例化，必须被其他类实现才能实例化
+    abstract class Animal {
+      private name: string;
+      constructor(name: string) {
+        this.name = name;
+      }
+      abstract eat(): any;
+      getName(): string {
+        return this.name;
+      }
+    }
+    class Dog extends Animal {              class Cat extends Animal {
+      constructor(name: string) {             constructor(name: string) {
+        super(name);                            super(name);
+      }                                       }
+      eat(): void {                           eat(): void {
+        logout(`${this.getName()} 吃骨头`);     logout(`${this.getName()} 吃小鱼`);
+      }                                       }
+    }                                        }
+    let d = new Dog("dog");
+    d.eat();
+    let c = new Cat("cat");
+    c.eat();
+</pre>
+            </div>
+
+            <div class="chapter" id="ts8">
+                <h2>ts8 ts中的接口</h2>
+                <pre>
+  1、接口是一种规范的定义，定义了行为和动作的规范，定义标准
+  2、属性接口：对JSON的约束
+    以前：定义方法传参、定义方法传入参数对象
+    使用接口：行为和动作的约束，对批量方法进行约束，interface
+      接口里面以分号结束
+        interface Student {
+          name: string;
+          age: number;
+          grade: number;
+        }
+        function createStudent(stu: Student) {
+          logout(`name: ${stu.name}, age: ${stu.age}, grade: ${stu.grade}`);
+        }
+        createStudent({
+          name: "tiger",
+          age: 23,
+          grade: 18
+        });
+      或者：（这时候包含接口就行，即可编译通过）
+        let stu = {
+          name: "tiger",
+          age: 23,
+          grade: 18,
+          addr: "anhui",
+        }
+        createStudent(stu);
+  3、接口：可选属性，加个问号
+    interface Student {
+      name: string;
+      age: number;
+      grade?: number;// 可选属性
+    }
+  4、函数类型接口：对方法传入的参数以及返回值的类型进行约束
+    // 加密的函数类型接口
+    interface encrypt {
+      (key: string, value: string): string;
+    }
+    let md5: encrypt = function (key: string, value: string) {
+      return key + "--" + value;
+    }
+    logout(md5("allx", "123"));
+  5、可索引接口：数组和对象的约束（不常用）
+    ts中定义数组的两种方式，可索引接口对其进行扩充
+      interface UserArr {
+        [index: number]: string
+      }
+      let arr: UserArr = ["allx", "tiger"];
+      interface UserObj {
+        [index: string]: string;
+      }
+      let u: UserObj = {
+        name: "allx",
+      }
+  6、类类型接口：对类的约束，类似抽象类
+    interface Article {
+      title: string;
+      create(content: string): void;
+    }
+    class NewsArticle implements Article {
+      title: string;
+      constructor(title: string) {
+        this.title = title;
+      }
+      create(content: string) {
+        logout(this.title + "  " + content);
+      }
+    }
+    class News2Article implements Article {
+      title: string;
+      constructor(title: string) {
+        this.title = title;
+      }
+      create() {
+        logout(this.title + "  no content");
+      }
+    }
+  7、接口扩展：接口可以继承接口
+    interface Book {read(): void;}
+    interface ChineseBook extends Book {poem(): void;}
+    class UniversityChineseBook implements ChineseBook {
+      public title: string;
+      constructor(title: string) {
+        this.title = title;
+      }
+      read() { }
+      poem() { }
+    }
+    class BookStore {
+      price: number;
+      constructor(price: number) {
+        this.price = price;
+      }
+      sold(): void { }
+    }
+    class UniChiBoo extends BookStore implements Book {
+      constructor(price: number) {
+        super(price);
+      }
+      read(): void { }
+    }
+</pre>
+            </div>
+
+            <div class="chapter" id="ts9">
+                <h2>ts9 ts中的泛型</h2>
+                <pre>
+  1、泛型用于支持未来数据类型，更加灵活
+    解决类、接口、方法的可复用性，以及对不特定数据类型的支持
+    any其实是放弃了类型检查，性能不如泛型
+  2、泛型函数
+    T表示泛型，具体是什么类型是调用这个方法时决定的
+      function someData&lt;T&gt;(data: T): T {
+        return data;
+      }
+  3、泛型类
+    class MinClass&lt;T&gt; {
+      public list: T[] = [];
+      add(value: T) {
+        this.list.push(value);
+      }
+      min(): T {
+        var m = this.list[0];
+        for (let l of this.list) {
+          m = m &lt;= l ? m : l;
+        }
+        return m;
+      }
+    }
+    let m = new MinClass&lt;number&gt;();
+    m.add(2);
+    m.add(1);
+    m.add(6);
+    m.add(3);
+    logout(m.min());
+  4、泛型接口
+      interface ConfigFn {
+        &lt;T&gt;(url: T, data: T): T;
+      }
+      let getData: ConfigFn = function &lt;T&gt;(url: T, data: T): T {
+        return url;
+      }
+      getData&lt;string&gt;("allx", "hhhhhh");
+    或者：
+      interface ConfigFn2&lt;T&gt; {
+        (url: T, data: T): T;
+      }    
+      function getData2&lt;T&gt;(url: T, data: T): T {
+        return url;
+      }    
+      let getData22: ConfigFn2&lt;string&gt; = getData2;
+      getData22("allx", "hhhhhh");
+  5、泛型类
+    class MysqlDB&lt;T&gt; {
+      add(r: T): boolean {
+        logout(r);
+        return true;
+      }
+    }
+  6、要实现泛型接口，实现类也需是泛型类
+    interface DBI&lt;T&gt; {
+      add(value: T): boolean;
+      update(value: T): boolean;
+      delete(id: number): boolean;
+      get(id: number): boolean;
+    }
+    class MySQLDB&lt;T&gt; implements DBI&lt;T&gt;{
+      add(value: T): boolean {
+        throw new Error("Method not implemented.");
+      }
+      update(value: T): boolean {
+        throw new Error("Method not implemented.");
+      }
+      delete(id: number): boolean {
+        throw new Error("Method not implemented.");
+      }
+      get(id: number): boolean {
+        throw new Error("Method not implemented.");
+      }
+    }
+</pre>
+            </div>
+
+            <div class="chapter" id="ts10">
+                <h2>ts10 ts中的模块</h2>
+                <pre>
+  1、内部模块--命名空间，外部模块--模块
+    export导出，import导入
+    浏览器不支持，但在node环境可以运行，或者使用webpack工具转换成浏览器可使用的
+      export function getData():string{}
+      import {getData} from "./module/ts"
+      import {getData as get} from "./module/ts"
+
+      export default getData; 在一个模块中只能使用一次
+      import getData from "./module/ts"
+  2、命名空间，namespace，组织代码，避免命名冲突
+    命名空间里的代码是私有的，若要在命名空间外可见，也要使用export
+    不能使用export default
+    namespace A {                           namespace B {
+      export let name = "allx";               export let name = "tiger";
+      export function getName(): string {     export function getName(): string {
+        return name;                            return name;
+      }                                       }
+    }                                       }
+    logout(A.getName());                    logout(B.getName());
+</pre>
+            </div>
+
+            <div class="chapter" id="ts11">
+                <h2>ts11 ts中的装饰器</h2>
+                <pre>
+  1、装饰器是一种特殊的类型声明，本质上也是方法
+    扩展类、方法、属性、参数的功能
+  2、类的普通装饰器，无法传参
+    function logClass(params: any) {
+      logout(params);// params 就是当前类
+      params.prototype.apiUrl = "动态扩展的属性";
+      params.prototype.open = (): void => {
+        logout("动态扩展的方法");
+      }
+    }
+    @logClass
+    class HttpCliet {
+      constructor() { }
+      getData() { }
+    }
+    let http = new HttpCliet();
+    logout(http.apiUrl);
+    http.open();
+  3、类的装饰器工厂，可以传参
+    function logClass2(params: string) {
+      return function (target: any) {
+        logout(target);
+        logout(params);
+        target.prototype.apiUrl = params;
+      }
+    }
+    @logClass2("https://www.baidu.com")
+    class HttpCliet2 {
+      constructor() { }
+      getData() { }
+    }
+    let http2 = new HttpCliet2();
+    logout(http2.apiUrl);
+  4、类装饰器会在运行时当做函数被调用，类的构造函数作为其唯一参数
+    function logClass3(target: any) {
+      logout(target);
+      return class extends target {
+        apiUrl = "装饰器修改后的数据";
+      }
+    }
+    @logClass3
+    class HttpClient3 {
+      public apiUrl: string | undefined;
+      constructor() {
+        this.apiUrl = "构造函数中的URL";
+      }
+      getData(): any {
+        return this.apiUrl;
+      }
+    }
+    let http3 = new HttpClient3();
+    logout(http3.getData());
+  5、属性装饰器
+    function aSkill(params: any) {
+      return (target: any, attr: any) => {
+        logout(`${attr} 属性装饰器：参数[${params}]`)
+        target[attr] = params;
+      }
+    }
+    @aSkill("喷火")
+    skill: string | undefined;
+  6、方法装饰器：
+    function aFighting(params: any) {
+      return (target: any, methodName: any, desc: any){
+        logout(`${target} 类 ${methodName} 方法装饰器：描述[${desc.value}]`)
+      }
+    }
+    @aFighting("打怪兽")
+    fighting(): void {
+      logout(`${this.name} 发动技能 [${this.skill}] 打怪兽`);
+    }
+  7、方法参数装饰器
+  8、执行顺序：属性、方法、方法参数（从后向前）、类
+</pre>
+            </div>
+
+            <div class="chapter" id="ts12">
+                <h2>ts12 搭建ts开发环境</h2>
+                <pre>
+  1、npm init：创建package.json文件，然后手动选择配置（MIT协议）
+    npm init -y：直接使用默认参数
+  2、tsc --init：创建tsconfig.json，配置ts环境
+  3、npm install webpack webpack-cli webpack-dev-server -D
+      安装本地webpack，并添加为开发时依赖,
+    在package.json中添加"webpack": "webpack"，以使用本地webpack
+    在package.json的脚本中添加"webpack-version": "webpack --version"
+      npm run webpack-version：查看本地webpack脚本
+      npx webpack -v：查看本地webpack脚本
+    在build文件夹下创建webpack.config.js文件：webpack的配置文件
+      webpack的配置是在node环境下运行的
+      ·entry：入口文件
+      ·output：输出文件
+      ·resolve：可以配置可以缺省掉的后缀名
+      ·module：可以配置文件解析规则
+        安装ts-loader（开发依赖）：npm install ts-loader --save-dev
+        或者：npm install ts-loader --D
+      ·devtool: process.env.NODE_ENV === "production" ? false : "inline-source-map",
+        source-map：需要查看是否是开发环境，避免资源浪费
+        NODE_ENV参数的传入：使用cross-env工具，npm install cross-env -D
+      ·devServer：本地开发服务器配置
+      ·plugins：插件，npm install clean-webpack-plugin html-webpack-plugin -D 
+        clean-webpack-plugin：可以清楚webpack的插件
+        html-webpack-plugin：html模板（webpack会自动引入js文件）
+  4、package.json的脚本中添加：start
+    start指令可以直接使用：npm start运行，缺省掉run，所以常用于启动本地开发服务
+      webpack-dev-server --config ./build/webpack.config.js
+        启动本地开发服务，并指定配置文件，热更新
+  5、npm install typescript：安装项目中的typescript
+  6、配置打包指令：npm run build
+    "build":"cross-env NODE_ENV=production webpack --config ./build/webpack.config.js"
+    打包后的js文件会自动丑化压缩
+  7、npm install -g tslint：安装tslint
+    在设置中搜索autofix，编辑tslint的setting.json，设置"tslint.autoFixOnSave": true
+</pre>
+            </div>
+
+            <div class="chapter" id="ts13">
+                <h2>ts13 ts类型</h2>
+                <pre>
+  // 布尔类型：boolean
+  // 数值类型（都是浮点数）：number
+  // 字符串类型：string
+  // 数组类型：number[]、Array<number>、(number|string)[]
+  // 元组类型（数组的拓展，固定长度，固定类型）：[boolea,number,string,number[]]
+  // 枚举类型：enum（数值从0起，也可以指定，指定之后的依次加一）
+  //    也可以通过:Color[1]来获取对应的枚举名
+  //    Color[Color["RED"]=1]="RED"
+  // 任何类型：any，能不用就别用
+  // void类型：什么类型都不是，js中如果一个函数没有明确指定返回值的时候，就会返回一个undefined
+  //    void类型可以赋值为null和undefined
+  // null和undefined：既是值也是类型，是其他类型的子类型
+  // never类型：永远都不存在的类型，函数体报错或死循环，是任何类型的子类型
+  // 对象类型：object，存放的是对象在内存中地址的引用（指针）
+  // 类型断言：类型转换，尖括号或者as（jsx中只能as）          
+</pre>
+            </div>
+
+            <div class="chapter" id="ts14">
+                <h2>ts14 symbol</h2>
+                <pre>
+  // symbol是基本数据类型，用以表示独一无二的值
+  // const s1=Symbol();
+  // 
+  // 也可以传入一个string参数，参数相同，symbol也不同
+  // 传入number会被转为string
+  // const s1=Symbol("allx");
+  
+  // symbol值不可以参与基本数学运算，可以转为string（toString方法）
+  
+  // es6中用做对象的属性名，方括号包含住，甚至可以拼接字符串
+  let prop:string="allx";
+  const info={
+    [`prop-${prop}`]:"attr"
+  }
+  
+  // 使用symbol作为属性名，可以保证对象的属性不会被覆盖，独一无二
+  // 此时也只得使用方括号调用属性
+  // 使用for-in遍历对象的时候，不会识别symbol的属性
+  // Object.keys(obj)返回的属性数组也没有symbol值
+  // Object.getOwnPropertyNames(obj)也不会包含symbol
+  // JSON.stringify(obj)也不会包含symbol
+  // 但是Object.getOwnPropertySymbols(obj)可以返回对象中所有的symbol
+  // Reflect.OwnKeys(obj)可以看到对象所以的属性
+  
+  // Symbol.for("string")创建symbol变量时，会先在全局找是否有同参数的symbol
+  //    如果找到，那么就会返回该symbol的引用，如果没有那就创建一个新的
+  //    所以能够得到相同参数相同的symbol
+  // Symbol.keyFor(symbol1)获得使用for创建的symbol时传入的string参数
+  
+  // 内置的symbol值：11个
+  // Symbol.hasInstance
+  const obj1={
+    [Symbol.hasInstance](o){
+      console.log(o);
+    }
+  }
+  console.log({name:"allx"} instanceof <any>obj1);          
+</pre>
+            </div>
+
+            <div class="chapter" id="ts15">
+                <h2>ts15 ts高级类型</h2>
+                <pre>
+  1、交叉类型 &
+  2、联合类型 |
+  3、类型保护：函数、typeof、instanceof
+  4、null、undefined
+  5、类型别名
+  6、字面量类型
+  7、可辨识联合：有普通的单例类型属性、一个类型别名包含了哪些类型的联合
+  8、this
+    在类的成员函数返回this，即可实现方法的链式调用，所以也可以认为this是调用该方法的对象
+  9、索引类型：
+    索引查询：keyof
+    索引访问：[]
+  10、类型映射
+</pre>
+            </div>
+
+            <div class="chapter" id="ts16">
+                <h2>ts16 向npm发布包</h2>
+                <pre>
+  1、创建npm账户(https://www.npmjs.com/)
+  2、登录npm：npm login，填入登录名和密码
+  3、每次发包都得修改package.json中的版本号
+  4、创建.npmignore文件，填入不包含的文件和文件夹
+  5、使用：npm publish 来发包
+  6、下载使用：npm install 8888
+    import arrMap=require("8888")// 直接使用包名，不需要相对路径
+</pre>
+            </div>
+
+            <div class="chapter" id="ts17">
+                <h2>ts17 ts+express+mysql搭建后端服务</h2>
+                <pre>
+  1、安装全局express：npm install express-generator -g
+  2、创建express后端项目：express --view=jade ts-server-side
+  3、安装相关依赖：npm install
+  4、安装局部typescript：npm install typescript
+  5、安装express和node的声明文件：npm install @types/express @types/node -D
+  6、将bin下的www.js移到根目录，重命名为server.ts：mv ./bin/www ./server.ts
+    重命名app.js为app.ts：mv ./app.js ./app.ts
+    重命名routes下的两个js文件为ts文件
+  7、初始化tsc配置：tsc --init
+  8、修改tsconfig.json配置：
+    "outDir": "./dist" -- 输出目录
+    // "strict": true -- 关闭严格检查
+    "noImplicitAny": false -- 设为false
+    "moduleResolution": "node" -- 设为node
+  9、package.json配置：
+    "scripts": {
+      "start": "npm run serve",
+      "serve": "node ./dist/server.js"
+    }
+    安装shelljs以拷贝public文件夹（依赖：npm install shelljs）
+    安装cross-env传递参数（依赖：npm install cross-env）
+    安装nodemon实现编码热更新（开发依赖：npm install nodemon -D）
+    安装ts-node实现在node环境下运行ts文件（开发依赖：npm install ts-node -D）
+  10、安装mysql的模块：npm install mysql
+    安装mysql的声明文件：npm install @types/mysql -D
+  11、在config中创建mysql.config.ts文件，使用vscode打开文件：code .\mysql.config.ts
+  12、
+</pre>
+            </div>
+
+            <!-- ----------------chapter-box end---------------- -->
+        </div>
+        <!-- -----------------------------目录----------------------------- -->
+        <div class="catalog-box" id="catalog">
+            <ol>
+                <li v-for="(c,index) in reverseCatalogs">
+                    <a :href="getCatalogId(index)">ts{{ index + 1}} {{ c }}</a>
+                </li>
+            </ol>
+        </div>
+        <script type="text/javascript">
+            const catalogs = [
+                "向npm发布包",
+                "向npm发布包",
+                "ts高级类型",
+                "symbol",
+                "ts类型",
+                "搭建ts开发环境",
+                "ts中的装饰器",
+                "ts中的模块",
+                "ts中的泛型",
+                "ts中的接口",
+                "ts中的类",
+                "ts中的函数",
+                "ts中的数据类型",
+                "介绍、下载、安装、编译、配置",
+                "TypeScript变量声明",
+                "TypeScript类型",
+                "TypeScript下载安装",
+                // "在此写目录"
+            ];
+            const catalogVM = new Vue({
+                el: '#catalog',
+                data: {
+                    catalogs, // 对象增强写法
+                    currId: 1,
+                },
+                computed: {
+                    reverseCatalogs() {
+                        return this.catalogs.reverse();
+                    },
+                },
+                methods: {
+                    // 获取id
+                    getCatalogId(index) {
+                        return '#ts' + (index + 1);
+                    },
+                },
+            });
+        </script>
+    </div>
+</body>
+
+</html>

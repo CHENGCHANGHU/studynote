@@ -2242,7 +2242,7 @@
               save 300 10
               #   after 60 sec if at least 10000 keys changed
               save 60 10000
-            使用命令：redis-server.exe redis.window.conf来启动服务器并指定配置文件
+            使用命令：redis-server.exe redis.windows.conf来启动服务器并指定配置文件
             （这里可以使用npm来便捷操作）
           2）AOF：日志记录的方式，记录每一条命令的操作，可以每一次命令操作后，持久化数据
             编辑redis.window.conf文件：
@@ -2252,7 +2252,7 @@
               appendfsync everysec # 每一秒操作都进行持久化
               # appendfsync no # 不进行持久化
       5、使用java客户端操作redis -- jedis
-        一款java语言操作redis数据库的工具
+        一款java语言操作redis数据库的工具，得先启动redis服务器
         使用步骤：
           ·下载jedis的jar包
           ·编码：
@@ -2272,9 +2272,67 @@
           sadd、smembers
         操作sortedset
           zadd、zrange
-      6、jedis连接池：JedisPool（自带）
-        1）创建JedisPool对象
-      7、
+      6、jedis连接池：JedisPool（自带）类似jdbc，关闭就是归还连接
+        1）创建JedisPool连接池对象
+        2）调用getResource方法获取jedis连接
+      7、JedisPool工具类
+      8、省份选择demo
+        1）数据库创建：
+          create database provinceselectdemo; -- 创建省份选择demo数据库
+          use provinceselectdemo;
+          create table provinces( -- 创建省份表
+            id int primary key auto_increment, -- id
+              name varchar(32) not null -- 省份名称
+          );
+          -- 插入数据
+          insert into provinces values(null,"安徽");
+          insert into provinces values(null,"河北");
+          insert into provinces values(null,"江苏");
+          insert into provinces values(null,"湖北");
+          insert into provinces values(null,"湖南");
+          select * from provinces;
+        2）导入依赖jar包，add as library，将配置文件存放到src目录下
+        3）创建目录，编码
+      9、redis缓存
+        省份数据不常变，经常操作数据库性能下降，在数据库增删查改的时候删除redis
+        先从redis中查询数据
+          ·没有：从数据库中查询，存入redis，返回数据
+          ·有：直接返回数据
+    </pre>
+  </div>
+
+  <div id='java25'>
+    <h2>java25 maven</h2>
+    <pre>
+      1、依赖管理：maven工程对jar包的管理过程
+      2、一键构建：tomcat由maven集成，项目的编译、测试、运行、打包、安装、部署交由maven管理
+      3、下载解压即安装
+        bin：mvn命令
+        boot：maven需要的类加载器
+        conf：setting.xml，maven的配置
+        lib：依赖jar包
+      4、配置环境变量（maven运行依赖JAVA_HOME环境变量）
+        新建变量：MAVEN_HOME：D:\maven\apache-maven-3.6.3
+        编辑路径，增加：%MAVEN_HOME%\bin
+      5、仓库
+        maven项目中存放的都是jar包的位置（坐标），不存放具体的jar包
+        默认会在系统盘的本地仓库中找jar包：${user.home}/.m2/repository
+          &lt;localRepository&gt;D:\maven\maven_repository&lt;/localRepository&gt;
+          使用上面的标签来重新设置本地仓库的路径
+        本地仓库没有就去中央仓库下载，中央仓库放置了几乎所有的开源jar包
+        也可以去自己设置的远程仓库（私服）下载jar包，远程仓库的jar包可由本地仓库上传，也可从中央仓库下载
+      6、标准目录结构（传统的目录：项目名--src）
+        核心代码、配置文件、测试代码、测试配置
+        maven项目标准目录结构：
+          src/main/java：核心代码部分
+          src/main/resources：配置文件部分
+          src/test/java：测试代码
+          src/test/resources：测试配置
+          src/main/webapp：页面资源，js、css、图片等，如果是web项目
+      7、maven常用命令
+        mvn clean：
+        mvn compile：
+      8、
     </pre>
   </div>
 
@@ -2290,6 +2348,7 @@
   </div>
   <script type="text/javascript">
     const catalogs = [
+      'redis',
       'JSON',
       'AJAX',
       'Listener：监听器',
