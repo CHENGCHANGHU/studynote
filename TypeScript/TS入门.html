@@ -2,23 +2,23 @@
 <html>
 
 <head>
-    <meta charset='utf-8'>
-    <title>TypeScript入门学习</title>
-    <link rel="stylesheet" href="../styles/common.css" />
-    <!-- 对于制作原型或学习，你可以这样使用最新版本： -->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <meta charset='utf-8'>
+  <title>TypeScript入门学习</title>
+  <link rel="stylesheet" href="../styles/common.css" />
+  <!-- 对于制作原型或学习，你可以这样使用最新版本： -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 
 <body>
-    <div class="sticky-title">
-        伟大、无私、正经的 黄橙 先生存笔记于此
-    </div>
-    <div class="content-container">
-        <div class="chapter-box">
+  <div class="sticky-title">
+    伟大、无私、正经的 黄橙 先生存笔记于此
+  </div>
+  <div class="content-container">
+    <div class="chapter-box">
 
-            <div class="chapter" id="ts1">
-                <h2>ts1 TypeScript下载安装</h2>
-                <pre>
+      <div class="chapter" id="ts1">
+        <h2>ts1 TypeScript下载安装</h2>
+        <pre>
   1、确保安装了nodejs，node -v 查看node版本，npm -v 查看npm版本
   2、安装全局TypeScript：npm install -g typescript
     npm install -g typescript@3.3.3：指定安装版本
@@ -30,11 +30,11 @@
       node 文件名.js
     运行js文件，获得结果
 </pre>
-            </div>
+      </div>
 
-            <div class="chapter" id="ts2">
-                <h2>ts2 TypeScript类型</h2>
-                <pre>
+      <div class="chapter" id="ts2">
+        <h2>ts2 TypeScript类型</h2>
+        <pre>
   1、基础类型
     布尔值、数字、字符串、数组、元组tuple、枚举、any、void、null与undefined、never
     object、类型断言
@@ -113,11 +113,11 @@
     尖括号：let strLength: number = (<string>someValue).length;（JSX时不可用）
     as语法：let strLength: number = (someValue as string).length;
 </pre>
-            </div>
+      </div>
 
-            <div class="chapter" id="ts3">
-                <h2>ts3 TypeScript变量声明</h2>
-                <pre>
+      <div class="chapter" id="ts3">
+        <h2>ts3 TypeScript变量声明</h2>
+        <pre>
   1、var声明：全局变量
   2、let声明：具有块级作用域
   3、const声明：常量，将对象声明为const，对象中的属性还是能变的
@@ -131,11 +131,11 @@
   5、展开：...扩展运算符（浅拷贝）
   6、接口
 </pre>
-            </div>
+      </div>
 
-            <div class="chapter" id="ts4">
-                <h2>ts4 介绍、下载、安装、编译、配置</h2>
-                <pre>
+      <div class="chapter" id="ts4">
+        <h2>ts4 介绍、下载、安装、编译、配置</h2>
+        <pre>
   1、vscode配置ts自动编译
     1）创建tsconfig.json文件，使用：tsc --init生成tsconfig.json配置文件
       解压缩："outDir": "./js", 输出文件夹的配置
@@ -147,11 +147,11 @@
       执行：set-ExecutionPolicy RemoteSigned，变更执行策略为RemoteSigned
   2、Hbuilder：工具-插件安装
 </pre>
-            </div>
+      </div>
 
-            <div class="chapter" id="ts5">
-                <h2>ts5 ts中的数据类型</h2>
-                <pre>
+      <div class="chapter" id="ts5">
+        <h2>ts5 ts中的数据类型</h2>
+        <pre>
   ts中为了使编写的代码更规范，更有利于维护，增加了类型校验
   写ts代码时必须指定类型
   数组类型有两种定义方式，数组里的元素具有同一种基本类型
@@ -173,11 +173,11 @@
   方法没有返回值就可以定义成void类型
   never类型（包含null和undefined）是其他类型的子类型
 </pre>
-            </div>
+      </div>
 
-            <div class="chapter" id="ts6">
-                <h2>ts6 ts中的函数</h2>
-                <pre>
+      <div class="chapter" id="ts6">
+        <h2>ts6 ts中的函数</h2>
+        <pre>
   1、函数声明法
     function run():string{
       return "run";
@@ -222,11 +222,11 @@
   5、箭头函数：
     箭头函数里面的this指向上下文
 </pre>
-            </div>
+      </div>
 
-            <div class="chapter" id="ts7">
-                <h2>ts7 ts中的类</h2>
-                <pre>
+      <div class="chapter" id="ts7">
+        <h2>ts7 ts中的类</h2>
+        <pre>
   1、ts中定义类：
     class Person{
       name:string;// 属性，省略public关键词
@@ -287,11 +287,11 @@
     let c = new Cat("cat");
     c.eat();
 </pre>
-            </div>
+      </div>
 
-            <div class="chapter" id="ts8">
-                <h2>ts8 ts中的接口</h2>
-                <pre>
+      <div class="chapter" id="ts8">
+        <h2>ts8 ts中的接口</h2>
+        <pre>
   1、接口是一种规范的定义，定义了行为和动作的规范，定义标准
   2、属性接口：对JSON的约束
     以前：定义方法传参、定义方法传入参数对象
@@ -393,11 +393,11 @@
       read(): void { }
     }
 </pre>
-            </div>
+      </div>
 
-            <div class="chapter" id="ts9">
-                <h2>ts9 ts中的泛型</h2>
-                <pre>
+      <div class="chapter" id="ts9">
+        <h2>ts9 ts中的泛型</h2>
+        <pre>
   1、泛型用于支持未来数据类型，更加灵活
     解决类、接口、方法的可复用性，以及对不特定数据类型的支持
     any其实是放弃了类型检查，性能不如泛型
@@ -472,11 +472,11 @@
       }
     }
 </pre>
-            </div>
+      </div>
 
-            <div class="chapter" id="ts10">
-                <h2>ts10 ts中的模块</h2>
-                <pre>
+      <div class="chapter" id="ts10">
+        <h2>ts10 ts中的模块</h2>
+        <pre>
   1、内部模块--命名空间，外部模块--模块
     export导出，import导入
     浏览器不支持，但在node环境可以运行，或者使用webpack工具转换成浏览器可使用的
@@ -497,11 +497,11 @@
     }                                       }
     logout(A.getName());                    logout(B.getName());
 </pre>
-            </div>
+      </div>
 
-            <div class="chapter" id="ts11">
-                <h2>ts11 ts中的装饰器</h2>
-                <pre>
+      <div class="chapter" id="ts11">
+        <h2>ts11 ts中的装饰器</h2>
+        <pre>
   1、装饰器是一种特殊的类型声明，本质上也是方法
     扩展类、方法、属性、参数的功能
   2、类的普通装饰器，无法传参
@@ -576,11 +576,11 @@
   7、方法参数装饰器
   8、执行顺序：属性、方法、方法参数（从后向前）、类
 </pre>
-            </div>
+      </div>
 
-            <div class="chapter" id="ts12">
-                <h2>ts12 搭建ts开发环境</h2>
-                <pre>
+      <div class="chapter" id="ts12">
+        <h2>ts12 搭建ts开发环境</h2>
+        <pre>
   1、npm init：创建package.json文件，然后手动选择配置（MIT协议）
     npm init -y：直接使用默认参数
   2、tsc --init：创建tsconfig.json，配置ts环境
@@ -616,11 +616,11 @@
   7、npm install -g tslint：安装tslint
     在设置中搜索autofix，编辑tslint的setting.json，设置"tslint.autoFixOnSave": true
 </pre>
-            </div>
+      </div>
 
-            <div class="chapter" id="ts13">
-                <h2>ts13 ts类型</h2>
-                <pre>
+      <div class="chapter" id="ts13">
+        <h2>ts13 ts类型</h2>
+        <pre>
   // 布尔类型：boolean
   // 数值类型（都是浮点数）：number
   // 字符串类型：string
@@ -637,11 +637,11 @@
   // 对象类型：object，存放的是对象在内存中地址的引用（指针）
   // 类型断言：类型转换，尖括号或者as（jsx中只能as）          
 </pre>
-            </div>
+      </div>
 
-            <div class="chapter" id="ts14">
-                <h2>ts14 symbol</h2>
-                <pre>
+      <div class="chapter" id="ts14">
+        <h2>ts14 symbol</h2>
+        <pre>
   // symbol是基本数据类型，用以表示独一无二的值
   // const s1=Symbol();
   // 
@@ -680,11 +680,11 @@
   }
   console.log({name:"allx"} instanceof <any>obj1);          
 </pre>
-            </div>
+      </div>
 
-            <div class="chapter" id="ts15">
-                <h2>ts15 ts高级类型</h2>
-                <pre>
+      <div class="chapter" id="ts15">
+        <h2>ts15 ts高级类型</h2>
+        <pre>
   1、交叉类型 &
   2、联合类型 |
   3、类型保护：函数、typeof、instanceof
@@ -699,11 +699,11 @@
     索引访问：[]
   10、类型映射
 </pre>
-            </div>
+      </div>
 
-            <div class="chapter" id="ts16">
-                <h2>ts16 向npm发布包</h2>
-                <pre>
+      <div class="chapter" id="ts16">
+        <h2>ts16 向npm发布包</h2>
+        <pre>
   1、创建npm账户(https://www.npmjs.com/)
   2、登录npm：npm login，填入登录名和密码
   3、每次发包都得修改package.json中的版本号
@@ -712,11 +712,11 @@
   6、下载使用：npm install 8888
     import arrMap=require("8888")// 直接使用包名，不需要相对路径
 </pre>
-            </div>
+      </div>
 
-            <div class="chapter" id="ts17">
-                <h2>ts17 ts+express+mysql搭建后端服务</h2>
-                <pre>
+      <div class="chapter" id="ts17">
+        <h2>ts17 ts+express+mysql搭建后端服务</h2>
+        <pre>
   1、安装全局express：npm install express-generator -g
   2、创建express后端项目：express --view=jade ts-server-side
   3、安装相关依赖：npm install
@@ -743,61 +743,67 @@
   10、安装mysql的模块：npm install mysql
     安装mysql的声明文件：npm install @types/mysql -D
   11、在config中创建mysql.config.ts文件，使用vscode打开文件：code .\mysql.config.ts
-  12、
+  12、npm run build，编译项目
 </pre>
-            </div>
+      </div>
 
-            <!-- ----------------chapter-box end---------------- -->
-        </div>
-        <!-- -----------------------------目录----------------------------- -->
-        <div class="catalog-box" id="catalog">
-            <ol>
-                <li v-for="(c,index) in reverseCatalogs">
-                    <a :href="getCatalogId(index)">ts{{ index + 1}} {{ c }}</a>
-                </li>
-            </ol>
-        </div>
-        <script type="text/javascript">
-            const catalogs = [
-                "向npm发布包",
-                "向npm发布包",
-                "ts高级类型",
-                "symbol",
-                "ts类型",
-                "搭建ts开发环境",
-                "ts中的装饰器",
-                "ts中的模块",
-                "ts中的泛型",
-                "ts中的接口",
-                "ts中的类",
-                "ts中的函数",
-                "ts中的数据类型",
-                "介绍、下载、安装、编译、配置",
-                "TypeScript变量声明",
-                "TypeScript类型",
-                "TypeScript下载安装",
-                // "在此写目录"
-            ];
-            const catalogVM = new Vue({
-                el: '#catalog',
-                data: {
-                    catalogs, // 对象增强写法
-                    currId: 1,
-                },
-                computed: {
-                    reverseCatalogs() {
-                        return this.catalogs.reverse();
-                    },
-                },
-                methods: {
-                    // 获取id
-                    getCatalogId(index) {
-                        return '#ts' + (index + 1);
-                    },
-                },
-            });
-        </script>
+      <div class="chapter" id="ts18">
+        <h2>ts18 ts+vue开发一个todo应用</h2>
+        <pre>
+            </pre>
+      </div>
+
+      <!-- ----------------chapter-box end---------------- -->
     </div>
+    <!-- -----------------------------目录----------------------------- -->
+    <div class="catalog-box" id="catalog">
+      <ol>
+        <li v-for="(c,index) in reverseCatalogs">
+          <a :href="getCatalogId(index)">ts{{ index + 1}} {{ c }}</a>
+        </li>
+      </ol>
+    </div>
+    <script type="text/javascript">
+      const catalogs = [
+        "ts+express+mysql搭建后端服务",
+        "向npm发布包",
+        "ts高级类型",
+        "symbol",
+        "ts类型",
+        "搭建ts开发环境",
+        "ts中的装饰器",
+        "ts中的模块",
+        "ts中的泛型",
+        "ts中的接口",
+        "ts中的类",
+        "ts中的函数",
+        "ts中的数据类型",
+        "介绍、下载、安装、编译、配置",
+        "TypeScript变量声明",
+        "TypeScript类型",
+        "TypeScript下载安装",
+        // "在此写目录"
+      ];
+      const catalogVM = new Vue({
+        el: '#catalog',
+        data: {
+          catalogs, // 对象增强写法
+          currId: 1,
+        },
+        computed: {
+          reverseCatalogs() {
+            return this.catalogs.reverse();
+          },
+        },
+        methods: {
+          // 获取id
+          getCatalogId(index) {
+            return '#ts' + (index + 1);
+          },
+        },
+      });
+    </script>
+  </div>
 </body>
 
 </html>

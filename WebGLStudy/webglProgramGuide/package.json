@@ -1,0 +1,15 @@
+{
+  "name": "webglprogramguide",
+  "version": "1.0.0",
+  "description": "webgl program guide",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "start index.html"
+  },
+  "keywords": [
+    "webgl"
+  ],
+  "author": "allx <1669675499@qq.com>",
+  "license": "ISC"
+}
