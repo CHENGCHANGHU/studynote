@@ -4,6 +4,8 @@
 <head>
   <meta charset='utf-8'>
   <title>gl</title>
+  <link rel="shortcut icon" href="../icon/sparrow.png" />
+  <link rel="bookmark" href="../icon/sparrow.png" type="image/x-icon" />
   <link rel="stylesheet" href="./common.css" />
   <!-- 对于制作原型或学习，你可以这样使用最新版本： -->
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -20,6 +22,8 @@
   </div>
   <div class="content-container">
     <div class="chapter-box">
+
+      <!-- 绘制一个二维矩形 -->
       <div class="chapter" id="gl1">
         <h2>gl1 绘制一个二维矩形</h2>
         <canvas id="c1" width="400" height="400">
@@ -45,6 +49,7 @@
         </script>
       </div>
 
+      <!-- 清空绘图区 -->
       <div id='gl2'>
         <h2>gl2 清空绘图区</h2>
         <canvas id="c2" width="400" height="400">
@@ -86,20 +91,14 @@
       将attribute变量赋值给gl_Position变量
       向attribute变量传递数据</pre>
         <script type="text/javascript">
-          // 1、获取canvas
-          let c2 = document.querySelector("#c2");
-
-          // 2、获取webgl绘图上下文
-          let gl = getWebGLContext(c2);
-
-          // 3、指定清空颜色
-          gl.clearColor(0, 0, 0, 1.0);
-
-          // 4、清空
-          gl.clear(gl.COLOR_BUFFER_BIT);
+          let c2 = document.querySelector("#c2"); // 1、获取canvas
+          let gl = getWebGLContext(c2); // 2、获取webgl绘图上下文
+          gl.clearColor(0, 0, 0, 1.0); // 3、指定清空颜色
+          gl.clear(gl.COLOR_BUFFER_BIT); // 4、清空
         </script>
       </div>
 
+      <!-- 案例：绘制点1 -->
       <div id='gl3'>
         <h2>gl3 案例：绘制点1</h2>
         <canvas id="c3" width="400" height="400">
@@ -138,13 +137,14 @@
           gl3.clearColor(0.0, 0.0, 0.0, 1.0);
 
           // 清空canvas
-          gl3.clear(gl.COLOR_BUFFER_BIT);
+          gl3.clear(gl3.COLOR_BUFFER_BIT);
 
           // 绘制一个点
-          gl3.drawArrays(gl.POINTS, 0, 1);
+          gl3.drawArrays(gl3.POINTS, 0, 1);
         </script>
       </div>
 
+      <!-- 案例：绘制点2 -->
       <div id='gl4'>
         <h2>gl4 案例：绘制点2</h2>
         <canvas id="c4" width="400" height="400">
@@ -166,116 +166,39 @@
               gl_FragColor=vec4(1.0, 0.0, 0.0, 1.0);
             }`;
 
-          // 获取canvas
-          const c4 = document.querySelector("#c4");
-
           // 获取webGL绘图上下文
-          const gl4 = getWebGLContext(c4);
-          if (!gl4) {
-            console.log("无法获得webgl的绘图上下文");
-          }
+          const gl4 = getWebGLContext(document.querySelector("#c4"));
+          if (!gl4) console.log("无法获得webgl的绘图上下文");
 
           // 初始化着色器
-          if (!initShaders(gl4, VSHADER_SOURCE4, FSHADER_SOURCE4)) {
-            console.log("无法初始化着色器");
-          }
+          if (!initShaders(gl4, VSHADER_SOURCE4, FSHADER_SOURCE4)) console.log("无法初始化着色器");
 
           // 获取attribute变量的存储位置
           const a_position4 = gl4.getAttribLocation(gl4.program, "a_Position");
-          if (a_position4 < 0) {
-            console.log("无法获取attribute变量的存储位置");
-          }
+          if (a_position4 < 0) console.log("无法获取attribute变量的存储位置");
 
-          // 将顶点位置传递给attribute变量
-          gl4.vertexAttrib3f(a_position4, 0.5, 0.5, 0.0);
+          gl4.vertexAttrib3f(a_position4, 0.5, 0.5, 0.0); // 将顶点位置传递给attribute变量
 
-          // 设置背景色
-          gl4.clearColor(0.0, 0.0, 0.0, 1.0);
+          gl4.clearColor(0.0, 0.0, 0.0, 1.0); // 设置背景色
+          gl4.clear(gl4.COLOR_BUFFER_BIT); // 清空canvas
 
-          // 清空canvas
-          gl4.clear(gl4.COLOR_BUFFER_BIT);
-
-          // 绘制一个点
-          gl4.drawArrays(gl4.POINTS, 0, 1);
+          gl4.drawArrays(gl4.POINTS, 0, 1); // 绘制一个点
         </script>
       </div>
 
+      <!-- 案例：通过鼠标点击绘点 -->
       <div id='gl5'>
         <h2>gl5 案例：通过鼠标点击绘点</h2>
-        <canvas id="c5" width="400" height="400">
-          您的浏览器不支持canvas
-        </canvas>
         <pre>
   1、鼠标点击的相对屏幕左上角绝对坐标需要转换为相对canvas中心点的相对坐标（0-1）
   2、鼠标点击位置需要记录在数组中
     因为WebGL使用的是颜色缓冲区，绘制操作实际上是在颜色缓冲区中绘制，绘制结束后系统将缓冲区中的内容显示在屏幕上，
       但颜色缓冲区被重置，其中内容默认丢失，所以需要重新绘制所有的点
-  3、每次绘制之后，颜色缓冲区就被webgl重置为默认的(0,0,0,0)，默认完全透明，所以需要调用指定的颜色来清空</pre>
-        <script type="text/javascript">
-          // 顶点着色器程序2
-          let VSHADER_SOURCE5 = `
-            attribute vec4 a_Position;
-            void main(){
-              gl_Position=a_Position;
-              gl_PointSize=10.0;
-            }`;
-
-          // 片元着色器程序2
-          let FSHADER_SOURCE5 = `
-            void main(){
-              gl_FragColor=vec4(1.0, 0.0, 0.0, 1.0);
-            }`;
-          // 获取canvas，获取webGL绘图上下文
-          const c5 = document.querySelector("#c5");
-          const gl5 = getWebGLContext(c5);
-          if (!gl5) {
-            console.log("无法获得webgl的绘图上下文");
-          }
-          // 初始化着色器
-          if (!initShaders(gl5, VSHADER_SOURCE5, FSHADER_SOURCE5)) {
-            console.log("无法初始化着色器");
-          }
-          // 获取attribute变量的存储位置
-          const a_position5 = gl5.getAttribLocation(gl5.program, "a_Position");
-          if (a_position5 < 0) {
-            console.log("无法获取attribute变量的存储位置");
-          }
-
-          gl5.clearColor(0.0, 0.0, 0.0, 1.0);
-          gl5.clear(gl5.COLOR_BUFFER_BIT);
-
-          c5.addEventListener("click", event => drawAPointWhereClick(event, gl5, a_position5));
-
-          // 鼠标点击位置数组
-          const g5_points = [];
-          const drawAPointWhereClick = (event, gl, a_position) => {
-            let x = event.clientX; // 鼠标点击的x坐标（相对屏幕，左上角为00，x正向右，y正向下）
-            let y = event.clientY; // 鼠标点击的y坐标（相对屏幕，左上角为00，x正向右，y正向下）
-            let rect = event.target.getBoundingClientRect();
-            console.log(x, y, rect);
-
-            // 将x、y转换成相对canvas中心点的相对坐标（0-1）
-            // x：鼠标点击的相对屏幕左上角的绝对坐标
-            // rect：canvas左上角顶点相对屏幕左上角的绝对坐标
-            x = (x - rect.x - c5.width / 2) / (c5.width / 2);
-            y = (c5.height / 2 - y + rect.y) / (c5.height / 2);
-            console.log(x, y);
-
-            // 将转换后的坐标保存到g5_points数组
-            g5_points.push(x);
-            g5_points.push(y);
-
-            gl.clearColor(0.0, 0.0, 0.0, 1.0);
-            gl.clear(gl.COLOR_BUFFER_BIT);
-
-            for (let i = 0; i < g5_points.length; i += 2) {
-              gl.vertexAttrib3f(a_position, g5_points[i], g5_points[i + 1], 0.0);
-              gl.drawArrays(gl.POINTS, 0, 1);
-            }
-          }
-        </script>
+  3、每次绘制之后，颜色缓冲区就被webgl重置为默认的(0,0,0,0)，默认完全透明，所以需要调用指定的颜色来清空
+    <a href="../examples/gl5.html" target="_blank" title="案例：通过鼠标点击绘点">示例</a></pre>
       </div>
 
+      <!-- 案例：使用uniform改变点的颜色 -->
       <div id='gl6'>
         <h2>gl6 案例：使用uniform改变点的颜色</h2>
         <canvas id="c6" width="400" height="400">
@@ -284,98 +207,99 @@
         <pre>
   只有顶点着色器才能使用attribute变量，片元着色器只能使用uniform变量</pre>
         <script type="text/javascript">
-          // 顶点着色器程序2
-          let VSHADER_SOURCE6 = `
-            attribute vec4 a_Position;
-            void main(){
-              gl_Position=a_Position;
-              gl_PointSize=10.0;
-            }`;
+          // // 顶点着色器程序2
+          // let VSHADER_SOURCE6 = `
+          //   attribute vec4 a_Position;
+          //   void main(){
+          //     gl_Position=a_Position;
+          //     gl_PointSize=10.0;
+          //   }`;
 
-          // 片元着色器程序2
-          let FSHADER_SOURCE6 = `
-            precision mediump float;
-            uniform vec4 u_FragColor;
-            void main(){
-              gl_FragColor=u_FragColor;
-            }`;
-          // 获取canvas，获取webGL绘图上下文
-          const c6 = document.querySelector("#c6");
-          const gl6 = getWebGLContext(c6);
-          if (!gl6) {
-            console.log("无法获得webgl的绘图上下文");
-          }
-          // 初始化着色器
-          if (!initShaders(gl6, VSHADER_SOURCE6, FSHADER_SOURCE6)) {
-            console.log("无法初始化着色器");
-          }
-          // 获取attribute变量的存储位置
-          const a_position6 = gl6.getAttribLocation(gl6.program, "a_Position");
-          if (a_position6 < 0) {
-            console.log("无法获取attribute变量的存储位置");
-          }
+          // // 片元着色器程序2
+          // let FSHADER_SOURCE6 = `
+          //   precision mediump float;
+          //   uniform vec4 u_FragColor;
+          //   void main(){
+          //     gl_FragColor=u_FragColor;
+          //   }`;
+          // // 获取canvas，获取webGL绘图上下文
+          // const c6 = document.querySelector("#c6");
+          // const gl6 = getWebGLContext(c6);
+          // if (!gl6) {
+          //   console.log("无法获得webgl的绘图上下文");
+          // }
+          // // 初始化着色器
+          // if (!initShaders(gl6, VSHADER_SOURCE6, FSHADER_SOURCE6)) {
+          //   console.log("无法初始化着色器");
+          // }
+          // // 获取attribute变量的存储位置
+          // const a_position6 = gl6.getAttribLocation(gl6.program, "a_Position");
+          // if (a_position6 < 0) {
+          //   console.log("无法获取attribute变量的存储位置");
+          // }
 
-          // 获取uniform变量的存储位置
-          const u_fragColor6 = gl6.getUniformLocation(gl6.program, "u_FragColor");
-          if (!u_fragColor6) { // 与attribute变量有差别
-            console.log("无法获取uniform变量的存储位置");
-          }
+          // // 获取uniform变量的存储位置
+          // const u_fragColor6 = gl6.getUniformLocation(gl6.program, "u_FragColor");
+          // if (!u_fragColor6) { // 与attribute变量有差别
+          //   console.log("无法获取uniform变量的存储位置");
+          // }
 
-          gl6.clearColor(0.0, 0.0, 0.0, 1.0);
-          gl6.clear(gl5.COLOR_BUFFER_BIT);
+          // gl6.clearColor(0.0, 0.0, 0.0, 1.0);
+          // gl6.clear(gl5.COLOR_BUFFER_BIT);
 
-          c6.addEventListener("click", event => drawAPointWhereClick6(event, gl6, c6, a_position6, u_fragColor6));
+          // c6.addEventListener("click", event => drawAPointWhereClick6(event, gl6, c6, a_position6, u_fragColor6));
 
-          // 鼠标点击位置数组
-          const g6_points = [];
-          // 存储点颜色的数组
-          // const g6_colors = [];
+          // // 鼠标点击位置数组
+          // const g6_points = [];
+          // // 存储点颜色的数组
+          // // const g6_colors = [];
 
-          // event：点击事件，包含点击的信息
-          // gl：canvas的webgl上下文环境
-          // canvas：绘图的canvas
-          // a_position：顶点着色器中绘制的点的坐标变量
-          // u_fragColor：片元着色器中绘制的点的颜色变量
-          const drawAPointWhereClick6 = (event, gl, canvas, a_position, u_fragColor) => {
-            let x = event.clientX; // 鼠标点击的x坐标（相对屏幕，左上角为00，x正向右，y正向下）
-            let y = event.clientY; // 鼠标点击的y坐标（相对屏幕，左上角为00，x正向右，y正向下）
-            let rect = event.target.getBoundingClientRect();
-            console.log(x, y, rect);
+          // // event：点击事件，包含点击的信息
+          // // gl：canvas的webgl上下文环境
+          // // canvas：绘图的canvas
+          // // a_position：顶点着色器中绘制的点的坐标变量
+          // // u_fragColor：片元着色器中绘制的点的颜色变量
+          // const drawAPointWhereClick6 = (event, gl, canvas, a_position, u_fragColor) => {
+          //   let x = event.clientX; // 鼠标点击的x坐标（相对屏幕，左上角为00，x正向右，y正向下）
+          //   let y = event.clientY; // 鼠标点击的y坐标（相对屏幕，左上角为00，x正向右，y正向下）
+          //   let rect = event.target.getBoundingClientRect();
+          //   console.log(x, y, rect);
 
-            // 将x、y转换成相对canvas中心点的相对坐标（0-1）
-            // x：鼠标点击的相对屏幕左上角的绝对坐标
-            // rect：canvas左上角顶点相对屏幕左上角的绝对坐标
-            x = (x - rect.x - c6.width / 2) / (c6.width / 2);
-            y = (c6.height / 2 - y + rect.y) / (c6.height / 2);
-            console.log(x, y);
+          //   // 将x、y转换成相对canvas中心点的相对坐标（0-1）
+          //   // x：鼠标点击的相对屏幕左上角的绝对坐标
+          //   // rect：canvas左上角顶点相对屏幕左上角的绝对坐标
+          //   x = (x - rect.x - c6.width / 2) / (c6.width / 2);
+          //   y = (c6.height / 2 - y + rect.y) / (c6.height / 2);
+          //   console.log(x, y);
 
-            // 将转换后的坐标保存到g_points数组
-            g6_points.push({
-              x,
-              y,
-              fragColor: [Math.random(), Math.random(), Math.random(), Math.random()]
-            });
+          //   // 将转换后的坐标保存到g_points数组
+          //   g6_points.push({
+          //     x,
+          //     y,
+          //     fragColor: [Math.random(), Math.random(), Math.random(), Math.random()]
+          //   });
 
-            // gl.clearColor(0.0, 0.0, 0.0, 1.0);
-            gl.clear(gl.COLOR_BUFFER_BIT);
+          //   // gl.clearColor(0.0, 0.0, 0.0, 1.0);
+          //   gl.clear(gl.COLOR_BUFFER_BIT);
 
-            // for (let i = 0; i < g5_points.length; i += 2) {
-            //   gl.vertexAttrib3f(a_position, g5_points[i], g5_points[i + 1], 0.0);
-            //   gl.drawArrays(gl.POINTS, 0, 1);
-            // }
+          //   // for (let i = 0; i < g5_points.length; i += 2) {
+          //   //   gl.vertexAttrib3f(a_position, g5_points[i], g5_points[i + 1], 0.0);
+          //   //   gl.drawArrays(gl.POINTS, 0, 1);
+          //   // }
 
-            for (let p of g6_points) {
-              // 将点的位置传输到a_Position变量中
-              gl.vertexAttrib3f(a_position, p.x, p.y, 0.0);
-              // 将点的颜色传输到u_FragColor变量中
-              gl.uniform4f(u_fragColor, p.fragColor[0], p.fragColor[1], p.fragColor[2], p.fragColor[3]);
-              // 绘制点
-              gl.drawArrays(gl.POINTS, 0, 1);
-            }
-          }
+          //   for (let p of g6_points) {
+          //     // 将点的位置传输到a_Position变量中
+          //     gl.vertexAttrib3f(a_position, p.x, p.y, 0.0);
+          //     // 将点的颜色传输到u_FragColor变量中
+          //     gl.uniform4f(u_fragColor, p.fragColor[0], p.fragColor[1], p.fragColor[2], p.fragColor[3]);
+          //     // 绘制点
+          //     gl.drawArrays(gl.POINTS, 0, 1);
+          //   }
+          // }
         </script>
       </div>
 
+      <!-- 缓冲区对象 -->
       <div id='gl7'>
         <h2>gl7 缓冲区对象</h2>
         <canvas id="c7" width="400" height="400">
@@ -406,7 +330,7 @@
     不支持push、pop，只能使用new来创建
   6、gl.vertexAttrib[1234]f只能为attribute变量分配一个值
     gl.vertexAttribPointer()可以分配缓冲区中的所有值，本质是引用或指针</pre>
-        <script type="text/javascript">
+        <!-- <script type="text/javascript">
           // 顶点着色器程序2
           let VSHADER_SOURCE7 = `
             attribute vec4 a_Position;
@@ -479,9 +403,10 @@
 
             return n;
           }
-        </script>
+        </script> -->
       </div>
 
+      <!-- 案例：绘制一个三角形 -->
       <div id='gl8'>
         <h2>gl8 案例：绘制一个三角形</h2>
         <canvas id="c8" width="400" height="400">
@@ -569,6 +494,7 @@
         </script>
       </div>
 
+      <!-- 案例：使用basicDraw绘制一个矩形 -->
       <div id='gl9'>
         <h2>gl9 案例：使用basicDraw绘制一个矩形</h2>
         <canvas id="c9" width="400" height="400">
@@ -577,7 +503,7 @@
         <pre>
   隐藏缓冲区对象的操作
   basicDraw(gl9, new Float32Array([-0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5]), 4, gl9.TRIANGLE_FAN);</pre>
-        <script type="text/javascript">
+        <!-- <script type="text/javascript">
           // 顶点着色器程序2
           let VSHADER_SOURCE9 = `
             attribute vec4 a_Position;
@@ -601,9 +527,10 @@
           }
 
           basicDraw(gl9, new Float32Array([-0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5]), 4, gl9.TRIANGLE_FAN);
-        </script>
+        </script> -->
       </div>
 
+      <!-- 变换：移动、旋转和缩放 -->
       <div id='gl10'>
         <h2>gl10 变换：移动、旋转和缩放</h2>
         <canvas id="c10" width="400" height="400">
@@ -618,7 +545,7 @@
   4、变换矩阵：旋转（关于Z轴正向旋转b角度）
     [[cos b, -sin b, 0][sin b, cos b, 0][0, 0, 1]]
   5、变换矩阵：平移（四阶，因为还需要一项常数）</pre>
-        <script type="text/javascript">
+        <!-- <script type="text/javascript">
           // 顶点着色器程序2
           let VSHADER_SOURCE10 = `
             attribute vec4 a_Position;
@@ -705,16 +632,17 @@
 
             return n;
           }
-        </script>
+        </script> -->
       </div>
 
+      <!-- 变换矩阵 -->
       <div id='gl11'>
         <h2>gl11 变换矩阵</h2>
         <canvas id="c11" width="400" height="400">
           您的浏览器不支持canvas
         </canvas>
         <pre></pre>
-        <script type="text/javascript">
+        <!-- <script type="text/javascript">
           // 顶点着色器程序2
           let VSHADER_SOURCE11 = `
             attribute vec4 a_Position;
@@ -770,20 +698,21 @@
             ]));
 
           gl11.clearColor(0.0, 0.0, 0.0, 1.0);
-          gl11.clear(gl10.COLOR_BUFFER_BIT);
+          gl11.clear(gl11.COLOR_BUFFER_BIT);
 
           // 绘制
           basicDraw(gl11, new Float32Array([0.5, 0.0, 0.0, 0.5, -0.5, 0.0]), 3, gl11.TRIANGLES);
-        </script>
+        </script> -->
       </div>
 
+      <!-- 使用Matrix4库 -->
       <div id='gl12'>
         <h2>gl12 使用Matrix4库</h2>
         <canvas id="c12" width="400" height="400">
           您的浏览器不支持canvas
         </canvas>
         <pre></pre>
-        <script type="text/javascript">
+        <!-- <script type="text/javascript">
           // 顶点着色器程序2
           let VSHADER_SOURCE12 = `
             attribute vec4 a_Position;
@@ -817,13 +746,14 @@
             modelMatrix12.elements);
 
           gl12.clearColor(0.0, 0.0, 0.0, 1.0);
-          gl12.clear(gl10.COLOR_BUFFER_BIT);
+          gl12.clear(gl12.COLOR_BUFFER_BIT);
 
           // 绘制
           basicDraw(gl12, new Float32Array([0.1, 0.0, 0.0, 0.1, -0.1, 0.0]), 3, gl12.TRIANGLES);
-        </script>
+        </script> -->
       </div>
 
+      <!-- 示例动画 -->
       <div id='gl13'>
         <h2>gl13 示例动画</h2>
         <canvas id="c13" width="400" height="400">
@@ -845,7 +775,7 @@
             attribute vec4 a_Position;
             uniform mat4 u_ModelMatrix;
             void main(){
-              gl_Position=u_ModelMatrix*a_Position;
+              gl_Position=u_ModelMatrix * a_Position;
             }`;
           // 片元着色器程序2
           let FSHADER_SOURCE13 = `
@@ -854,30 +784,24 @@
             }`;
           // 获取canvas，获取webGL绘图上下文，初始化着色器
           const gl13 = getWebGLContext(document.querySelector("#c13"));
-          if (!initShaders(gl13, VSHADER_SOURCE13, FSHADER_SOURCE13)) {
-            console.log(Error("无法初始化着色器"));
-          }
-          // 设置顶点缓冲区，设置canvas背景
+          if (!initShaders(gl13, VSHADER_SOURCE13, FSHADER_SOURCE13)) console.log(Error("无法初始化着色器"));
+
+          // 设置顶点信息，设置canvas背景
           let n13 = initVertexBuffers8(gl13);
-          if (n13 < 0) {
-            console.log("无法设置顶点位置");
-          }
+          if (n13 < 0) console.log("无法设置顶点位置");
+
           gl13.clearColor(0.0, 0.0, 0.0, 1.0);
 
-          // 旋转速度（度/秒）
-          let rotate_speed = 5;
+
+          let rotate_speed = 5; // 旋转速度（度/秒）
+          let currentAngle13 = 0; // 当前旋转角度
+          let g13_last = Date.now(); // 记录上一次调用时间
 
           let u_modelMatrix13 = gl13.getUniformLocation(gl13.program, "u_ModelMatrix");
-
-          // 当前旋转角度
-          let currentAngle13 = 0;
 
           let modelMatrix13 = new Matrix4();
           // modelMatrix12.setRotate(90.0, 0.0, 0.0, 0.1);
           // modelMatrix12.translate(0.5, 0, 0);
-
-          // 记录上一次调用时间
-          let g13_last = Date.now();
 
           function tick() {
             currentAngle13 = animate(currentAngle13); // 更新旋转角
@@ -911,16 +835,2333 @@
         </script>
       </div>
 
+      <!-- 多个缓冲区对象 -->
       <div id='gl14'>
-        <h2>gl14 将非坐标数据传入顶点着色器</h2>
+        <h2>gl14 多个缓冲区对象</h2>
         <canvas id="c14" width="400" height="400">
           您的浏览器不支持canvas
         </canvas>
         <pre>
-        </pre>
+  1、多个缓冲区对象
+    依次进行每个缓冲区对象的创建、绑定、写入、分配、连接，从而使得WebGL系统准备就绪，
+    再执行gl.drawArray函数，存储在缓冲区对象中的数据就将按照其在缓冲区中的顺序依次传给对应的attribute对象
+  2、gl.vertexAttribPointer(location,size,type,normalized,stride,offset)
+    参数：
+      location：指定待分配的attribute变量的存储位置
+      size：指定每个顶点的分量个数
+      type：指定数据类型
+      normalized：是否归一化
+      stride：步进，也即相邻两个顶点间的字节数，默认0
+      offset：偏移量
+    使用多个缓冲区对象适合数据量小的时候，数据量过大会导致维护困难
+    交错组织：将顶点的坐标数据和尺寸数据打包到同一个缓冲区对象，利用步进和偏移访问不同数据</pre>
+        <!-- <script type="text/javascript">
+          // 顶点着色器程序2
+          let VSHADER_SOURCE14 = `
+            attribute vec4 a_Position;
+            attribute float a_PointSize;
+            void main(){
+              gl_Position=a_Position;
+              gl_PointSize=a_PointSize;
+            }`;
+
+          // 片元着色器程序2
+          let FSHADER_SOURCE14 = `
+            precision mediump float;
+            uniform vec4 u_FragColor;
+            void main(){
+              gl_FragColor=u_FragColor;
+            }`;
+          // 获取canvas，获取webGL绘图上下文
+          const c14 = document.querySelector("#c14");
+          const gl14 = getWebGLContext(c14);
+          if (!gl14) {
+            console.log("无法获得webgl的绘图上下文");
+          }
+          // 初始化着色器
+          if (!initShaders(gl14, VSHADER_SOURCE14, FSHADER_SOURCE14)) {
+            console.log("无法初始化着色器");
+          }
+
+          // 设置顶点位置
+          let n14 = initVertexBuffers14(gl14);
+          if (n14 < 0) {
+            console.log("无法设置顶点位置");
+          }
+
+          gl14.clearColor(0.0, 0.0, 0.0, 1.0);
+          gl14.clear(gl14.COLOR_BUFFER_BIT);
+
+          // 绘制三个点
+          gl14.drawArrays(gl14.POINTS, 0, n14); // n7=3
+
+          function initVertexBuffers14(gl) {
+            let vertices = new Float32Array([
+              0.0, 0.5, -0.5, -0.5, 0.5, -0.5
+            ]);
+            let sizes = new Float32Array([10.0, 15.0, 20.0]);
+            let n = 3;
+
+            // 创建缓冲区对象
+            const vertextBuffer = gl.createBuffer();
+            if (!vertextBuffer) {
+              console.log("无法创建缓冲区对象");
+              return -1;
+            }
+            const sizeBuffer = gl.createBuffer();
+            if (!sizeBuffer) {
+              console.log("无法创建缓冲区对象");
+              return -1;
+            }
+
+            // 将缓冲区对象绑定到目标
+            gl.bindBuffer(gl.ARRAY_BUFFER, vertextBuffer);
+            // 向缓冲区对象中写入数据
+            gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+            let a_position = gl.getAttribLocation(gl.program, "a_Position");
+            if (a_position < 0) {
+              console.log("无法获取attribute变量的存储位置");
+              return -1;
+            }
+            // 将缓冲区对象分配给a_position变量
+            gl.vertexAttribPointer(a_position, 2, gl.FLOAT, false, 0, 0);
+            // 连接a_position变量与分配的缓冲区对象
+            gl.enableVertexAttribArray(a_position);
+
+            // 尺寸数据
+            // 将缓冲区对象绑定到目标
+            gl.bindBuffer(gl.ARRAY_BUFFER, sizeBuffer);
+            // 向缓冲区对象中写入数据
+            gl.bufferData(gl.ARRAY_BUFFER, sizes, gl.STATIC_DRAW);
+            let a_pointSize = gl.getAttribLocation(gl.program, "a_PointSize");
+            if (a_pointSize < 0) {
+              console.log("无法获取attribute变量的存储位置");
+              return -1;
+            }
+            // 将缓冲区对象分配给a_pointSize变量
+            gl.vertexAttribPointer(a_pointSize, 1, gl.FLOAT, false, 0, 0);
+            // 连接a_pointSize变量与分配的缓冲区对象
+            gl.enableVertexAttribArray(a_pointSize);
+
+            return n;
+          }
+        </script> -->
+      </div>
+
+      <!-- 交错组织 -->
+      <div id='gl15'>
+        <h2>gl15 交错组织</h2>
+        <canvas id="c15" width="400" height="400">
+          您的浏览器不支持canvas
+        </canvas>
+        <pre>
+  gl.vertexAttribPointer(a_position, 2, gl.FLOAT, false, FSIZE * 3, 0);
+  gl.vertexAttribPointer(a_pointSize, 1, gl.FLOAT, false, FSIZE * 3, FSIZE * 2);</pre>
+        <!-- <script type="text/javascript">
+          // 顶点着色器程序2
+          let VSHADER_SOURCE15 = `
+            attribute vec4 a_Position;
+            attribute float a_PointSize;
+            void main(){
+              gl_Position=a_Position;
+              gl_PointSize=a_PointSize;
+            }`;
+
+          // 片元着色器程序2
+          let FSHADER_SOURCE15 = `
+            precision mediump float;
+            uniform vec4 u_FragColor;
+            void main(){
+              gl_FragColor=u_FragColor;
+            }`;
+          // 获取canvas，获取webGL绘图上下文
+          const gl15 = getWebGLContext(document.querySelector("#c15"));
+          if (!gl15) {
+            console.log(Error("无法获得webgl的绘图上下文"));
+          }
+          // 初始化着色器
+          if (!initShaders(gl15, VSHADER_SOURCE15, FSHADER_SOURCE15)) {
+            console.log(Error("无法初始化着色器"));
+          }
+
+          // 设置顶点位置
+          let n15 = initVertexBuffers14(gl15);
+          if (n15 < 0) {
+            console.log(Error("无法设置顶点位置"));
+          }
+
+          gl15.clearColor(0.0, 0.0, 0.0, 1.0);
+          gl15.clear(gl15.COLOR_BUFFER_BIT);
+
+          // 绘制三个点
+          gl15.drawArrays(gl15.POINTS, 0, n15); // n7=3
+
+          function initVertexBuffers14(gl) {
+            let verticesData = new Float32Array([
+              0.0, 0.5, 10.0,
+              -0.5, -0.5, 20.0,
+              0.5, -0.5, 30.0
+            ]);
+            let n = 3;
+            const FSIZE = verticesData.BYTES_PER_ELEMENT;
+
+            // 创建缓冲区对象
+            const verticesBuffer = gl.createBuffer();
+            if (!verticesBuffer) {
+              console.log(Error("无法创建缓冲区对象"));
+              return -1;
+            }
+
+            // 将缓冲区对象绑定到目标
+            gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
+            // 向缓冲区对象中写入数据
+            gl.bufferData(gl.ARRAY_BUFFER, verticesData, gl.STATIC_DRAW);
+            let a_position = gl.getAttribLocation(gl.program, "a_Position");
+            if (a_position < 0) {
+              console.log("无法获取attribute变量的存储位置");
+              return -1;
+            }
+            // 将缓冲区对象分配给a_position变量
+            gl.vertexAttribPointer(a_position, 2, gl.FLOAT, false, FSIZE * 3, 0);
+            // 连接a_position变量与分配的缓冲区对象
+            gl.enableVertexAttribArray(a_position);
+
+
+            let a_pointSize = gl.getAttribLocation(gl.program, "a_PointSize");
+            if (a_pointSize < 0) {
+              console.log("无法获取attribute变量的存储位置");
+              return -1;
+            }
+            // 将缓冲区对象分配给a_pointSize变量
+            gl.vertexAttribPointer(a_pointSize, 1, gl.FLOAT, false, FSIZE * 3, FSIZE * 2);
+            // 连接a_pointSize变量与分配的缓冲区对象
+            gl.enableVertexAttribArray(a_pointSize);
+
+            return n;
+          }
+        </script> -->
+      </div>
+
+      <!-- varying变量修改颜色 -->
+      <div id='gl16'>
+        <h2>gl16 varying变量修改颜色</h2>
+        <canvas id="c16" width="400" height="400">
+          您的浏览器不支持canvas
+        </canvas>
+        <pre>
+  1、varying变量是能是float、vec2、vec3、vec4、mat2、mat3、mat4类型
+  2、片元着色器中的varying变量与顶点着色器中的varying变量同名，即可接收数据
+    javascript -> 顶点着色器（a_Color=v_Color） -> 片元着色器（v_Color）</pre>
+        <script type="text/javascript">
+          // 顶点着色器程序2
+          let VSHADER_SOURCE16 = ` 
+            attribute vec4 a_Position;
+            attribute float a_PointSize;
+            attribute vec4 a_Color;
+            varying vec4 v_Color;
+            void main(){
+              gl_Position=a_Position;
+              gl_PointSize=a_PointSize;
+              v_Color=a_Color;
+            }`;
+
+          // 片元着色器程序2
+          let FSHADER_SOURCE16 = `
+            precision mediump float;
+            varying vec4 v_Color;
+            void main(){
+              gl_FragColor=v_Color;
+            }`;
+
+          // 获取canvas，获取webGL绘图上下文
+          const gl16 = getWebGLContext(document.querySelector("#c16"));
+          if (!gl16) console.log(Error("无法获得webgl的绘图上下文"));
+
+          // 初始化着色器
+          if (!initShaders(gl16, VSHADER_SOURCE16, FSHADER_SOURCE16)) console.log(Error("无法初始化着色器"));
+
+          // 缓冲区对象设置
+          let n16 = initVertexBuffers16(gl16);
+          if (n16 < 0) console.log(Error("无法设置顶点位置"));
+
+          gl16.clearColor(0.0, 0.0, 0.0, 1.0);
+          gl16.clear(gl16.COLOR_BUFFER_BIT);
+
+          // 绘制
+          gl16.drawArrays(gl16.POINTS, 0, n16);
+          // gl16.drawArrays(gl16.TRIANGLES, 0, n16);
+
+          function initVertexBuffers16(gl) {
+            let verticesData = new Float32Array([
+              0.0, 0.5, 10.0, 1.0, 0.0, 0.0,
+              -0.5, -0.5, 20.0, 0.0, 1.0, 0.0,
+              0.5, -0.5, 30.0, 0.0, 0.0, 1.0
+            ]);
+            let n = 3;
+            const FSIZE = verticesData.BYTES_PER_ELEMENT;
+
+            const verticesBuffer = gl.createBuffer(); // 创建缓冲区对象
+            if (!verticesBuffer) {
+              console.log(Error("无法创建缓冲区对象"));
+              return -1;
+            }
+
+            // 将缓冲区对象绑定到目标
+            gl.bindBuffer(gl.ARRAY_BUFFER, verticesBuffer);
+            // 向缓冲区对象中写入数据
+            gl.bufferData(gl.ARRAY_BUFFER, verticesData, gl.STATIC_DRAW);
+
+            // 坐标数据
+            let a_position = gl.getAttribLocation(gl.program, "a_Position");
+            if (a_position < 0) {
+              console.log(Error("无法获取attribute变量的存储位置"));
+              return -1;
+            }
+            // 将缓冲区对象分配给a_position变量
+            gl.vertexAttribPointer(a_position, 2, gl.FLOAT, false, FSIZE * 6, 0);
+            // 连接a_position变量与分配的缓冲区对象
+            gl.enableVertexAttribArray(a_position);
+
+            // 尺寸数据
+            let a_pointSize = gl.getAttribLocation(gl.program, "a_PointSize");
+            if (a_pointSize < 0) {
+              console.log(Error("无法获取attribute变量的存储位置"));
+              return -1;
+            }
+            // 将缓冲区对象分配给a_pointSize变量
+            gl.vertexAttribPointer(a_pointSize, 1, gl.FLOAT, false, FSIZE * 6, FSIZE * 2);
+            // 连接a_pointSize变量与分配的缓冲区对象
+            gl.enableVertexAttribArray(a_pointSize);
+
+            // 颜色数据
+            let a_color = gl.getAttribLocation(gl.program, "a_Color");
+            if (a_color < 0) {
+              console.log(Error("无法获取attribute变量的存储位置"));
+              return -1;
+            }
+            // 将缓冲区对象分配给a_color变量
+            gl.vertexAttribPointer(a_color, 3, gl.FLOAT, false, FSIZE * 6, FSIZE * 3);
+            // 连接a_color变量与分配的缓冲区对象
+            gl.enableVertexAttribArray(a_color);
+
+            return n;
+          }
+        </script>
+      </div>
+
+      <!-- 从顶点着色器到片元着色器 -->
+      <div id='gl17'>
+        <h2>gl17 从顶点着色器到片元着色器</h2>
+        <canvas id="c17" width="400" height="400">
+          您的浏览器不支持canvas
+        </canvas>
+        <pre>
+  1、图形装配过程（geometric shape assembly）：又称图元装配过程（primitive assembly process）
+    将孤立的顶点坐标装配成几何图形，几何图形类别由gl.drawArrays()函数的第一个参数决定
+  2、光栅化过程：将装配好的几何图形转换为片元，将结果交到片元着色器
+  3、流程：
+    javascript -> 缓冲区对象 -> 顶点着色器 -> 图形装配 -> 光栅化 -> 片元着色器
+  4、调用片元着色器
+    光栅化之后，调用片元着色器，有多少片元调用多少次
+    每个片元的颜色都由片元着色器计算生成，并写入颜色缓冲区
+    最后一个片元渲染完成，浏览器显式最终结果
+  5、varying变量的作用和内插过程
+    顶点着色器的varying变量在传入片元着色器之前经过了内插
+    内插（interpolation process）：递减或递增的自动运算</pre>
+        <script type="text/javascript">
+          // 获取canvas，获取webGL绘图上下文
+          const gl17 = getWebGLContext(document.querySelector("#c17"));
+          if (!gl17) {
+            console.log(Error("无法获得webgl的绘图上下文"));
+          }
+          // 初始化着色器
+          if (!initShaders(gl17, VSHADER_SOURCE16, FSHADER_SOURCE16)) {
+            console.log(Error("无法初始化着色器"));
+          }
+
+          // 缓冲区对象设置
+          let n17 = initVertexBuffers16(gl17);
+          if (n17 < 0) {
+            console.log(Error("无法设置顶点位置"));
+          }
+
+          gl17.clearColor(0.0, 0.0, 0.0, 1.0);
+          gl17.clear(gl16.COLOR_BUFFER_BIT);
+
+          // 绘制
+          // gl17.drawArrays(gl17.POINTS, 0, n17);
+          gl17.drawArrays(gl17.TRIANGLES, 0, n17);
+        </script>
+      </div>
+
+      <!-- webgl纹理 -->
+      <div id='gl18'>
+        <h2>gl18 webgl纹理</h2>
+        <pre>
+  1、纹理映射：texture mapping
+    将一张图像映射到一个集合图形的表面（贴纸）
+    组成纹理图像的像素称为纹素（texels，texture elements）
+  2、步骤：
+    1）准备纹理图像
+    2）为几何图形配置纹理映射方式
+    3）加载纹理图像，进行配置
+    4）在片元着色器中将相应的纹素从纹理中抽取出来，将纹素的颜色赋给片元
+  3、运行chrome访问本地文件（记得关闭）
+    右键点击chrome的快捷方式选择属性，在目标一栏中添加--allow-file-access-from-files
+    注意与前面的内容要用一空格隔开，最后点击应用，然后点击确定
+  4、纹理坐标（texture coordinates）：st坐标系统
+    使用纹理坐标确定纹理图像的哪部分覆盖到几何图形上
+    S轴正向右，T轴正向上，右上角纹理坐标始终为：(1.0, 1.0)
+  5、纹理图像出现问题
+    texture bound to texture unit 1 is not renderable. It maybe non-power-of-2 and have incompatible texture filtering.
+    纹理没有渲染成功。因为你使用的图片的分辨率不属于2的幂数。
+    <a href="../examples/gl18.html" target="_blank" title="webgl纹理">示例</a></pre>
+      </div>
+
+      <!-- 修改：原图大小纹理 -->
+      <div id='gl19'>
+        <h2>gl19 修改：原图大小纹理</h2>
+        <pre>
+    <a href="../examples/gl19.html" target="_blank" title="webgl纹理">示例</a></pre>
+      </div>
+
+      <!-- OpenGL ES着色器语言 -->
+      <div id='gl20'>
+        <h2>gl20 OpenGL ES着色器语言</h2>
+        <!-- <canvas id="c20" width="400" height="400">
+          您的浏览器不支持canvas
+        </canvas> -->
+        <pre>
+  1、着色器是WebGL渲染视图的关键，GLSL ES是用来专门编写着色器的编程语言
+    是在OpenGL着色器语言的基础上，删除或简化了一部分功能
+    着色器语言也可以用来完成通用任务，如：图像处理、数据运算等（GPU）
+  2、基础语法（强类型严格语法）
+    变量区分大小写
+    语句以分号结束
+    从main函数开始执行，有且仅有一个main函数（空参）
+    两种数据类型：
+      数值类型：有小数点为浮点数，没有则是整数（float、int）
+      布尔类型：true、false（bool）
+    变量不能以gl_、webgl_、_webgl_为前缀开头（被OpenGL ES保留）
+    矢量：
+      vec2、vec3、vec4 -- float
+      ivec2、ivec3、ivec4 -- int
+      bvec2、bvec3、bvec4 -- bool
+    矩阵：mat2、mat3、mat4 -- float（2*2，,3*3,4*4）
+      矩阵传入值必须列主序
+    混合：点运算符后混合分量名同时获取
+    分量名集合：xyzw、rgba、stpq
+    数组：只支持一维数组
+    取样器（纹理）：sampler，内置类型，只能赋值为纹理单元编号
+    参数限定字
+    存储限定字：
+      const：常量
+      attribute：只能在顶点着色器中声明全局变量，表示“逐顶点”的信息
+        只能是float、vec2、vec3、vec4、mat2、mat3、mat4
+      uniform：顶点或片元中的全局变量，但只读，顶点和片元中同名则共享，各顶点和片元共用
+        如：变换矩阵
+      varying：全局，用以从顶点着色器向片元着色器传输数据，光栅化和内插之后再传递给片元着色器
+    精度限定字：表示每种数据具有的精度，提高运行效率，控制性能
+      hignp、mediump、lowp
+      使用precision来声明着色器的默认精度：precision 精度限定字 类型名称
+      因为片元着色器的float类型没有默认精度，所以需要手动指定
+        precision mediump float
+    预处理指令
+      如：使用宏来进行精度限定
+        #ifdef GL_ES
+        #ifdef GL_FRAGMENT_PRECISION_HIGH
+        precision hignp float;// 支持高精度则限定浮点数为高精度
+        #else
+        precision mediump float;// 不支持就限定浮点数为中精度
+        #endif
+        #endif</pre>
         <script type="text/javascript">
         </script>
       </div>
+
+      <!-- 三维基础 -->
+      <div id='gl21'>
+        <h2>gl21 三维基础</h2>
+        <canvas id="c21" width="400" height="400">
+          您的浏览器不支持canvas
+        </canvas>
+        <pre>
+  1、视点和视线
+    视点：观察者所处的位置（eye point），视线起点
+    视线：从视点出发沿着观察方向的射线称为视线（viewing direction）
+  2、默认情况下，视点位于原点(0,0,0)处，视线为Z轴负半轴（指向屏幕内部）
+  3、观察目标点（look-at point）：被观察的目标所在的点
+  4、上方向（up direction）：最终绘制在屏幕上的影像向上的方向，为了将观察者固定住，默认(0,1,0)
+  5、视图矩阵（view matrix）：（视点、观察目标点、上方向）
+    最终影响在屏幕上的视图
+  6、视图矩阵本质上与变换矩阵等价，都是对被观察对象的变换
+    移动视点与移动被观察对象等效
+  7、从指定视点观察变换后的对象（指定视角-视图矩阵，指定变换-模型矩阵）
+    新顶点坐标 = 视图矩阵 x 模型矩阵 x 原始顶点坐标
+  8、模型视图矩阵（model view matrix）= 视图矩阵 x 模型矩阵
+    避免不必要的开销（占用uniform变量）</pre>
+        <script type="text/javascript">
+          // 顶点着色器程序2
+          let VSHADER_SOURCE21 = `
+            attribute vec4 a_Position;
+            attribute vec4 a_Color;
+            uniform mat4 u_ViewMatrix;
+            varying vec4 v_Color;
+            void main(){
+              gl_Position=u_ViewMatrix*a_Position;
+              v_Color=a_Color;
+            }`;
+
+          // 片元着色器程序2
+          let FSHADER_SOURCE21 = `
+            precision mediump float;
+            varying vec4 v_Color;
+            void main(){
+              gl_FragColor=v_Color;
+            }`;
+
+          // 获取canvas，获取webGL绘图上下文
+          const gl21 = getWebGLContext(document.querySelector("#c21"));
+          if (!gl21) {
+            console.log(Error("无法获得webgl的绘图上下文"));
+          }
+          // 初始化着色器
+          if (!initShaders(gl21, VSHADER_SOURCE21, FSHADER_SOURCE21)) {
+            console.log(Error("无法初始化着色器"));
+          }
+
+          // 设置顶点信息（传入attribute变量）
+          let n21 = initVertexBuffers21(gl21);
+          if (n21 < 0) {
+            console.log(Error("无法设置顶点位置"));
+          }
+
+          // 传入uniform变量
+          let u_viewMatrix21 = gl21.getUniformLocation(gl21.program, "u_ViewMatrix"); // 省略错误处理
+          // 设置视点、视线和上方向
+          let viewMatrix21 = new Matrix4();
+          viewMatrix21.setLookAt(0.2, 0.25, 0.25, 0, 0, 0, 0, 1, 0);
+          gl21.uniformMatrix4fv(u_viewMatrix21, false, viewMatrix21.elements);
+
+          gl21.clearColor(0.0, 0.0, 0.0, 1.0);
+          gl21.clear(gl21.COLOR_BUFFER_BIT);
+
+          // 绘制
+          gl21.drawArrays(gl21.TRIANGLES, 0, n21); // n7=3
+
+          function initVertexBuffers21(gl) {
+            let vertices = new Float32Array([
+              // 顶点坐标、颜色
+              0.0, 0.5, -0.4, 0.4, 1.0, 0.4, // 绿色三角形在最后面
+              -0.5, -0.5, -0.4, 0.4, 1.0, 0.4,
+              0.5, -0.5, -0.4, 1.0, 0.4, 0.4,
+
+              0.5, 0.4, -0.2, 1.0, 0.4, 0.4, // 黄色三角形在最后面
+              -0.5, 0.4, -0.2, 1.0, 1.0, 0.4,
+              0.0, -0.6, -0.2, 1.0, 1.0, 0.4,
+
+              0.0, 0.5, 0.0, 0.4, 0.4, 1.0, // 蓝色三角形在最后面
+              -0.5, -0.5, 0.0, 0.4, 0.4, 1.0,
+              0.5, -0.5, 0.0, 1.0, 0.4, 0.4
+            ]);
+            let n = 9;
+            const FSIZE = vertices.BYTES_PER_ELEMENT;
+
+            // 创建缓冲区对象
+            const vertextBuffer = gl.createBuffer();
+            if (!vertextBuffer) {
+              console.log(Error("无法创建缓冲区对象"));
+              return -1;
+            }
+
+            // 将缓冲区对象绑定到目标，写入数据
+            gl.bindBuffer(gl.ARRAY_BUFFER, vertextBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+            let a_position = gl.getAttribLocation(gl.program, "a_Position");
+            if (a_position < 0) {
+              console.log(Error("无法获取attribute变量的存储位置"));
+              return -1;
+            }
+            // 将缓冲区对象分配给a_position变量，开启连接
+            gl.vertexAttribPointer(a_position, 3, gl.FLOAT, false, FSIZE * 6, 0);
+            gl.enableVertexAttribArray(a_position);
+
+            let a_color = gl.getAttribLocation(gl.program, "a_Color");
+            if (a_color < 0) {
+              console.log(Error("无法获取attribute变量的存储位置"));
+              return -1;
+            }
+            // 将缓冲区对象分配给a_position变量，开启连接
+            gl.vertexAttribPointer(a_color, 3, gl.FLOAT, false, FSIZE * 6, FSIZE * 3);
+            gl.enableVertexAttribArray(a_color);
+
+            return n;
+          }
+        </script>
+      </div>
+
+      <!-- 利用键盘改变视点 -->
+      <div id='gl22'>
+        <h2>gl22 利用键盘改变视点</h2>
+        <pre>
+  1、三角形缺角的原因：没有指定可视范围（visible range），即实际观察的到的区域边界
+    不绘制可视范围外的对象，降低程序开销
+  2、可视范围（正射类型），类似人类，水平200度，还有可视深度
+  3、可视空间（view volume）：水平视角、垂直视角、可视深度
+    长方体可视空间（盒状空间），由正射投影产生（orthographic projection）
+      物体大小与其所在位置无关，方便比较
+    四棱锥可视空间（金字塔可视空间），由透视投影产生（perspective projection）
+      类似平时观察世界，游戏第一人称
+    <a href="../examples/gl22.html" target="_blank" title="利用键盘改变视点">示例</a></pre>
+      </div>
+
+      <!-- 可视空间 -->
+      <div id='gl23'>
+        <h2>gl23 可视空间</h2>
+        <canvas id="c23" width="400" height="400">
+          您的浏览器不支持canvas
+        </canvas>
+        <pre>
+  1、盒状可视空间：近裁剪面（near clipping plane）、远裁剪面（far clipping plane）
+    canvas中显式的是可视空间内物体在近裁剪面上的投影
+    如果裁剪面的宽高比与canvas的宽高比不一致，就按照canvas的宽高比进行压缩
+    近裁剪面、远裁剪面之间的盒状空间就是可视空间
+  2、正射投影矩阵：新顶点坐标 = 正射投影矩阵 x 视图矩阵 x 顶点坐标
+  3、透视投影：实现人眼的深度感
+    使用透视投影矩阵之后，WebGL能自动将远距离对象缩小显示，产生深度感
+    远近裁剪面，可视空间外的对象不可见
+    不论盒状还是金字塔，都可以使用投影矩阵表示
+  4、透视投影矩阵（perspective projection matrix）</pre>
+        <script type="text/javascript">
+          // 顶点着色器程序2
+          let VSHADER_SOURCE23 = `
+            attribute vec4 a_Position;
+            attribute vec4 a_Color;
+            uniform mat4 u_ViewMatrix;
+            uniform mat4 u_ProjMatrix;
+            varying vec4 v_Color;
+            void main(){
+              gl_Position=u_ProjMatrix*u_ViewMatrix*a_Position;
+              v_Color=a_Color;
+            }`;
+
+          // 片元着色器程序2
+          let FSHADER_SOURCE23 = `
+            precision mediump float;
+            varying vec4 v_Color;
+            void main(){
+              gl_FragColor=v_Color;
+            }`;
+
+          // 获取canvas，获取webGL绘图上下文
+          const c23 = document.querySelector("#c23");
+          const gl23 = getWebGLContext(c23);
+          if (!gl23) {
+            console.log(Error("无法获得webgl的绘图上下文"));
+          }
+          // 初始化着色器
+          if (!initShaders(gl23, VSHADER_SOURCE23, FSHADER_SOURCE23)) {
+            console.log(Error("无法初始化着色器"));
+          }
+
+          // 设置顶点信息（传入attribute变量）
+          let n23 = initVertexBuffers23(gl23);
+          if (n23 < 0) {
+            console.log(Error("无法设置顶点位置"));
+          }
+
+          // 获取变量位置
+          let u_viewMatrix23 = gl23.getUniformLocation(gl23.program, "u_ViewMatrix");
+          let u_projMatrix23 = gl23.getUniformLocation(gl23.program, "u_ProjMatrix");
+          // 创建矩阵
+          let viewMatrix23 = new Matrix4();
+          let projMatrix23 = new Matrix4();
+          // 设置视图矩阵：视点、视线（被观察对象位置）、上方向
+          viewMatrix23.setLookAt(0, 0, 5, 0, 0, -100, 0, 1, 0);
+          // 设置透视投影参数：垂直视角、近裁剪面宽高比、近裁剪面位置、远裁剪面位置
+          projMatrix23.setPerspective(30, c23.width / c23.height, 1, 100);
+          // 写入 uniform 数据
+          gl23.uniformMatrix4fv(u_viewMatrix23, false, viewMatrix23.elements);
+          gl23.uniformMatrix4fv(u_projMatrix23, false, projMatrix23.elements);
+
+          // 清空canvas
+          gl23.clearColor(0.0, 0.0, 0.0, 1.0);
+          gl23.clear(gl23.COLOR_BUFFER_BIT);
+
+          // 绘制
+          gl23.drawArrays(gl23.TRIANGLES, 0, n23); // n7=3
+
+          function initVertexBuffers23(gl) {
+            let vertices = new Float32Array([
+              // 右侧三个三角形
+              // 顶点坐标、颜色
+              0.75, 1.0, -4.0, 0.4, 1.0, 0.4, // 绿色三角形在最后面
+              0.25, -1.0, -4.0, 0.4, 1.0, 0.4,
+              1.25, -1.0, -4.0, 1.0, 0.4, 0.4,
+
+              0.75, 1.0, -2.0, 1.0, 0.4, 0.4, // 黄色三角形在中间
+              0.25, -1.0, -2.0, 1.0, 1.0, 0.4,
+              1.25, -1.0, -2.0, 1.0, 1.0, 0.4,
+
+              0.75, 1.0, 0.0, 0.4, 0.4, 1.0, // 蓝色三角形在最前面
+              0.25, -1.0, 0.0, 0.4, 0.4, 1.0,
+              1.25, -1.0, 0.0, 1.0, 0.4, 0.4,
+
+              // 左侧三个三角形
+              // 顶点坐标、颜色
+              -0.75, 1.0, -4.0, 0.4, 1.0, 0.4, // 绿色三角形在最后面
+              -0.25, -1.0, -4.0, 0.4, 1.0, 0.4,
+              -1.25, -1.0, -4.0, 1.0, 0.4, 0.4,
+
+              -0.75, 1.0, -2.0, 1.0, 0.4, 0.4, // 黄色三角形在中间
+              -0.25, -1.0, -2.0, 1.0, 1.0, 0.4,
+              -1.25, -1.0, -2.0, 1.0, 1.0, 0.4,
+
+              -0.75, 1.0, 0.0, 0.4, 0.4, 1.0, // 蓝色三角形在最前面
+              -0.25, -1.0, 0.0, 0.4, 0.4, 1.0,
+              -1.25, -1.0, 0.0, 1.0, 0.4, 0.4
+            ]);
+            let n = 18; // 6个三角形
+            const FSIZE = vertices.BYTES_PER_ELEMENT;
+
+            // 创建缓冲区对象
+            const vertextBuffer = gl.createBuffer();
+            if (!vertextBuffer) {
+              console.log(Error("无法创建缓冲区对象"));
+              return -1;
+            }
+
+            // 将缓冲区对象绑定到目标，写入数据
+            gl.bindBuffer(gl.ARRAY_BUFFER, vertextBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+            let a_position = gl.getAttribLocation(gl.program, "a_Position");
+            if (a_position < 0) {
+              console.log(Error("无法获取attribute变量的存储位置"));
+              return -1;
+            }
+            // 将缓冲区对象分配给a_position变量，开启连接
+            gl.vertexAttribPointer(a_position, 3, gl.FLOAT, false, FSIZE * 6, 0);
+            gl.enableVertexAttribArray(a_position);
+
+            let a_color = gl.getAttribLocation(gl.program, "a_Color");
+            if (a_color < 0) {
+              console.log(Error("无法获取attribute变量的存储位置"));
+              return -1;
+            }
+            // 将缓冲区对象分配给a_position变量，开启连接
+            gl.vertexAttribPointer(a_color, 3, gl.FLOAT, false, FSIZE * 6, FSIZE * 3);
+            gl.enableVertexAttribArray(a_color);
+
+            return n;
+          }
+        </script>
+      </div>
+
+      <!-- 对象的前后关系 -->
+      <div id='gl24'>
+        <h2>gl24 对象的前后关系</h2>
+        <!-- <canvas id="c24" width="400" height="400">
+          您的浏览器不支持canvas
+        </canvas> -->
+        <pre>
+  1、WebGL默认按照缓冲区的顺序绘制图形，后绘制的图形覆盖前面绘制的图形，高效
+  2、隐藏面消除（hidden surface removal）
+    不能事先决定对象出现的顺序时，消除被遮挡的隐藏面
+    开启：
+      gl.enable(gl.DEPTH_TEST);
+    清除深度缓冲区：（在绘制每一帧之前，都必须清除深度缓冲区，也需要清除颜色缓冲区）
+      gl.clear(gl.DEPTH_BUFFER_BIT);
+    流程：
+      javascript -> 顶点着色器 -> 片元着色器 -> 深度检测
+    同时清除深度缓冲区和颜色缓冲区：
+      gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
+  3、深度缓冲区（depth buffer）：存储深度信息，又称Z缓冲区
+  4、深度冲突（Z fighting）：Z值完全一样
+    解决：多边形偏移（polygon offset），自动在Z值上加上偏移量，偏移量由物体表面相对观察者视线的角度决定
+    开启：gl.enable(gl.POLYGON_OFFSET_FILL);
+    绘制之前指定计算偏移量的参数：
+      gl.polygonpOffset(1.0,1.0);
+</pre>
+        <script type="text/javascript">
+        </script>
+      </div>
+
+      <!-- 立方体 -->
+      <div id='gl25'>
+        <h2>gl25 立方体</h2>
+        <canvas id="c25" width="400" height="400">
+          您的浏览器不支持canvas
+        </canvas>
+        <pre>
+  1、gl.drawElements()：替代gl.drawArrays()，避免重复定义顶点，保持顶点数目最少
+  2、gl.ELEMENT_ARRAY_BUFFER：管理着具有索引结构的三维模型数据
+</pre>
+        <script type="text/javascript">
+          // 顶点着色器程序2
+          let VSHADER_SOURCE25 = `
+            attribute vec4 a_Position;
+            attribute vec4 a_Color;
+            uniform mat4 u_MvpMatrix;
+            varying vec4 v_Color;
+            void main(){
+              gl_Position = u_MvpMatrix * a_Position;
+              v_Color = a_Color;
+            }`;
+
+          // 片元着色器程序2
+          let FSHADER_SOURCE25 = `
+            precision mediump float;
+            varying vec4 v_Color;
+            void main(){
+              gl_FragColor = v_Color;
+            }`;
+
+          // 获取canvas，获取webGL绘图上下文
+          // const c25 = document.querySelector("#c25");
+          const gl25 = document.querySelector("#c25").getContext("webgl");
+          if (!gl25) {
+            console.log(Error("无法获得webgl的绘图上下文"));
+          }
+          // 初始化着色器
+          if (!initShaders(gl25, VSHADER_SOURCE25, FSHADER_SOURCE25)) {
+            console.log(Error("无法初始化着色器"));
+          }
+
+          // 设置顶点信息（传入attribute变量）
+          let n25 = initVertexBuffers25(gl25);
+
+          // 获取 uniform 变量位置
+          let u_mvpMatrix25 = gl25.getUniformLocation(gl25.program, "u_MvpMatrix");
+          // let modelMatrix25 = new Matrix4(); // 模型矩阵（变换）
+          // modelMatrix25.setTranslate(0.75, 0, 0);
+          // let viewMatrix25 = new Matrix4(); // 视图矩阵
+          // viewMatrix25.setLookAt(0, 0, 5, 0, 0, -100, 0, 1, 0);
+          // let projMatrix25 = new Matrix4(); // 投影矩阵
+          // projMatrix25.setPerspective(30, c25.width / c25.height, 1, 100);
+          let mvpMatrix25 = new Matrix4(); // 模型视图投影矩阵
+          mvpMatrix25.setPerspective(30, 1, 1, 100);
+          mvpMatrix25.lookAt(3, 3, 7, 0, 0, 0, 0, 1, 0);
+          // 计算mvp矩阵并传入
+          // mvpMatrix25.set(projMatrix25).multiply(viewMatrix25).multiply(modelMatrix25);
+          gl25.uniformMatrix4fv(u_mvpMatrix25, false, mvpMatrix25.elements);
+
+          // 设置背景色并
+          gl25.clearColor(0.0, 0.0, 0.0, 1.0);
+
+          // 开启隐藏面消除
+          gl25.enable(gl25.DEPTH_TEST);
+
+          // 清空颜色及深度缓冲区
+          gl25.clear(gl25.COLOR_BUFFER_BIT | gl25.DEPTH_BUFFER_BIT);
+
+          // 绘制
+          gl25.drawElements(gl25.TRIANGLES, n25, gl25.UNSIGNED_BYTE, 0);
+
+          function initVertexBuffers25(gl) {
+            // 创建一个立方体
+            //    v6----- v5
+            //   /|      /|
+            //  v1------v0|
+            //  | |     | |
+            //  | |v7---|-|v4
+            //  |/      |/
+            //  v2------v3
+            let vertices = new Float32Array([
+              // 顶点坐标、颜色
+              1.0, 1.0, 1.0, 1.0, 1.0, 1.0, // v0
+              -1.0, 1.0, 1.0, 1.0, 0.0, 1.0, // v1
+              -1.0, -1.0, 1.0, 1.0, 0.0, 0.0, // v2
+              1.0, -1.0, 1.0, 1.0, 1.0, 0.0, // v3
+              1.0, -1.0, -1.0, 0.0, 1.0, 0.0, // v4
+              1.0, 1.0, -1.0, 0.0, 1.0, 1.0, // v5
+              -1.0, 1.0, -1.0, 0.0, 0.0, 1.0, // v6
+              -1.0, -1.0, -1.0, 0.0, 0.0, 0.0 //v7
+            ]);
+            // 顶点索引
+            let indices = new Uint8Array([
+              0, 1, 2, 0, 2, 3, // 前
+              0, 3, 4, 0, 4, 5, // 后
+              0, 5, 6, 0, 6, 1, // 上
+              1, 6, 7, 1, 7, 2, // 左
+              7, 4, 3, 7, 3, 2, // 下
+              4, 7, 6, 4, 6, 5 // 后
+            ]);
+
+            const FSIZE = vertices.BYTES_PER_ELEMENT;
+
+            // 创建缓冲区对象
+            const vertextBuffer = gl.createBuffer();
+            const indexBuffer = gl.createBuffer();
+            if (!vertextBuffer || !indexBuffer) {
+              console.log(Error("无法创建缓冲区对象"));
+              return -1;
+            }
+
+            // 将缓冲区对象绑定到目标，写入数据
+            gl.bindBuffer(gl.ARRAY_BUFFER, vertextBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+            let a_position = gl.getAttribLocation(gl.program, "a_Position");
+            if (a_position < 0) {
+              console.log(Error("无法获取attribute变量的存储位置"));
+              return -1;
+            }
+            // 将缓冲区对象分配给a_position变量，开启连接
+            gl.vertexAttribPointer(a_position, 3, gl.FLOAT, false, FSIZE * 6, 0);
+            gl.enableVertexAttribArray(a_position);
+
+            let a_color = gl.getAttribLocation(gl.program, "a_Color");
+            if (a_color < 0) {
+              console.log(Error("无法获取attribute变量的存储位置"));
+              return -1;
+            }
+            // 将缓冲区对象分配给a_position变量，开启连接
+            gl.vertexAttribPointer(a_color, 3, gl.FLOAT, false, FSIZE * 6, FSIZE * 3);
+            gl.enableVertexAttribArray(a_color);
+
+            // 将顶点索引数据写入缓冲区对象
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+
+            return indices.length;
+          }
+        </script>
+      </div>
+
+      <!-- 指定不同颜色的立方体 -->
+      <div id='gl26'>
+        <h2>gl26 指定不同颜色的立方体</h2>
+        <!-- <canvas id="c26" width="400" height="400">
+          您的浏览器不支持canvas
+        </canvas> -->
+        <pre>
+  每个顶点会被三个表面共用，需要创建具有相同坐标不同颜色的顶点
+  <a href="../examples/gl26.html" target="_blank" title="指定不同颜色的立方体">示例</a></pre>
+        <!-- <script type="text/javascript">
+          var VERTEX_SHADER_SOURCE26 = `
+            attribute vec4 a_Position;
+            attribute vec4 a_Color;
+            uniform mat4 u_mvpMatrix;
+            varying vec4 v_Color;
+            void main() {
+                gl_Position = u_mvpMatrix * a_Position;
+                v_Color = a_Color;
+            }`;
+          var FRAGMENT_SHADER_SOURCE26 = `
+            precision mediump float;
+            varying vec4 v_Color;
+            void main() {
+              gl_FragColor = v_Color;
+            }`;
+
+          var c26 = document.getElementById("c26");
+          var gl26 = c26.getContext('webgl');
+
+          if (!initShaders(gl26, VERTEX_SHADER_SOURCE26, FRAGMENT_SHADER_SOURCE26)) {
+            alert('Failed to init shaders');
+          }
+
+          var n26 = initVertexBuffers26(gl26);
+
+          var u_mvpMatrix26 = gl26.getUniformLocation(gl26.program, 'u_mvpMatrix');
+          // <projection matrix> * <view matrix>
+          var mvpMatrix26 = new Matrix4();
+          mvpMatrix26.setPerspective(30, 1, 1, 100);
+          mvpMatrix26.lookAt(3, 3, 7, 0, 0, 0, 0, 1, 0);
+
+          gl26.uniformMatrix4fv(u_mvpMatrix26, false, mvpMatrix26.elements);
+
+          gl26.enable(gl26.DEPTH_TEST);
+          gl26.clearColor(0.0, 0.0, 0.0, 1.0);
+          gl26.clear(gl26.COLOR_BUFFER_BIT | gl26.DEPTH_BUFFER_BIT);
+          gl26.drawElements(gl26.TRIANGLES, n26, gl26.UNSIGNED_BYTE, 0);
+
+          function initVertexBuffers26(gl) {
+            // Create a cube
+            //    v6----- v5
+            //   /|      /|
+            //  v1------v0|
+            //  | |     | |
+            //  | |v7---|-|v4
+            //  |/      |/
+            //  v2------v3
+
+            var vertices = new Float32Array([
+              1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, // v0-v1-v2-v3 front
+              1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, // v0-v3-v4-v5 right
+              1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, // v0-v5-v6-v1 up
+              -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, // v1-v6-v7-v2 left
+              -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, // v7-v4-v3-v2 down
+              1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0 // v4-v7-v6-v5 back
+            ]);
+
+            var colors = new Float32Array([ // Colors
+              0.4, 0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 0.4, 1.0, // v0-v1-v2-v3 front(blue)
+              0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 0.4, 1.0, 0.4, // v0-v3-v4-v5 right(green)
+              1.0, 0.4, 0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 0.4, 1.0, 0.4, 0.4, // v0-v5-v6-v1 up(red)
+              1.0, 1.0, 0.4, 1.0, 1.0, 0.4, 1.0, 1.0, 0.4, 1.0, 1.0, 0.4, // v1-v6-v7-v2 left
+              1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, // v7-v4-v3-v2 down
+              0.4, 1.0, 1.0, 0.4, 1.0, 1.0, 0.4, 1.0, 1.0, 0.4, 1.0, 1.0 // v4-v7-v6-v5 back
+            ]);
+
+            var indices = new Uint8Array([ // Indices of the vertices
+              0, 1, 2, 0, 2, 3, // front
+              4, 5, 6, 4, 6, 7, // right
+              8, 9, 10, 8, 10, 11, // up
+              12, 13, 14, 12, 14, 15, // left
+              16, 17, 18, 16, 18, 19, // down
+              20, 21, 22, 20, 22, 23 // back
+            ]);
+
+            if (!initArrayBuffer26(gl, vertices, 3, gl.FLOAT, 'a_Position')) {
+              return -1;
+            }
+            if (!initArrayBuffer26(gl, colors, 3, gl.FLOAT, 'a_Color')) {
+              return -1;
+            }
+
+            var indexBuffer = gl.createBuffer();
+            if (!indexBuffer) {
+              console.log('Failed to create index buffer');
+              return -1;
+            }
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+
+            return indices.length;
+          }
+
+          function initArrayBuffer26(gl, data, numOfComponents, dataType, attributeName) {
+            var buffer = gl.createBuffer();
+            if (!buffer) {
+              console.log(Error('Failed to create buffer object'));
+              return false;
+            }
+
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+
+            var attribute = gl.getAttribLocation(gl.program, attributeName);
+            gl.vertexAttribPointer(attribute, numOfComponents, dataType, false, 0, 0);
+            gl.enableVertexAttribArray(attribute);
+
+            return true;
+          }
+        </script> -->
+      </div>
+
+      <!-- 光照原理 -->
+      <div id='gl27'>
+        <h2>gl27 光照原理</h2>
+        <canvas id="c27" width="400" height="400">
+          您的浏览器不支持canvas
+        </canvas>
+        <pre>
+  1、着色（shading）：根据光照条件重建“物体各表面明暗不一的效果”的过程
+  2、光源类型：
+    平行光（directional light）：类似于自然界中太阳光，无限远处
+    点光源光（point light）：灯泡，有限远处
+    环境光（ambient light）：非直射光，经过墙壁反射的光，四周
+    聚光灯光（spot light）：手电筒
+  3、反射类型：取决于入射光和物体表面的类型
+    漫反射（diffuse reflection）
+      漫反射光颜色 = 入射光颜色 x 表面基地色 x cos(入射角-入射光与法线夹角)
+    环境反射（environment ambient reflection）
+      环境反射光颜色 = 入射光颜色 x 表面基地色
+    两者都存在则相加：
+      表面反射光颜色 = 漫反射光颜色 + 环境反射光颜色
+  4、根据光线和表面的方向计算入射角
+    余弦定理：n·l=|n| x |l| x cosθ
+      如果|n| x |l| = 1就好了 -- 归一化
+    漫反射光颜色 = 入射光颜色 x 表面基底色 x （ 光线方向 x 表面法线方向 ）
+    注意：这里的光线方向实际是入社方向的反方向时（所以方便计算入射角的余弦值）
+  5、法线：表面的朝向（右手法则）
+    对于立方体，每个顶点对应三个法向量</pre>
+        <script type="text/javascript">
+          // 顶点着色器程序2
+          let VSHADER_SOURCE27 = `
+            attribute vec4 a_Position; // 顶点坐标
+            attribute vec4 a_Color; // 顶点颜色
+            attribute vec4 a_Normal; // 法向量
+            uniform mat4 u_MvpMatrix; // 模型视图投影矩阵
+            uniform vec3 u_LightColor; // 光线颜色
+            uniform vec3 u_LightDirection; // 光线归一化方向
+            uniform vec3 u_AmbientLight; // 环境光颜色
+            varying vec4 v_Color;
+            void main(){
+              gl_Position = u_MvpMatrix * a_Position;
+              vec3 normal = normalize(vec3(a_Normal)); // 归一化法向量
+              float nDotL = max(dot(u_LightDirection, normal), 0.0); // 计算光线方向和法向量的点积 
+              vec3 diffuse = u_LightColor * vec3(a_Color) * nDotL; // 计算漫反射光的颜色
+              vec3 ambient = u_AmbientLight * a_Color.rgb; // 计算环境反射光颜色
+              v_Color = vec4(diffuse + ambient, a_Color.a);// 漫反射光 + 环境反射光
+            }`;
+
+          // 片元着色器程序2
+          let FSHADER_SOURCE27 = `
+            precision mediump float;
+            varying vec4 v_Color;
+            void main(){
+              gl_FragColor = v_Color;
+            }`;
+
+          // 获取canvas，获取webGL绘图上下文
+          const gl27 = document.querySelector("#c27").getContext("webgl");
+          if (!gl23) console.log(Error("无法获得webgl的绘图上下文"));
+
+          // 初始化着色器
+          if (!initShaders(gl27, VSHADER_SOURCE27, FSHADER_SOURCE27)) console.log(Error("无法初始化着色器"));
+
+          // 设置顶点信息（传入attribute变量）
+          let n27 = initVertexBuffers27(gl27);
+          if (n27 < 0) console.log(Error("无法设置顶点位置"));
+
+          // 获取变量位置
+          let u_mvpMatrix27 = gl27.getUniformLocation(gl27.program, "u_MvpMatrix");
+          let u_lightColor27 = gl27.getUniformLocation(gl27.program, "u_LightColor");
+          let u_lightDirection27 = gl27.getUniformLocation(gl27.program, "u_LightDirection");
+          let u_ambientLight27 = gl27.getUniformLocation(gl27.program, "u_AmbientLight");
+
+          gl27.uniform3f(u_lightColor27, 1.0, 1.0, 1.0); // 传入 白色光线
+          let lightDirection27 = new Vector3([0.5, 3.0, 4.0]);
+          lightDirection27.normalize(); // 归一化
+          gl27.uniform3fv(u_lightDirection27, lightDirection27.elements); // 传入 光线归一化方向
+          gl27.uniform3f(u_ambientLight27, 0.2, 0.2, 0.2); // 传入 环境光颜色 更真实
+
+          let mvpMatrix27 = new Matrix4(); // 创建模型视图投影矩阵
+          mvpMatrix27.setPerspective(30, 1, 1, 100); // 垂直视角、近裁剪面宽高比、近裁剪面位置、远裁剪面位置
+          mvpMatrix27.lookAt(3, 3, 7, 0, 0, 0, 0, 1, 0); // 视点、视线（被观察对象位置）、上方向
+          gl27.uniformMatrix4fv(u_mvpMatrix27, false, mvpMatrix27.elements); // 传入
+
+          gl27.enable(gl27.DEPTH_TEST);
+          gl27.clearColor(0.0, 0.0, 0.0, 1.0);
+          gl27.clear(gl27.COLOR_BUFFER_BIT | gl27.DEPTH_BUFFER_BIT); // 清空canvas
+          gl27.drawElements(gl27.TRIANGLES, n27, gl27.UNSIGNED_BYTE, 0); // 绘制
+
+          function initVertexBuffers27(gl) {
+            var vertices = new Float32Array([
+              1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, // v0-v1-v2-v3 front
+              1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, // v0-v3-v4-v5 right
+              1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, // v0-v5-v6-v1 up
+              -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, // v1-v6-v7-v2 left
+              -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, // v7-v4-v3-v2 down
+              1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0 // v4-v7-v6-v5 back
+            ]);
+
+            var colors = new Float32Array([ // Colors
+              1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v1-v2-v3 front
+              1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v3-v4-v5 right
+              1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v5-v6-v1 up
+              1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v1-v6-v7-v2 left
+              1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v7-v4-v3-v2 down
+              1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0 // v4-v7-v6-v5 back
+            ]);
+
+            var normals = new Float32Array([ // Normal
+              0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, // v0-v1-v2-v3 front
+              1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, // v0-v3-v4-v5 right
+              0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, // v0-v5-v6-v1 up
+              -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, // v1-v6-v7-v2 left
+              0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, // v7-v4-v3-v2 down
+              0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0 // v4-v7-v6-v5 back
+            ]);
+
+            var indices = new Uint8Array([ // Indices of the vertices
+              0, 1, 2, 0, 2, 3, // front
+              4, 5, 6, 4, 6, 7, // right
+              8, 9, 10, 8, 10, 11, // up
+              12, 13, 14, 12, 14, 15, // left
+              16, 17, 18, 16, 18, 19, // down
+              20, 21, 22, 20, 22, 23 // back
+            ]);
+
+            if (!initArrayBuffer(gl, "a_Position", vertices, 3, gl.FLOAT)) return -1; // 写入ArrayBuffer缓冲区
+            if (!initArrayBuffer(gl, "a_Color", colors, 3, gl.FLOAT)) return -1; // 写入ArrayBuffer缓冲区
+            if (!initArrayBuffer(gl, "a_Normal", normals, 3, gl.FLOAT)) return -1; // 写ArrayBuffer入缓冲区
+
+            let indexBuffer = gl.createBuffer();
+            if (!indexBuffer) {
+              console.log(Error('Failed to create index buffer'));
+              return -1;
+            }
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW); // 写ELEMENT_ARRAY_BUFFER入缓冲区
+
+            return indices.length;
+          }
+        </script>
+      </div>
+
+      <!-- 运动物体的光照效果 -->
+      <div id='gl28'>
+        <h2>gl28 运动物体的光照效果</h2>
+        <!-- <canvas id="c28" width="400" height="400">
+          您的浏览器不支持canvas
+        </canvas> -->
+        <pre>
+  魔法矩阵：逆转置矩阵（inverse transpose matrix）
+    对顶点进行变换的矩阵称为模型矩阵
+    逆转置矩阵：逆矩阵的转置
+    计算变换后的法向量：将变换前的法向量乘以模型矩阵的逆转置矩阵
+</pre>
+        <script type="text/javascript">
+        </script>
+      </div>
+
+      <!-- 点光源光 -->
+      <div id='gl29'>
+        <h2>gl29 点光源光</h2>
+        <canvas id="c29" width="400" height="400">
+          您的浏览器不支持canvas
+        </canvas>
+        <pre>
+  1、需要在每个入射点计算点光源光在该处的方向
+  2、因为物体转动后，法向量只与模型矩阵相关，所以需要额外传入模型矩阵
+</pre>
+        <script type="text/javascript">
+          // 顶点着色器程序2
+          let VSHADER_SOURCE29 = `
+            attribute vec4 a_Position; // 顶点坐标
+            attribute vec4 a_Color; // 顶点颜色
+            attribute vec4 a_Normal; // 法向量
+            uniform mat4 u_MvpMatrix; // 模型视图投影矩阵
+            uniform mat4 u_ModelMatrix; // 模型矩阵
+            // uniform mat4 u_NormalMatrix; // 用来变换法向量的矩阵
+            uniform vec3 u_LightColor; // 光线颜色
+            uniform vec3 u_LightPosition; // 光源位置（世界坐标系）
+            uniform vec3 u_LightDirection; // 光线归一化方向
+            uniform vec3 u_AmbientLight; // 环境光颜色
+            varying vec4 v_Color; // 向片元着色器传递颜色
+
+            void main(){
+              gl_Position = u_MvpMatrix * a_Position; 
+
+              vec3 normal = normalize(vec3(a_Normal)); // 归一化法向量
+              // vec3 normal = normalize(vec3(u_NormalMatrix * a_Normal)); // 计算变换后的法向量并归一化法向量     
+              vec4 vertexPosition = u_ModelMatrix * a_Position; // 计算顶点的世界坐标         
+              vec3 lightDirection = normalize(u_LightPosition - vec3(vertexPosition)); // 计算光线方向并归一化
+              // float nDotL = max(dot(u_LightDirection, normal), 0.0); // 计算光线方向和法向量的点积
+              float nDotL = max(dot(lightDirection, normal), 0.0); // 计算光线方向和法向量的点积
+
+              vec3 diffuse = u_LightColor * vec3(a_Color) * nDotL; // 计算漫反射光的颜色
+              vec3 ambient = u_AmbientLight * a_Color.rgb; // 计算环境反射光颜色
+              v_Color = vec4(diffuse + ambient, a_Color.a);// 漫反射光 + 环境反射光
+            }`;
+
+          // 片元着色器程序2
+          let FSHADER_SOURCE29 = `
+            precision mediump float; // 声明片元着色器float的精度（必须指定）
+            varying vec4 v_Color; // 接收顶点着色器传递的颜色
+            void main(){
+              gl_FragColor = v_Color;
+            }`;
+
+          // 获取canvas，获取webGL绘图上下文
+          const gl29 = document.querySelector("#c29").getContext("webgl");
+          if (!gl29) console.log(Error("无法获得webgl的绘图上下文"));
+
+          // 初始化着色器
+          if (!initShaders(gl29, VSHADER_SOURCE29, FSHADER_SOURCE29)) console.log(Error("无法初始化着色器"));
+
+          // 设置顶点信息（传入attribute变量）
+          let n29 = initVertexBuffers27(gl29);
+          if (n29 < 0) console.log(Error("无法设置顶点位置"));
+
+          // 获取变量位置
+          let u_mvpMatrix29 = gl29.getUniformLocation(gl29.program, "u_MvpMatrix");
+          let u_modelMatrix29 = gl29.getUniformLocation(gl29.program, "u_ModelMatrix");
+          let u_lightColor29 = gl29.getUniformLocation(gl29.program, "u_LightColor");
+          let u_lightDirection29 = gl29.getUniformLocation(gl29.program, "u_LightDirection");
+          let u_ambientLight29 = gl29.getUniformLocation(gl29.program, "u_AmbientLight");
+          let u_lightPosition29 = gl29.getUniformLocation(gl29.program, "u_LightPosition");
+
+          gl29.uniform3f(u_lightColor29, 1.0, 1.0, 1.0); // 传入 白色光线
+          let lightDirection29 = new Vector3([0.5, 3.0, 4.0]);
+          lightDirection29.normalize(); // 归一化
+          gl29.uniform3fv(u_lightDirection29, lightDirection29.elements); // 传入 光线归一化方向
+          gl29.uniform3f(u_ambientLight29, 0.2, 0.2, 0.2); // 传入 环境光颜色 更真实
+          gl29.uniform3f(u_lightPosition29, 0.0, 0.3, 0.8); // 传入 点光源位置（世界坐标）
+
+          let mvpMatrix29 = new Matrix4(); // 创建模型视图投影矩阵
+          mvpMatrix29.setPerspective(30, 1, 1, 100); // 垂直视角、近裁剪面宽高比、近裁剪面位置、远裁剪面位置
+          mvpMatrix29.lookAt(3, 3, 7, 0, 0, 0, 0, 1, 0); // 视点、视线（被观察对象位置）、上方向
+
+          let modelMatrix29 = new Matrix4(); // 创建模型矩阵
+          modelMatrix29.rotate(90, 0, 1, 0);
+          gl29.uniformMatrix4fv(u_modelMatrix29, false, modelMatrix29.elements); // 传入 模型矩阵
+
+          mvpMatrix29.multiply(modelMatrix29);
+          gl29.uniformMatrix4fv(u_mvpMatrix29, false, mvpMatrix29.elements); // 传入 模型视图投影矩阵
+
+          gl29.enable(gl29.DEPTH_TEST);
+          gl29.clearColor(0.0, 0.0, 0.0, 1.0);
+          gl29.clear(gl29.COLOR_BUFFER_BIT | gl29.DEPTH_BUFFER_BIT); // 清空canvas
+          gl29.drawElements(gl29.TRIANGLES, n27, gl29.UNSIGNED_BYTE, 0); // 绘制
+        </script>
+      </div>
+
+      <!-- 逐片元光照 -->
+      <div id='gl30'>
+        <h2>gl30 逐片元光照</h2>
+        <canvas id="c30" width="400" height="400">
+          您的浏览器不支持canvas
+        </canvas>
+        <pre>
+  避免内插效果显示出来的不自然，逐片元光照，将计算光照的逻辑移到片元着色器</pre>
+        <!-- <script type="text/javascript">
+          // 顶点着色器程序2
+          let VSHADER_SOURCE30 = `
+            attribute vec4 a_Position; // 顶点坐标
+            attribute vec4 a_Color; // 顶点颜色
+            attribute vec4 a_Normal; // 法向量
+
+            uniform mat4 u_MvpMatrix; // 模型视图投影矩阵
+            uniform mat4 u_ModelMatrix; // 模型矩阵
+            // uniform mat4 u_NormalMatrix; // 用来变换法向量的矩阵
+            // uniform vec3 u_LightDirection; // 光线归一化方向（平行光使用）
+            
+
+            varying vec4 v_Color; // 向片元着色器传递颜色
+            varying vec3 v_Normal; 
+            varying vec3 v_Position;
+
+            void main(){
+              gl_Position = u_MvpMatrix * a_Position; 
+
+              v_Position = vec3(u_ModelMatrix * a_Position); // 计算顶点的世界坐标
+              v_Normal = normalize(vec3(a_Normal)); // 归一化法向量
+              // v_Normal = normalize(vec3(u_NormalMatrix * a_Normal)); // 计算变换后的法向量并归一化法向量
+              v_Color = a_Color;
+            }`;
+
+          // 片元着色器程序2
+          let FSHADER_SOURCE30 = `
+            precision mediump float; // 声明片元着色器float的精度（必须指定）
+
+            uniform vec3 u_LightColor; // 光线颜色
+            uniform vec3 u_LightPosition; // 光源位置（世界坐标系）
+            uniform vec3 u_AmbientLight; // 环境光颜色
+
+            varying vec4 v_Color; // 接收顶点着色器传递的颜色
+            varying vec3 v_Normal; 
+            varying vec3 v_Position;
+
+            void main(){
+              vec3 normal = normalize(v_Normal); // 对法线进行归一化（内插后长度不一定为1.0）
+              vec3 lightDirection = normalize(u_LightPosition - v_Position); // 计算光线方向并归一化
+              float nDotL = max(dot(lightDirection, normal), 0.0); // 计算光线方向和法向量的点积
+
+              vec3 diffuse = u_LightColor * vec3(v_Color) * nDotL; // 计算漫反射光的颜色
+              vec3 ambient = u_AmbientLight * v_Color.rgb; // 计算环境反射光颜色
+
+              gl_FragColor = vec4(diffuse + ambient, v_Color.a); // 漫反射光 + 环境反射光
+            }`;
+
+          // 获取canvas，获取webGL绘图上下文
+          const gl30 = document.querySelector("#c30").getContext("webgl");
+          if (!gl30) console.log(Error("无法获得webgl的绘图上下文"));
+
+          // 初始化着色器
+          if (!initShaders(gl30, VSHADER_SOURCE30, FSHADER_SOURCE30)) console.log(Error("无法初始化着色器"));
+
+          // 设置顶点信息（传入attribute变量）
+          let n30 = initVertexBuffers27(gl30);
+          if (n30 < 0) console.log(Error("无法设置顶点位置"));
+
+          // 获取变量位置
+          let u_mvpMatrix30 = gl30.getUniformLocation(gl30.program, "u_MvpMatrix");
+          let u_modelMatrix30 = gl30.getUniformLocation(gl30.program, "u_ModelMatrix");
+          let u_lightColor30 = gl30.getUniformLocation(gl30.program, "u_LightColor");
+          // let u_lightDirection30 = gl30.getUniformLocation(gl30.program, "u_LightDirection");
+          let u_ambientLight30 = gl30.getUniformLocation(gl30.program, "u_AmbientLight");
+          let u_lightPosition30 = gl30.getUniformLocation(gl30.program, "u_LightPosition");
+
+          gl30.uniform3f(u_lightColor30, 1.0, 1.0, 1.0); // 传入 白色光线
+          let lightDirection30 = new Vector3([0.5, 3.0, 4.0]);
+          lightDirection30.normalize(); // 归一化
+          // gl30.uniform3fv(u_lightDirection30, lightDirection30.elements); // 传入 光线归一化方向
+          gl30.uniform3f(u_ambientLight30, 0.4, 0.4, 0.4); // 传入 环境光颜色 更真实
+          gl30.uniform3f(u_lightPosition30, 0.0, 0.3, 0.8); // 传入 点光源位置（世界坐标）
+
+          let mvpMatrix30 = new Matrix4(); // 创建模型视图投影矩阵
+          mvpMatrix30.setPerspective(30, 1, 1, 100); // 垂直视角、近裁剪面宽高比、近裁剪面位置、远裁剪面位置
+          mvpMatrix30.lookAt(3, 3, 7, 0, 0, 0, 0, 1, 0); // 视点、视线（被观察对象位置）、上方向
+
+          let modelMatrix30 = new Matrix4(); // 创建模型矩阵
+          modelMatrix30.rotate(90, 0, 1, 0);
+          gl30.uniformMatrix4fv(u_modelMatrix30, false, modelMatrix30.elements); // 传入 模型矩阵
+
+          mvpMatrix30.multiply(modelMatrix30);
+          gl30.uniformMatrix4fv(u_mvpMatrix30, false, mvpMatrix30.elements); // 传入 模型视图投影矩阵
+
+          gl30.enable(gl30.DEPTH_TEST);
+          gl30.clearColor(0.0, 0.0, 0.0, 1.0);
+          gl30.clear(gl30.COLOR_BUFFER_BIT | gl30.DEPTH_BUFFER_BIT); // 清空canvas
+          gl30.drawElements(gl30.TRIANGLES, n30, gl30.UNSIGNED_BYTE, 0); // 绘制
+        </script> -->
+      </div>
+
+      <!-- 示例：旋转立方体 -->
+      <div id='gl31'>
+        <h2>gl31 示例：旋转立方体</h2>
+        <canvas id="c31" width="400" height="400">
+          您的浏览器不支持canvas
+        </canvas>
+        <pre>
+  不变的光照信息可以在draw之前传入</pre>
+        <script type="text/javascript">
+          // 顶点着色器程序2
+          let VSHADER_SOURCE31 = `
+            attribute vec4 a_Position; // 顶点坐标
+            attribute vec4 a_Color; // 顶点颜色
+            attribute vec4 a_Normal; // 法向量
+
+            uniform mat4 u_MvpMatrix; // 模型视图投影矩阵
+            uniform mat4 u_ModelMatrix; // 模型矩阵
+            uniform mat4 u_NormalMatrix; // 用来变换法向量的矩阵
+            // uniform vec3 u_LightDirection; // 光线归一化方向（平行光使用）
+
+            varying vec4 v_Color; // 向片元着色器传递颜色
+            varying vec3 v_Normal; 
+            varying vec3 v_Position;
+
+            void main(){
+              gl_Position = u_MvpMatrix * a_Position; 
+
+              v_Position = vec3(u_ModelMatrix * a_Position); // 计算顶点的世界坐标
+              // v_Normal = normalize(vec3(a_Normal)); // 归一化法向量
+              v_Normal = normalize(vec3(u_NormalMatrix * a_Normal)); // 计算变换后的法向量并归一化法向量
+              v_Color = a_Color;
+            }`;
+
+          // 片元着色器程序2
+          let FSHADER_SOURCE31 = `
+            precision mediump float; // 声明片元着色器float的精度（必须指定）
+
+            uniform vec3 u_LightColor; // 光线颜色
+            uniform vec3 u_LightPosition; // 光源位置（世界坐标系）
+            uniform vec3 u_AmbientLight; // 环境光颜色
+
+            varying vec4 v_Color; // 接收顶点着色器传递的颜色
+            varying vec3 v_Normal; 
+            varying vec3 v_Position;
+
+            void main(){
+              vec3 normal = normalize(v_Normal); // 对插值后的法向量进行归一化（内插后长度不一定为1.0）
+              vec3 lightDirection = normalize(u_LightPosition - v_Position); // 计算光线方向并归一化
+              float nDotL = max(dot(lightDirection, normal), 0.0); // 计算光线方向和法向量的点积
+
+              vec3 diffuse = u_LightColor * vec3(v_Color) * nDotL; // 计算漫反射光的颜色
+              vec3 ambient = u_AmbientLight * v_Color.rgb; // 计算环境反射光颜色
+
+              gl_FragColor = vec4(diffuse + ambient, v_Color.a); // 漫反射光 + 环境反射光
+            }`;
+
+          // 获取canvas，获取webGL绘图上下文
+          const gl31 = document.querySelector("#c31").getContext("webgl");
+          if (!gl31) console.log(Error("无法获得webgl的绘图上下文"));
+
+          // 初始化着色器
+          if (!initShaders(gl31, VSHADER_SOURCE31, FSHADER_SOURCE31)) console.log(Error("无法初始化着色器"));
+
+          // 设置顶点信息（传入attribute变量）
+          let n31 = initVertexBuffers27(gl31);
+          if (n31 < 0) console.log(Error("无法设置顶点位置"));
+
+          gl31.enable(gl31.DEPTH_TEST); // 开启深度检测
+          gl31.clearColor(0.0, 0.0, 0.0, 1.0); // 设置背景色
+
+          let rotate_speed31 = 200; // 旋转速度（度/秒）
+          let currentAngle31 = 0; // 当前旋转角度
+          let g31_last = Date.now(); // 上一次调用时间
+
+          // 获取变量位置
+          let u_mvpMatrix31 = gl31.getUniformLocation(gl31.program, "u_MvpMatrix");
+          let u_modelMatrix31 = gl31.getUniformLocation(gl31.program, "u_ModelMatrix");
+          let u_normalMatrix31 = gl31.getUniformLocation(gl31.program, "u_NormalMatrix");
+          let u_lightColor31 = gl31.getUniformLocation(gl31.program, "u_LightColor");
+          // let u_lightDirection31 = gl31.getUniformLocation(gl31.program, "u_LightDirection");
+          let u_ambientLight31 = gl31.getUniformLocation(gl31.program, "u_AmbientLight");
+          let u_lightPosition31 = gl31.getUniformLocation(gl31.program, "u_LightPosition");
+
+          gl31.uniform3f(u_lightColor31, 1.0, 1.0, 1.0); // 传入 白色光线
+          gl31.uniform3f(u_ambientLight31, 0.2, 0.2, 0.2); // 传入 环境光颜色 更真实
+          gl31.uniform3f(u_lightPosition31, 5.0, 5.0, 10.0); // 传入 点光源位置（世界坐标）
+
+          // 在绘制的时候传入
+          let mvpMatrix31 = new Matrix4(); // 创建模型视图投影矩阵
+          let modelMatrix31 = new Matrix4(); // 创建模型矩阵
+          let normalMatrix31 = new Matrix4(); // 创建魔法矩阵
+
+          function tick31() {
+            currentAngle31 = animate31(currentAngle31); // 更新旋转角
+            draw31(gl31, n31, currentAngle31);
+            requestAnimationFrame(tick31); // 请求浏览器调用tick函数
+          }
+
+          tick31();
+
+          function animate31(angle) {
+            // 计算距离上次调用经过多长时间
+            let now = Date.now();
+            let elapsed = now - g13_last;
+            g13_last = now;
+
+            // 更新旋转角度
+            let newAngle = angle + (rotate_speed31 * elapsed) / 1000.0;
+            return newAngle % 360;
+          }
+
+          function draw31(gl, n, currentAngle) {
+            mvpMatrix31.setPerspective(30, 1, 1, 100); // 垂直视角、近裁剪面宽高比、近裁剪面位置、远裁剪面位置
+            mvpMatrix31.lookAt(5, 5, 9, 0, 0, 0, 0, 1, 0); // 视点、视线（被观察对象位置）、上方向
+
+            modelMatrix31.setRotate(currentAngle, 0, 1, 0); // 设置模型矩阵
+            gl.uniformMatrix4fv(u_modelMatrix31, false, modelMatrix31.elements); // 传入 模型矩阵
+
+            normalMatrix31.setInverseOf(modelMatrix31); // 取模型矩阵逆矩阵
+            normalMatrix31.transpose(); // 取转置矩阵
+            gl.uniformMatrix4fv(u_normalMatrix31, false, normalMatrix31.elements); // 传入 魔法矩阵
+
+            mvpMatrix31.multiply(modelMatrix31);
+            gl.uniformMatrix4fv(u_mvpMatrix31, false, mvpMatrix31.elements); // 传入 模型视图投影矩阵
+
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // 清空颜色及深度缓冲区
+            gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0); // 绘制
+          }
+        </script>
+      </div>
+
+      <!-- 多个简单模型组成的复杂模型 -->
+      <div id='gl32'>
+        <h2>gl32 多个简单模型组成的复杂模型</h2>
+        <pre>
+  1、关键在于处理模型的整体移动
+  2、层次结构模型：按照模型中各个部件的层次顺序，从高到低逐一绘制
+  3、单关节模型
+    <a href="../examples/gl32.html" target="_blank" title="多个简单模型组成的复杂模型">示例</a></pre>
+      </div>
+
+      <!-- 多节点模型 -->
+      <div id='gl33'>
+        <h2>gl33 多节点模型</h2>
+        <pre>
+  因为两根手指都连接在手掌上，所以需要用栈结构保存模型矩阵，在绘制完一根手指后，继续使用栈中的模型矩阵
+  WASDZXCV控制
+    <a href="../examples/gl33.html" target="_blank" title="多节点模型">示例</a></pre>
+        <!-- <script type="text/javascript">
+          // 顶点着色器程序2
+          let VSHADER_SOURCE33 = `
+            attribute vec4 a_Position; // 顶点坐标
+            attribute vec4 a_Color; // 顶点颜色
+            attribute vec4 a_Normal; // 法向量
+
+            uniform mat4 u_MvpMatrix; // 模型视图投影矩阵
+            uniform mat4 u_ModelMatrix; // 模型矩阵
+            uniform mat4 u_NormalMatrix; // 用来变换法向量的矩阵
+            // uniform vec3 u_LightDirection; // 光线归一化方向（平行光使用）
+
+            varying vec4 v_Color; // 向片元着色器传递颜色
+            varying vec3 v_Normal;
+            varying vec3 v_Position;
+
+            void main(){
+              gl_Position = u_MvpMatrix * a_Position;
+
+              v_Position = vec3(u_ModelMatrix * a_Position); // 计算顶点的世界坐标
+              // v_Normal = normalize(vec3(a_Normal)); // 归一化法向量
+              v_Normal = normalize(vec3(u_NormalMatrix * a_Normal)); // 计算变换后的法向量并归一化法向量
+              v_Color = a_Color;
+            }`;
+
+          // 片元着色器程序2
+          let FSHADER_SOURCE33 = `
+            precision mediump float; // 声明片元着色器float的精度（必须指定）
+
+            uniform vec3 u_LightColor; // 光线颜色
+            uniform vec3 u_LightPosition; // 光源位置（世界坐标系）
+            uniform vec3 u_AmbientLight; // 环境光颜色
+
+            varying vec4 v_Color; // 接收顶点着色器传递的颜色
+            varying vec3 v_Normal; 
+            varying vec3 v_Position;
+
+            void main(){
+              vec3 normal = normalize(v_Normal); // 对插值后的法向量进行归一化（内插后长度不一定为1.0）
+              vec3 lightDirection = normalize(u_LightPosition - v_Position); // 计算光线方向并归一化
+              float nDotL = max(dot(lightDirection, normal), 0.0); // 计算光线方向和法向量的点积
+
+              vec3 diffuse = u_LightColor * vec3(v_Color) * nDotL; // 计算漫反射光的颜色
+              vec3 ambient = u_AmbientLight * v_Color.rgb; // 计算环境反射光颜色
+
+              gl_FragColor = vec4(diffuse + ambient, v_Color.a); // 漫反射光 + 环境反射光
+              // gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); // 漫反射光 + 环境反射光
+            }`;
+
+
+          // 获取canvas，获取webGL绘图上下文
+          const gl33 = document.querySelector("#c33").getContext("webgl");
+          if (!gl33) console.log(Error("无法获得webgl的绘图上下文"));
+
+          // 初始化着色器
+          if (!initShaders(gl33, VSHADER_SOURCE33, FSHADER_SOURCE33)) console.log(Error("无法初始化着色器"));
+
+          // 设置顶点信息（传入attribute变量），返回绘制次数
+          let n33 = initVertexBuffers33(gl33);
+          if (n33 < 0) console.log(Error("无法设置顶点信息（传入attribute变量）"));
+
+          gl33.enable(gl33.DEPTH_TEST); // 开启深度检测（隐藏面消除）
+          gl33.clearColor(0.0, 0.0, 0.0, 1.0); // 设置背景色
+
+          // 获取 uniform 变量位置
+          let u_mvpMatrix33 = gl33.getUniformLocation(gl33.program, "u_MvpMatrix");
+          let u_modelMatrix33 = gl33.getUniformLocation(gl33.program, "u_ModelMatrix");
+          let u_normalMatrix33 = gl33.getUniformLocation(gl33.program, "u_NormalMatrix");
+          let u_lightColor33 = gl33.getUniformLocation(gl33.program, "u_LightColor");
+          let u_ambientLight33 = gl33.getUniformLocation(gl33.program, "u_AmbientLight");
+          let u_lightPosition33 = gl33.getUniformLocation(gl33.program, "u_LightPosition");
+
+          let ANGLE_STEP33 = 3.0; // 每次按键转动的角度
+          let g_arm1Angle33 = 90.0; // arm1当前的角度
+          let g_joint1Angle33 = 0.0; // joint1的当前角度，即arm2的角度
+          let g_joint2Angle33 = 0.0; //joint2的当前角度
+          let g_joint3Angle33 = 0.0; //joint3的当前角度
+
+          let g_modelMatrix33 = new Matrix4(); // 全局 模型矩阵
+          let g_mvpMatrix33 = new Matrix4(); // 全局 模型视图投影矩阵
+          let g_normalMatrix33 = new Matrix4(); // 全局 魔法矩阵
+
+          let g_matrixStack33 = []; //存储矩阵的值
+          let pushMatrix33 = (m) => g_matrixStack33.push(new Matrix4(m)); //将矩阵压入栈
+          let popMatrix33 = () => g_matrixStack33.pop(); //从栈中弹出矩阵
+
+          gl33.uniform3f(u_lightColor33, 1.0, 1.0, 1.0); // 传入 白色光线
+          gl33.uniform3f(u_ambientLight33, 0.1, 0.1, 0.1); // 传入 环境光颜色 更真实
+          gl33.uniform3f(u_lightPosition33, 20.0, 20.0, 40.0); // 传入 点光源位置（世界坐标）
+
+          let viewProjMatrix33 = new Matrix4(); // 创建视图投影矩阵
+          viewProjMatrix33.setPerspective(50.0, 1, 1.0, 100.0); // 垂直视角、近裁剪面宽高比、近裁剪面位置、远裁剪面位置
+          viewProjMatrix33.lookAt(10.0, 10.0, 30.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0); // 视点、视线（被观察对象位置）、上方向
+
+          //绘制机器臂
+          draw33(gl33, n33, viewProjMatrix33, u_mvpMatrix33, u_modelMatrix33, u_normalMatrix33);
+
+          //添加键盘按键交互事件
+          document.onkeydown = function (e) {
+            handleKeyDown33(e, gl33, n33, viewProjMatrix33, u_mvpMatrix33, u_modelMatrix33, u_normalMatrix33);
+          };
+
+          function handleKeyDown33(event, gl, n, viewProjMatrix, u_mvpMatrix, u_modelMatrix, u_normalMatrix) {
+            switch (event.keyCode) {
+              case 87: // W键 -> 以joint1为中心沿着z轴旋转（增量）
+                if (g_joint1Angle33 < 135.0) g_joint1Angle33 += ANGLE_STEP33;
+                break;
+              case 83: // S键 -> 以joint1为中心沿着z轴旋转（减量）
+                if (g_joint1Angle33 > -135.0) g_joint1Angle33 -= ANGLE_STEP33;
+                break;
+              case 68: // D键 -> 以y轴进行水平旋转（增量）
+                g_arm1Angle33 = (g_arm1Angle33 + ANGLE_STEP33) % 360;
+                break;
+              case 65: // A键 -> 以y轴进行水平旋转（减量）
+                g_arm1Angle33 = (g_arm1Angle33 - ANGLE_STEP33) % 360;
+                break;
+              case 90: // Z键 -> 使joint2正向转动
+                g_joint2Angle33 = (g_joint2Angle33 + ANGLE_STEP33) % 360;
+                break;
+              case 88: // X键 -> 使joint2负向转动
+                g_joint2Angle33 = (g_joint2Angle33 - ANGLE_STEP33) % 360;
+                break;
+              case 86: // V键 -> 使joint3正向转动
+                if (g_joint3Angle33 < 60.0) g_joint3Angle33 = (g_joint3Angle33 + ANGLE_STEP33) % 360;
+                break;
+              case 67: // C键 -> 使joint3负向转动
+                if (g_joint3Angle33 > -60.0) g_joint3Angle33 = (g_joint3Angle33 - ANGLE_STEP33) % 360;
+                break;
+              default:
+                return; // 其他按键没作用
+            }
+
+            draw33(gl, n, viewProjMatrix, u_mvpMatrix, u_modelMatrix, u_normalMatrix);
+          }
+
+          function initVertexBuffers33(gl) {
+            var vertices = new Float32Array([ // Vertex coordinates（长方体3宽度，高度10，长度3，其原点在其底部）
+              0.5, 1.0, 0.5, -0.5, 1.0, 0.5, -0.5, 0.0, 0.5, 0.5, 0.0, 0.5, // v0-v1-v2-v3 front
+              0.5, 1.0, 0.5, 0.5, 0.0, 0.5, 0.5, 0.0, -0.5, 0.5, 1.0, -0.5, // v0-v3-v4-v5 right
+              0.5, 1.0, 0.5, 0.5, 1.0, -0.5, -0.5, 1.0, -0.5, -0.5, 1.0, 0.5, // v0-v5-v6-v1 up
+              -0.5, 1.0, 0.5, -0.5, 1.0, -0.5, -0.5, 0.0, -0.5, -0.5, 0.0, 0.5, // v1-v6-v7-v2 left
+              -0.5, 0.0, -0.5, 0.5, 0.0, -0.5, 0.5, 0.0, 0.5, -0.5, 0.0, 0.5, // v7-v4-v3-v2 down
+              0.5, 0.0, -0.5, -0.5, 0.0, -0.5, -0.5, 1.0, -0.5, 0.5, 1.0, -0.5 // v4-v7-v6-v5 back
+            ]);
+
+            var colors = new Float32Array([ // Colors
+              1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v1-v2-v3 front
+              1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v3-v4-v5 right
+              1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v5-v6-v1 up
+              1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v1-v6-v7-v2 left
+              1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v7-v4-v3-v2 down
+              1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0 // v4-v7-v6-v5 back
+            ]);
+
+            var normals = new Float32Array([ // 每一个面的法向量
+              0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, // v0-v1-v2-v3 front
+              1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, // v0-v3-v4-v5 right
+              0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, // v0-v5-v6-v1 up
+              -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, // v1-v6-v7-v2 left
+              0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, // v7-v4-v3-v2 down
+              0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0 // v4-v7-v6-v5 back
+            ]);
+
+            var indices = new Uint8Array([ // 索引
+              0, 1, 2, 0, 2, 3, // front
+              4, 5, 6, 4, 6, 7, // right
+              8, 9, 10, 8, 10, 11, // up
+              12, 13, 14, 12, 14, 15, // left
+              16, 17, 18, 16, 18, 19, // down
+              20, 21, 22, 20, 22, 23 // back
+            ]);
+
+            const FSIZE = vertices.BYTES_PER_ELEMENT;
+
+            if (!initArrayBuffer(gl, "a_Position", vertices, 3, gl.FLOAT)) return -1; // 创建缓冲区并赋值attribute
+            if (!initArrayBuffer(gl, "a_Color", colors, 3, gl.FLOAT)) return -1; // 创建缓冲区并赋值attribute
+            if (!initArrayBuffer(gl, "a_Normal", normals, 3, gl.FLOAT)) return -1; // 创建缓冲区并赋值attribute
+
+            let indexBuffer = gl.createBuffer();
+            if (!indexBuffer) {
+              console.log(Error('Failed to create index buffer'));
+              return -1;
+            }
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW); // 写ELEMENT_ARRAY_BUFFER入缓冲区
+
+            return indices.length;
+          }
+
+          //绘制图形
+          function draw33(gl, n, viewProjMatrix, u_mvpMatrix, u_modelMatrix, u_normalMatrix) {
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // 清空颜色及深度缓冲区
+
+            //绘制基座
+            let baseHeight = 2.0; //基座的高度
+            g_modelMatrix33.setTranslate(0.0, -12.0, 0.0); //设置为平移矩阵，并沿y轴向下移动12
+            drawBox33(gl, n, 10.0, baseHeight, 10.0, viewProjMatrix, u_mvpMatrix, u_modelMatrix, u_normalMatrix);
+
+            //arm1 第一节胳膊
+            var arm1Length = 10.0; //第一节胳膊的长度
+            g_modelMatrix33.translate(0.0, baseHeight, 0.0); //移至基座
+            g_modelMatrix33.rotate(g_arm1Angle33, 0.0, 1.0, 0.0); //沿y轴旋转
+            drawBox33(gl, n, 4.0, arm1Length, 4.0, viewProjMatrix, u_mvpMatrix, u_modelMatrix, u_normalMatrix);
+
+            //arm2 第二节胳膊
+            var arm2Length = 8.0; //
+            g_modelMatrix33.translate(0.0, arm1Length, 0.0); //移至joint1
+            g_modelMatrix33.rotate(g_joint1Angle33, 0.0, 0.0, 1.0); //沿z轴旋转
+            drawBox33(gl, n, 3.0, arm2Length, 3.0, viewProjMatrix, u_mvpMatrix, u_modelMatrix, u_normalMatrix);
+
+            //机器人手掌的制作
+            var palmLength = 4.0;
+            g_modelMatrix33.translate(0.0, arm2Length, 0.0); //移至joint2
+            g_modelMatrix33.rotate(g_joint2Angle33, 0.0, 1.0, 0.0); //沿y轴旋转
+            drawBox33(gl, n, 2.0, palmLength, 6.0, viewProjMatrix, u_mvpMatrix, u_modelMatrix, u_normalMatrix);
+
+            //移至手掌一端的中点
+            g_modelMatrix33.translate(0.0, palmLength, 0.0);
+
+            //绘制finger1 第一个手指头
+            pushMatrix33(g_modelMatrix33); //将当前的g_modelMatrix的值保存
+            g_modelMatrix33.translate(0.0, 0.0, 2.0); //沿z轴移动
+            g_modelMatrix33.rotate(g_joint3Angle33, 1.0, 0.0, 0.0); //沿x轴旋转
+            drawBox33(gl, n, 1.0, 3.0, 1.0, viewProjMatrix, u_mvpMatrix, u_modelMatrix, u_normalMatrix);
+            g_modelMatrix33 = popMatrix33(); //获取到压入时的g_modelMatrix矩阵的值
+
+            //绘制finger2 第二个手指头
+            g_modelMatrix33.translate(0.0, 0.0, -2.0); //沿z轴负方向移动
+            g_modelMatrix33.rotate(-g_joint3Angle33, 1.0, 0.0, 0.0); //沿x轴旋转
+            drawBox33(gl, n, 1.0, 3.0, 1.0, viewProjMatrix, u_mvpMatrix, u_modelMatrix, u_normalMatrix);
+          }
+
+          //绘制立方体
+          function drawBox33(gl, n, width, height, depth, viewProjMatrix, u_mvpMatrix, u_modelMatrix, u_normalMatrix) {
+            pushMatrix33(g_modelMatrix33); // 入栈
+
+            g_modelMatrix33.scale(width, height, depth);
+            gl.uniformMatrix4fv(u_modelMatrix, false, g_modelMatrix33.elements); // 模型矩阵
+
+            g_mvpMatrix33.set(viewProjMatrix);
+            g_mvpMatrix33.multiply(g_modelMatrix33);
+            gl.uniformMatrix4fv(u_mvpMatrix, false, g_mvpMatrix33.elements); // 模型视图投影矩阵
+
+            g_normalMatrix33.setInverseOf(g_modelMatrix33);
+            g_normalMatrix33.transpose();
+            gl.uniformMatrix4fv(u_normalMatrix, false, g_normalMatrix33.elements);
+
+            //绘制
+            gl.drawElements(gl.TRIANGLES, n, gl.UNSIGNED_BYTE, 0);
+
+            g_modelMatrix33 = popMatrix33(); // 出栈
+          }
+        </script> -->
+      </div>
+
+      <!-- 多节点模型2 -->
+      <div id='gl34'>
+        <h2>gl34 多节点模型2</h2>
+        <!-- <canvas id="c34" width="400" height="400">
+          您的浏览器不支持canvas
+        </canvas> -->
+        <pre></pre>
+        <script type="text/javascript">
+        </script>
+      </div>
+
+      <!-- 着色器和着色器程序对象 -->
+      <div id='gl35'>
+        <h2>gl35 着色器和着色器程序对象</h2>
+        <!-- <canvas id="c35" width="400" height="400">
+          您的浏览器不支持canvas
+        </canvas> -->
+        <pre>
+  1、initShader()函数
+    创建着色器对象 - 填充源代码 - 编译着色器 - 创建程序对象 - 分配着色器 - 连接程序对象 - 使用程序对象
+  2、着色器对象管理一个顶点或片元着色器，程序对象是管理着色器对象的容器
+    一个程序对象必须包含一个顶点和一个片元着色器
+  3、可以在绘制前准备多个程序对象，在绘制的时候根据需要来切换程序对象</pre>
+        <script type="text/javascript">
+        </script>
+      </div>
+
+      <!-- 鼠标控制物体旋转 -->
+      <div id='gl36'>
+        <h2>gl36 鼠标控制物体旋转</h2>
+        <pre>
+  根据鼠标的移动情况创建旋转矩阵，更新模型视图投影矩阵，变换物体
+  放大缩小可以通过移动视点来实现
+    <a href="../examples/gl36.html" target="_blank" title="鼠标控制物体旋转">示例</a></pre>
+      </div>
+
+      <!-- 选中物体 -->
+      <div id='gl37'>
+        <h2>gl37 选中物体</h2>
+        <canvas id="c37" width="400" height="400">
+          您的浏览器不支持canvas
+        </canvas>
+        <pre>
+  1、选中物体：
+    1）当鼠标左键按下时，将整个立方体重绘成单一的红色，
+    2）读取鼠标点击处的颜色
+    3）对立方体使用原来的颜色进行重绘（为避免闪烁，读取颜色后立即重绘）
+    4）如果读取到的颜色是红色，就是选中了物体
+  2、传入着色器的uniform变量在未更改时，不用再传入，清空缓存不会清空变量
+    修改u_Clicked后，清空颜色缓冲区和深度缓冲区再绘制即可，其他不用传入</pre>
+        <script type="text/javascript">
+          // 顶点着色器程序2
+          let VSHADER_SOURCE37 = `
+            attribute vec4 a_Position; // 顶点坐标
+            attribute vec4 a_Color; // 顶点颜色
+            attribute vec4 a_Normal; // 法向量
+
+            uniform mat4 u_MvpMatrix; // 模型视图投影矩阵
+            uniform mat4 u_ModelMatrix; // 模型矩阵
+
+            varying vec4 v_Color; // 向片元着色器传递颜色
+            varying vec3 v_Normal; 
+            varying vec3 v_Position;
+
+            void main(){
+              gl_Position = u_MvpMatrix * a_Position; 
+
+              v_Position = vec3(u_ModelMatrix * a_Position); // 计算顶点的世界坐标
+              v_Normal = normalize(vec3(a_Normal)); // 归一化法向量
+
+              v_Color = a_Color;
+            }`;
+
+          // 片元着色器程序2
+          let FSHADER_SOURCE37 = `
+            precision mediump float; // 声明片元着色器float的精度（必须指定）
+
+            uniform vec3 u_LightColor; // 光线颜色
+            uniform vec3 u_LightPosition; // 光源位置（世界坐标系）
+            uniform vec3 u_AmbientLight; // 环境光颜色
+            uniform bool u_Clicked; // 是否被点击
+
+            varying vec4 v_Color; // 接收顶点着色器传递的颜色
+            varying vec3 v_Normal; 
+            varying vec3 v_Position;
+
+            void main(){
+              if (!u_Clicked) {
+                vec3 normal = normalize(v_Normal); // 对法线进行归一化（内插后长度不一定为1.0）
+                vec3 lightDirection = normalize(u_LightPosition - v_Position); // 计算光线方向并归一化
+                float nDotL = max(dot(lightDirection, normal), 0.0); // 计算光线方向和法向量的点积
+
+                vec3 diffuse = u_LightColor * vec3(v_Color) * nDotL; // 计算漫反射光的颜色
+                vec3 ambient = u_AmbientLight * v_Color.rgb; // 计算环境反射光颜色
+
+                gl_FragColor = vec4(diffuse + ambient, v_Color.a); // 漫反射光 + 环境反射光
+              } else {
+                gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0); // 被点击就渲染成蓝色
+              }
+            }`;
+
+          // 获取canvas，获取webGL绘图上下文
+          const c37 = document.querySelector("#c37");
+          const gl37 = c37.getContext("webgl");
+          if (!gl37) console.log(Error("无法获得webgl的绘图上下文"));
+
+          // 初始化着色器
+          if (!initShaders(gl37, VSHADER_SOURCE37, FSHADER_SOURCE37)) console.log(Error("无法初始化着色器"));
+
+          // 设置顶点信息（传入attribute变量）
+          let n37 = initVertexBuffers27(gl37);
+          if (n37 < 0) console.log(Error("无法设置顶点位置"));
+
+          // 获取变量位置
+          let u_mvpMatrix37 = gl37.getUniformLocation(gl37.program, "u_MvpMatrix");
+          let u_modelMatrix37 = gl37.getUniformLocation(gl37.program, "u_ModelMatrix");
+          let u_lightColor37 = gl37.getUniformLocation(gl37.program, "u_LightColor");
+          let u_ambientLight37 = gl37.getUniformLocation(gl37.program, "u_AmbientLight");
+          let u_lightPosition37 = gl37.getUniformLocation(gl37.program, "u_LightPosition");
+          let u_clicked37 = gl37.getUniformLocation(gl37.program, "u_Clicked");
+
+          gl37.uniform1i(u_clicked37, 0);
+
+          gl37.uniform3f(u_lightColor37, 1.0, 1.0, 1.0); // 传入 白色光线
+          gl37.uniform3f(u_ambientLight37, 0.4, 0.4, 0.4); // 传入 环境光颜色 更真实
+          gl37.uniform3f(u_lightPosition37, 0.0, 0.3, 0.8); // 传入 点光源位置（世界坐标）
+
+          let mvpMatrix37 = new Matrix4(); // 创建模型视图投影矩阵
+          mvpMatrix37.setPerspective(30, 1, 1, 100); // 垂直视角、近裁剪面宽高比、近裁剪面位置、远裁剪面位置
+          mvpMatrix37.lookAt(3, 3, 7, 0, 0, 0, 0, 1, 0); // 视点、视线（被观察对象位置）、上方向
+
+          let modelMatrix37 = new Matrix4(); // 创建模型矩阵
+          modelMatrix37.rotate(90, 0, 1, 0);
+          gl37.uniformMatrix4fv(u_modelMatrix37, false, modelMatrix37.elements); // 传入 模型矩阵
+
+          mvpMatrix37.multiply(modelMatrix37);
+          gl37.uniformMatrix4fv(u_mvpMatrix37, false, mvpMatrix37.elements); // 传入 模型视图投影矩阵
+
+          gl37.enable(gl37.DEPTH_TEST);
+          gl37.clearColor(0.0, 0.0, 0.0, 1.0);
+          gl37.clear(gl37.COLOR_BUFFER_BIT | gl37.DEPTH_BUFFER_BIT); // 清空canvas
+          gl37.drawElements(gl37.TRIANGLES, n37, gl37.UNSIGNED_BYTE, 0); // 绘制
+
+          c37.addEventListener("mousedown", (event) => {
+            let x = event.clientX;
+            let y = event.clientY;
+            let rect = event.target.getBoundingClientRect();
+            if (rect.left <= x && x < rect.right && rect.top <= y && rect.bottom > y) {
+              let x_in_c = x - rect.left;
+              let y_in_c = rect.bottom - y;
+              let picked = check(gl37, n37, x_in_c, y_in_c);
+              if (picked) alert("点中了");
+            }
+          });
+
+          function check(gl, n, x, y) {
+            let picked = false;
+            gl.uniform1i(u_clicked37, 1); // 将立方体绘制成蓝色
+            draw37();
+            let pixels = new Uint8Array(4);
+            gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+            // console.log(pixels);            
+            if (pixels[2] === 255)
+              picked = true;
+            gl.uniform1i(u_clicked37, 0); // 重绘成原颜色
+            draw37();
+            return picked;
+          }
+
+          function draw37() {
+            gl37.clear(gl37.COLOR_BUFFER_BIT | gl37.DEPTH_BUFFER_BIT); // 清空canvas
+            gl37.drawElements(gl37.TRIANGLES, n37, gl37.UNSIGNED_BYTE, 0); // 绘制
+          }
+        </script>
+      </div>
+
+      <!-- 选中一个表面 -->
+      <div id='gl38'>
+        <h2>gl38 选中一个表面</h2>
+        <canvas id="c38" width="400" height="400">
+          您的浏览器不支持canvas
+        </canvas>
+        <pre>
+  点击鼠标重绘立方体的时候，将每个像素属于哪个面的信息写入颜色缓冲区的α分量中
+</pre>
+        <script type="text/javascript">
+          // 顶点着色器程序2
+          let VSHADER_SOURCE38 = `
+            attribute vec4 a_Position; // 顶点坐标
+            attribute vec4 a_Color; // 顶点颜色
+            attribute vec4 a_Normal; // 法向量
+            attribute float a_Face; // 表面编号（attribute不可使用int）
+
+            uniform mat4 u_MvpMatrix; // 模型视图投影矩阵
+            uniform vec3 u_LightColor; // 光线颜色
+            uniform vec3 u_LightDirection; // 光线归一化方向
+            uniform vec3 u_AmbientLight; // 环境光颜色
+            uniform int u_PickedFace; // 被选中的表面编号
+
+            varying vec4 v_Color;
+
+            void main(){
+              gl_Position = u_MvpMatrix * a_Position;
+              int face = int(a_Face); // 转为int
+              vec3 color = (face == u_PickedFace) ? vec3(1.0) : a_Color.rgb;
+              if (u_PickedFace == 0){
+                v_Color = vec4(color, a_Face/255.0); // 除255是因为rgba的值在0-1之间，但8位二进制会表示256
+              } else {
+                // v_Color = vec4(color, a_Color.a);
+                vec3 normal = normalize(vec3(a_Normal)); // 归一化法向量
+                float nDotL = max(dot(u_LightDirection, normal), 0.0); // 计算光线方向和法向量的点积 
+                vec3 diffuse = u_LightColor * vec3(a_Color) * nDotL; // 计算漫反射光的颜色
+                vec3 ambient = u_AmbientLight * a_Color.rgb; // 计算环境反射光颜色
+                v_Color = vec4(diffuse + ambient, a_Color.a);// 漫反射光 + 环境反射光
+              }              
+            }`;
+
+          // 片元着色器程序2
+          let FSHADER_SOURCE38 = `
+            precision mediump float;
+            varying vec4 v_Color;
+            void main(){
+              gl_FragColor = v_Color;
+            }`;
+
+          // 获取canvas，获取webGL绘图上下文
+          const c38 = document.querySelector("#c38");
+          const gl38 = c38.getContext("webgl");
+          if (!gl38) console.log(Error("无法获得webgl的绘图上下文"));
+
+          // 初始化着色器
+          if (!initShaders(gl38, VSHADER_SOURCE38, FSHADER_SOURCE38)) console.log(Error("无法初始化着色器"));
+
+          // 设置顶点信息（传入attribute变量）
+          let n38 = initVertexBuffers38(gl38);
+          if (n38 < 0) console.log(Error("无法设置顶点位置"));
+
+          // 获取变量位置
+          let u_mvpMatrix38 = gl38.getUniformLocation(gl38.program, "u_MvpMatrix");
+          let u_lightColor38 = gl38.getUniformLocation(gl38.program, "u_LightColor");
+          let u_lightDirection38 = gl38.getUniformLocation(gl38.program, "u_LightDirection");
+          let u_ambientLight38 = gl38.getUniformLocation(gl38.program, "u_AmbientLight");
+          let u_pickedFace38 = gl38.getUniformLocation(gl38.program, "u_PickedFace");
+
+          gl38.uniform1i(u_pickedFace38, -1); // 初始化被选中的表面
+
+          gl38.uniform3f(u_lightColor38, 1.0, 1.0, 1.0); // 传入 白色光线
+          let lightDirection38 = new Vector3([0.5, 3.0, 4.0]);
+          lightDirection38.normalize(); // 归一化
+          gl38.uniform3fv(u_lightDirection38, lightDirection38.elements); // 传入 光线归一化方向
+          gl38.uniform3f(u_ambientLight38, 0.2, 0.2, 0.2); // 传入 环境光颜色 更真实
+
+          let mvpMatrix38 = new Matrix4(); // 创建模型视图投影矩阵
+          mvpMatrix38.setPerspective(30, 1, 1, 100); // 垂直视角、近裁剪面宽高比、近裁剪面位置、远裁剪面位置
+          mvpMatrix38.lookAt(3, 3, 7, 0, 0, 0, 0, 1, 0); // 视点、视线（被观察对象位置）、上方向
+          // mvpMatrix38.rotate(180, 0, 1, 0);
+          gl38.uniformMatrix4fv(u_mvpMatrix38, false, mvpMatrix38.elements); // 传入
+
+          gl38.enable(gl38.DEPTH_TEST);
+          gl38.clearColor(0.0, 0.0, 0.0, 1.0);
+          gl38.clear(gl38.COLOR_BUFFER_BIT | gl38.DEPTH_BUFFER_BIT); // 清空canvas
+          gl38.drawElements(gl38.TRIANGLES, n27, gl38.UNSIGNED_BYTE, 0); // 绘制
+
+          c38.addEventListener("mousedown", event => {
+            let x = event.clientX;
+            let y = event.clientY;
+            let rect = event.target.getBoundingClientRect();
+            if (rect.left <= x && x < rect.right && rect.top <= y && rect.bottom > y) {
+              let x_in_c = x - rect.left;
+              let y_in_c = rect.bottom - y;
+              let face = checkFace38(gl38, n38, x_in_c, y_in_c);
+              console.log(face);
+              gl38.uniform1i(u_pickedFace38, face);
+              draw38();
+
+              // let picked = check(gl37, n37, x_in_c, y_in_c);
+              // if (picked) alert("点中了");
+            }
+          });
+
+          function checkFace38(gl, n, x, y) {
+            let pixels = new Uint8Array(4); // 存储像素值的数组
+            gl.uniform1i(u_pickedFace38, 0);
+            draw38();
+            gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+            return pixels[3];
+          }
+
+          function draw38() {
+            gl38.clear(gl38.COLOR_BUFFER_BIT | gl38.DEPTH_BUFFER_BIT); // 清空canvas
+            gl38.drawElements(gl38.TRIANGLES, n27, gl38.UNSIGNED_BYTE, 0); // 绘制
+          }
+
+          function initVertexBuffers38(gl) {
+            var vertices = new Float32Array([
+              1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, // v0-v1-v2-v3 front
+              1.0, 1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, // v0-v3-v4-v5 right
+              1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, // v0-v5-v6-v1 up
+              -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, // v1-v6-v7-v2 left
+              -1.0, -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, // v7-v4-v3-v2 down
+              1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0 // v4-v7-v6-v5 back
+            ]);
+
+            var colors = new Float32Array([ // Colors
+              1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v1-v2-v3 front
+              1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v3-v4-v5 right
+              1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v5-v6-v1 up
+              1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v1-v6-v7-v2 left
+              1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v7-v4-v3-v2 down
+              1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0 // v4-v7-v6-v5 back
+            ]);
+
+            var normals = new Float32Array([ // Normal
+              0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, // v0-v1-v2-v3 front
+              1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, // v0-v3-v4-v5 right
+              0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, // v0-v5-v6-v1 up
+              -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, // v1-v6-v7-v2 left
+              0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, // v7-v4-v3-v2 down
+              0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0 // v4-v7-v6-v5 back
+            ]);
+
+            var faces = new Uint8Array([ // Faces  顶点的面编号
+              1, 1, 1, 1, // v0-v1-v2-v3 front
+              2, 2, 2, 2, // v0-v3-v4-v5 right
+              3, 3, 3, 3, // v0-v5-v6-v1 up
+              4, 4, 4, 4, // v1-v6-v7-v2 left
+              5, 5, 5, 5, // v7-v4-v3-v2 down
+              6, 6, 6, 6 // v4-v7-v6-v5 back
+            ]);
+
+            var indices = new Uint8Array([ // Indices of the vertices
+              0, 1, 2, 0, 2, 3, // front
+              4, 5, 6, 4, 6, 7, // right
+              8, 9, 10, 8, 10, 11, // up
+              12, 13, 14, 12, 14, 15, // left
+              16, 17, 18, 16, 18, 19, // down
+              20, 21, 22, 20, 22, 23 // back
+            ]);
+
+            if (!initArrayBuffer(gl, "a_Position", vertices, 3, gl.FLOAT)) return -1; // 写入ArrayBuffer缓冲区
+            if (!initArrayBuffer(gl, "a_Color", colors, 3, gl.FLOAT)) return -1; // 写入ArrayBuffer缓冲区
+            if (!initArrayBuffer(gl, "a_Normal", normals, 3, gl.FLOAT)) return -1; // 写ArrayBuffer入缓冲区
+            if (!initArrayBuffer(gl, "a_Face", faces, 1, gl.UNSIGNED_BYTE)) return -1; // 写ArrayBuffer入缓冲区
+
+            let indexBuffer = gl.createBuffer();
+            if (!indexBuffer) {
+              console.log(Error('Failed to create index buffer'));
+              return -1;
+            }
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW); // 写ELEMENT_ARRAY_BUFFER入缓冲区
+
+            return indices.length;
+          }
+        </script>
+      </div>
+
+      <!-- HUD平视显示器 -->
+      <div id='gl39'>
+        <h2>gl39 HUD平视显示器</h2>
+        <div style="position: relative;">
+          <canvas id="c39" width="400" height="400" style="position:relative;top:0;left:0;z-index:0;">
+            您的浏览器不支持canvas
+          </canvas>
+          <canvas id="h39" width="400" height="400" style="position:relative;top:0;left:-400px;z-index:1;">
+            您的浏览器不支持canvas
+          </canvas>
+        </div>
+        <pre>
+  1、平视显示器，Head Up Display
+  2、原理：只要两个canvas重叠，浏览器就会将WebGL和HUD内容混合
+  3、默认情况下，canvas的背景是透明的
+</pre>
+        <script type="text/javascript">
+          // 获取canvas，获取webGL绘图上下文
+          const c39 = document.querySelector("#c39");
+          const gl39 = c39.getContext("webgl");
+          if (!gl39) console.log(Error("无法获得webgl的绘图上下文"));
+
+          const h39 = document.querySelector("#h39");
+          const hud39 = h39.getContext("2d");
+
+          // 初始化着色器
+          if (!initShaders(gl39, VSHADER_SOURCE37, FSHADER_SOURCE37)) console.log(Error("无法初始化着色器"));
+
+          let n39 = initVertexBuffers27(gl39); // 设置顶点信息（传入attribute变量），返回绘制次数
+          if (n39 < 0) console.log(Error("无法设置顶点位置"));
+
+          // 获取变量位置
+          let u_mvpMatrix39 = gl39.getUniformLocation(gl39.program, "u_MvpMatrix");
+          let u_modelMatrix39 = gl39.getUniformLocation(gl39.program, "u_ModelMatrix");
+          let u_lightColor39 = gl39.getUniformLocation(gl39.program, "u_LightColor");
+          let u_ambientLight39 = gl39.getUniformLocation(gl39.program, "u_AmbientLight");
+          let u_lightPosition39 = gl39.getUniformLocation(gl39.program, "u_LightPosition");
+          let u_clicked39 = gl39.getUniformLocation(gl39.program, "u_Clicked");
+
+          gl39.uniform1i(u_clicked39, 0);
+
+          gl39.uniform3f(u_lightColor39, 1.0, 1.0, 1.0); // 传入 白色光线
+          gl39.uniform3f(u_ambientLight39, 0.4, 0.4, 0.4); // 传入 环境光颜色 更真实
+          gl39.uniform3f(u_lightPosition39, 0.0, 0.3, 0.8); // 传入 点光源位置（世界坐标）
+
+          let mvpMatrix39 = new Matrix4(); // 创建模型视图投影矩阵
+          mvpMatrix39.setPerspective(30, 1, 1, 100); // 垂直视角、近裁剪面宽高比、近裁剪面位置、远裁剪面位置
+          mvpMatrix39.lookAt(3, 3, 7, 0, 0, 0, 0, 1, 0); // 视点、视线（被观察对象位置）、上方向
+
+          let modelMatrix39 = new Matrix4(); // 创建模型矩阵
+          modelMatrix39.rotate(90, 0, 1, 0);
+          gl39.uniformMatrix4fv(u_modelMatrix39, false, modelMatrix39.elements); // 传入 模型矩阵
+
+          mvpMatrix39.multiply(modelMatrix39);
+          gl39.uniformMatrix4fv(u_mvpMatrix39, false, mvpMatrix39.elements); // 传入 模型视图投影矩阵
+
+          gl39.enable(gl39.DEPTH_TEST);
+          gl39.clearColor(0.0, 0.0, 0.0, 1.0);
+          gl39.clear(gl39.COLOR_BUFFER_BIT | gl39.DEPTH_BUFFER_BIT); // 清空canvas
+          gl39.drawElements(gl39.TRIANGLES, n37, gl39.UNSIGNED_BYTE, 0); // 绘制
+
+          h39.addEventListener("mousedown", (event) => {
+            let x = event.clientX;
+            let y = event.clientY;
+            let rect = event.target.getBoundingClientRect();
+            console.log(x, y, rect);
+            // if (rect.left <= x && x < rect.right && rect.top <= y && rect.bottom > y) {
+            //   let x_in_c = x - rect.left;
+            //   let y_in_c = rect.bottom - y;
+            //   let picked = check39(gl37, n37, x_in_c, y_in_c);
+            //   if (picked) alert("点中了");
+            // }
+          });
+
+          function tick39() {
+            draw2D39(hud39, "allx");
+            requestAnimationFrame(tick39, c39);
+          }
+          tick39();
+
+          function draw2D39(ctx, str) {
+            ctx.clearRect(0, 0, 400, 400);
+            ctx.fillStyle = "rgba(255,255,255,1.0)";
+            ctx.beginPath(); // 绘制三角形
+            ctx.moveTo(120, 10);
+            ctx.lineTo(200, 150);
+            ctx.lineTo(40, 150);
+            ctx.closePath();
+            ctx.font = "18px 'KaiTi'";
+            ctx.fillStyle = "rgba(255,255,255,1.0)";
+            ctx.fillText("HUD: Head Up Display", 40, 180);
+            ctx.fillText(str, 40, 200);
+          }
+
+          function check39(gl, n, x, y) {
+            let picked = false;
+            gl.uniform1i(u_clicked39, 1); // 将立方体绘制成蓝色
+            draw39();
+            let pixels = new Uint8Array(4);
+            gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+            // console.log(pixels);            
+            if (pixels[2] === 255)
+              picked = true;
+            gl.uniform1i(u_clicked39, 0); // 重绘成原颜色
+            draw39();
+            return picked;
+          }
+
+          function draw39() {
+            gl39.clear(gl39.COLOR_BUFFER_BIT | gl39.DEPTH_BUFFER_BIT); // 清空canvas
+            gl39.drawElements(gl39.TRIANGLES, n37, gl39.UNSIGNED_BYTE, 0); // 绘制
+          }
+        </script>
+      </div>
+
+      <!-- 雾化fog -->
+      <div id='gl40'>
+        <h2>gl40 雾化fog</h2>
+        <pre>
+  1、简单的线性雾化（linear fog）：距离视点越远，雾化程度越高
+  2、雾化因子（fog factor）：某一点的雾化程度
+    雾化因子 = （终点 - 当前点到视点距离） / （终点 - 起点）
+    片元颜色 = 表面基底色 * 雾化因子 + 雾的颜色 * （1 - 雾化因子）
+  3、使用w分量
+    w分量是z分量的相反数，在视图坐标系中，观察者的视点在原点，视线沿着Z轴负方向，所以可以直接使用w近似表示顶点与视点的距离
+  4、雾化因子是在世界坐标系下建立
+    1）顶点着色器计算当前顶点与视点的距离，传入片元着色器
+    2）片元着色器根据片元与视点的距离，计算雾化因子和片元颜色
+    <a href="../examples/gl40.html" target="_blank" alt="雾化fog" title="雾化fog">示例</a>
+    <a href="../examples/gl40-2.html" target="_blank" alt="雾化fog" title="雾化fog">示例2</a></pre>
+        <script type="text/javascript">
+        </script>
+      </div>
+
+      <!-- 绘制圆形的点 -->
+      <div id='gl41'>
+        <h2>gl41 绘制圆形的点</h2>
+        <pre>
+  1、gl_FragCoord：片元的窗口坐标，gl_PointCoord：片元在被绘制的点内的坐标（0-1）
+    discard：放弃当前片元
+    <a href="../examples/gl41.html" target="_blank" title="绘制圆形的点">示例</a></pre>
+        <script type="text/javascript">
+        </script>
+      </div>
+
+      <!-- α混合：半透明效果 -->
+      <div id='gl42'>
+        <h2>gl42 α混合：半透明效果</h2>
+        <pre>
+  1、α混合（alpha blending）：
+    1）开启混合功能：gl.enable(gl.BLEND);
+    2）指定混合参数：gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+  2、混合函数
+    <a href="../examples/gl42.html" target="_blank" title="α混合：半透明效果">示例</a></pre>
+        <script type="text/javascript">
+        </script>
+      </div>
+
+      <!-- 半透明三维物体 -->
+      <div id='gl43'>
+        <h2>gl43 半透明三维物体</h2>
+        <pre>
+  1、透明物体需要关闭隐藏面消除
+  2、透明与不透明共存
+    1）开启隐藏面消除
+    2）绘制所有不透明物体
+    3）锁定深度缓冲区的写入操作，使之只读
+    4）从后向前按深度绘制所有半透明物体
+    5）释放深度缓冲区，使之可读可写
+  3、隐藏面消除原理：后绘制的z值与深度缓冲区中的z值对比，后z大，则绘制，后z小，则隐藏
+    <a href="../examples/gl43.html" target="_blank" title="半透明三维物体">示例</a></pre>
+        <script type="text/javascript">
+        </script>
+      </div>
+
+      <!-- 渲染到纹理 -->
+      <div id='gl44'>
+        <h2>gl44 渲染到纹理</h2>
+        <pre>
+  1、将渲染结果作为纹理使用，动态生成图像，而不是向服务器请求加载外部图像
+  2、纹理可由WebGL实时绘制
+  3、WebGL在颜色缓冲区中进行绘图，开启隐藏面消除后，还会用到深度缓冲区
+  4、帧缓冲区对象（framebuffer object）：可以用来替换颜色缓冲区或深度缓冲区
+    绘制在帧缓冲区的对象不会直接显示在canvas上，在帧缓冲区中进行的绘制可称为离屏绘制（offscreen drawing）
+    可以对其中内容进行处理后再显示，或者直接作为纹理图像
+  5、步骤：
+    1）创建帧缓冲区对象
+    2）创建纹理对象并设置尺寸和参数
+    3）创建渲染缓冲区对象
+    4）绑定渲染缓冲区对象并设置其尺寸
+    5）将帧缓冲区的颜色关联对象指定为一个纹理对象
+    6）将帧缓冲区的深度关联对象指定为一个渲染缓冲区对象
+    7）检查帧缓冲区是否正确配置
+    8）在帧缓冲区中进行绘制
+    <a href="../examples/gl44.html" target="_blank" title="渲染到纹理">示例</a></pre>
+        <script type="text/javascript">
+        </script>
+      </div>
+
 
     </div>
     <!-- -----------------------------目录----------------------------- -->
@@ -933,6 +3174,37 @@
     </div>
     <script type="text/javascript">
       const catalogs = [
+        "渲染到纹理",
+        "半透明三维物体",
+        "α混合：半透明效果",
+        "绘制圆形的点",
+        "雾化fog",
+        "HUD平视显示器",
+        "选中一个表面",
+        "选中物体",
+        "鼠标控制物体旋转",
+        "着色器和着色器程序对象",
+        "多节点模型2",
+        "多节点模型",
+        "多个简单模型组成的复杂模型",
+        "示例：旋转立方体",
+        "逐片元光照",
+        "点光源光",
+        "运动物体的光照效果",
+        "光照原理",
+        "指定不同颜色的立方体",
+        "立方体",
+        "对象的前后关系",
+        "可视空间",
+        "利用键盘改变视点",
+        "三维基础",
+        "OpenGL ES着色器语言",
+        "修改：原图大小纹理",
+        "webgl纹理",
+        "从顶点着色器到片元着色器",
+        "varying变量修改颜色",
+        "交错组织",
+        "多个缓冲区对象",
         "示例动画",
         "使用Matrix4库",
         "变换矩阵",

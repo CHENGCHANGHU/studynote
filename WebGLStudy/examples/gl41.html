@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <title>绘制圆形的点</title>
+  <link rel="shortcut icon" href="../icon/sparrow.png" />
+  <link rel="bookmark" href="../icon/sparrow.png" type="image/x-icon" />
+  <link rel="stylesheet" href="../style/common.css" />
+  <!-- 对于制作原型或学习，你可以这样使用最新版本： -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
+  <script src="../lib/webgl-debug.js"></script>
+  <script src="../lib/webgl-utils.js"></script>
+  <script src="../lib/cuon-matrix.js"></script>
+  <script src="../lib/cuon-utils.js"></script>
+  <script src="../lib/allx-utils.js"></script>
+</head>
+
+<body>
+  <h2>gl41 绘制圆形的点</h2>
+  <canvas id="canvas" width="400" height="400">
+    您的浏览器不支持canvas
+  </canvas>
+  <pre></pre>
+  <script type="text/javascript">
+    // 顶点着色器程序2
+    let VSHADER_SOURCE = `
+        attribute vec4 a_Position;
+        void main(){
+          gl_Position=a_Position;
+          gl_PointSize=10.0;
+        }`;
+
+    // 片元着色器程序2
+    let FSHADER_SOURCE = `
+        precision mediump float; // 声明片元着色器float的精度（必须指定）
+        void main(){
+          float dist = distance(gl_PointCoord, vec2(0.5, 0.5)); // 计算当前片元与中心点坐标距离
+          if (dist < 0.5){ // 点的半径是0.5
+            gl_FragColor=vec4(1.0, 0.0, 0.0, 1.0);
+          }else{
+            discard; // 忽略当前片元
+          }          
+        }`;
+
+    // 获取webGL绘图上下文
+    const gl = getWebGLContext(document.querySelector("#canvas"));
+    if (!gl) console.log("无法获得webgl的绘图上下文");
+
+    // 初始化着色器
+    if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) console.log("无法初始化着色器");
+
+    // 获取attribute变量的存储位置
+    const a_position = gl.getAttribLocation(gl.program, "a_Position");
+    if (a_position < 0) console.log("无法获取attribute变量的存储位置");
+
+    gl.vertexAttrib3f(a_position, 0.5, 0.5, 0.0); // 将顶点位置传递给attribute变量
+
+    gl.clearColor(0.0, 0.0, 0.0, 1.0); // 设置背景色
+    gl.clear(gl.COLOR_BUFFER_BIT); // 清空canvas
+
+    gl.drawArrays(gl.POINTS, 0, 1); // 绘制一个点
+  </script>
+
+
+</body>
+
+</html>

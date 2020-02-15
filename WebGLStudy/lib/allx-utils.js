@@ -66,3 +66,26 @@ function initVertexBuffers(gl) {
 
   return n;
 }
+
+function initArrayBuffer(gl, attributeName, data, numOfComponents, dataType) {
+  let buffer = gl.createBuffer();
+  if (!buffer) {
+    console.log(Error("无法创建缓冲区对象"));
+    return false;
+  }
+
+  // 将缓冲区对象绑定到目标，写入数据
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+
+  let a_attributeName = gl.getAttribLocation(gl.program, attributeName);
+  if (a_attributeName < 0) {
+    console.log(Error("无法获取attribute变量的存储位置"));
+    return false;
+  }
+  // 将缓冲区对象分配给a_position变量，开启连接
+  gl.vertexAttribPointer(a_attributeName, numOfComponents, dataType, false, 0, 0);
+  gl.enableVertexAttribArray(a_attributeName);
+
+  return true;
+}

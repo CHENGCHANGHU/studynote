@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <title>鼠标控制物体旋转</title>
+  <link rel="shortcut icon" href="../icon/sparrow.png" />
+  <link rel="bookmark" href="../icon/sparrow.png" type="image/x-icon" />
+  <link rel="stylesheet" href="../style/common.css" />
+  <!-- 对于制作原型或学习，你可以这样使用最新版本： -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="../lib/webgl-debug.js"></script>
+  <script src="../lib/webgl-utils.js"></script>
+  <script src="../lib/cuon-matrix.js"></script>
+  <script src="../lib/cuon-utils.js"></script>
+  <script src="../lib/allx-utils.js"></script>
+</head>
+
+<body>
+  <div id='gl5'>
+    <h2>gl5 案例：通过鼠标点击绘点</h2>
+    <canvas id="c5" width="400" height="400">
+      您的浏览器不支持canvas
+    </canvas>
+    <script type="text/javascript">
+      // 顶点着色器程序2
+      let VSHADER_SOURCE5 = `
+        attribute vec4 a_Position;
+        void main(){
+          gl_Position=a_Position;
+          gl_PointSize=10.0;
+        }`;
+
+      // 片元着色器程序2
+      let FSHADER_SOURCE5 = `
+        void main(){
+          gl_FragColor=vec4(1.0, 0.0, 0.0, 1.0);
+        }`;
+      // 获取canvas，获取webGL绘图上下文
+      const c5 = document.querySelector("#c5");
+      const gl5 = getWebGLContext(c5);
+      if (!gl5) {
+        console.log("无法获得webgl的绘图上下文");
+      }
+      // 初始化着色器
+      if (!initShaders(gl5, VSHADER_SOURCE5, FSHADER_SOURCE5)) {
+        console.log("无法初始化着色器");
+      }
+      // 获取attribute变量的存储位置
+      const a_position5 = gl5.getAttribLocation(gl5.program, "a_Position");
+      if (a_position5 < 0) {
+        console.log("无法获取attribute变量的存储位置");
+      }
+
+      gl5.clearColor(0.0, 0.0, 0.0, 1.0);
+      gl5.clear(gl5.COLOR_BUFFER_BIT);
+
+      c5.addEventListener("click", event => drawAPointWhereClick(event, gl5, a_position5));
+
+      // 鼠标点击位置数组
+      const g5_points = [];
+      const drawAPointWhereClick = (event, gl, a_position) => {
+        let x = event.clientX; // 鼠标点击的x坐标（相对屏幕，左上角为00，x正向右，y正向下）
+        let y = event.clientY; // 鼠标点击的y坐标（相对屏幕，左上角为00，x正向右，y正向下）
+        let rect = event.target.getBoundingClientRect();
+        console.log(x, y, rect);
+
+        // 将x、y转换成相对canvas中心点的相对坐标（0-1）
+        // x：鼠标点击的相对屏幕左上角的绝对坐标
+        // rect：canvas左上角顶点相对屏幕左上角的绝对坐标
+        x = (x - rect.x - c5.width / 2) / (c5.width / 2);
+        y = (c5.height / 2 - y + rect.y) / (c5.height / 2);
+        console.log(x, y);
+
+        // 将转换后的坐标保存到g5_points数组
+        g5_points.push(x);
+        g5_points.push(y);
+
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        for (let i = 0; i < g5_points.length; i += 2) {
+          gl.vertexAttrib3f(a_position, g5_points[i], g5_points[i + 1], 0.0);
+          gl.drawArrays(gl.POINTS, 0, 1);
+        }
+      }
+    </script>
+  </div>
+</body>
+
+</html>

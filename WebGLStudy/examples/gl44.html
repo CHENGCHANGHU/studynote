@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <title>渲染到纹理</title>
+  <link rel="shortcut icon" href="../icon/sparrow.png" />
+  <link rel="bookmark" href="../icon/sparrow.png" type="image/x-icon" />
+  <link rel="stylesheet" href="../style/common.css" />
+  <!-- 对于制作原型或学习，你可以这样使用最新版本： -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
+  <script src="../lib/webgl-debug.js"></script>
+  <script src="../lib/webgl-utils.js"></script>
+  <script src="../lib/cuon-matrix.js"></script>
+  <script src="../lib/cuon-utils.js"></script>
+  <script src="../lib/allx-utils.js"></script>
+</head>
+
+<body>
+  <div id='gl44'>
+    <h2>gl44 渲染到纹理</h2>
+    <canvas id="canvas" width="400" height="400">
+      您的浏览器不支持canvas
+    </canvas>
+    <script type="text/javascript">
+      // 顶点着色器程序2
+      const VSHADER_SOURCE = `
+        attribute vec4 a_Position; // 顶点坐标
+        attribute vec2 a_TexCoord; // 对应纹理坐标
+
+        varying vec2 v_TexCoord;
+
+        void main(){
+          gl_Position=a_Position;
+          v_TexCoord=a_TexCoord;
+        }`;
+
+      // 片元着色器程序2
+      const FSHADER_SOURCE = `
+        precision mediump float; // 声明片元着色器float的精度（必须指定）
+
+        uniform sampler2D u_Sampler;
+
+        varying vec2 v_TexCoord;
+
+        void main(){
+          gl_FragColor=texture2D(u_Sampler, v_TexCoord); // 使用纹素颜色
+        }`;
+
+      const OFFSCREEN_WIDTH = 256; // 离屏绘制的尺寸
+      const OFFSCREEN_HEIGHT = 256; // 离屏绘制的尺寸
+
+      // 获取canvas，获取webGL绘图上下文
+      const gl = getWebGLContext(document.querySelector("#canvas"));
+      if (!gl) console.log(Error("无法获得webgl的绘图上下文"));
+
+      // 初始化着色器
+      if (!initShaders(gl, VSHADER_SOURCE, FSHADER_SOURCE)) console.log(Error("无法初始化着色器"));
+
+      let n = initVertexBuffers(gl); // 设置顶点信息
+      if (n < 0) console.log(Error("设置顶点着色器缓冲区信息"));
+
+      //得到attribute变量和uniform变量的存储位置
+      var program = gl.program; //获取到程序对象
+      program.a_Position = gl.getAttribLocation(program, "a_Position");
+      program.a_TexCoord = gl.getAttribLocation(program, "a_TexCoord");
+      program.u_MvpMatrix = gl.getUniformLocation(program, "u_MvpMatrix");
+
+      let fbo = initFramebufferObject(gl);
+
+      gl.clearColor(0.0, 0.0, 0.0, 1.0);
+      // gl18.clear(gl18.COLOR_BUFFER_BIT);
+
+      if (!initTextures(gl, n)) console.log(Error("无法配置纹理")); // 配置纹理
+
+      // 初始化帧缓冲区对象
+      function initFramebufferObject(gl) {
+        let framebuffer, texture, depthbuffer;
+
+        framebuffer = gl.createFramebuffer(); // 创建帧缓冲区FBO
+        if (!framebuffer) console.log(Error("创建帧缓冲区FBO 失败"));
+
+        // 创建纹理对象并设置尺寸和参数
+        texture = gl.createTexture(); // 创建纹理对象
+        gl.bindTexture(gl.TEXTURE_2D, texture); // 绑定纹理对象到纹理目标，再通过目标操作纹理对象
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+          null); // 将纹理图像分配给纹理对象
+
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        framebuffer.texture = texture; // 保存纹理对象
+
+        // 创建渲染缓冲区对象并设置尺寸和参数
+        depthbuffer = gl.createRenderbuffer(); // 创建渲染缓冲区
+        if (!depthbuffer) console.log(Error("创建渲染缓冲区 失败"));
+        gl.bindRenderbuffer(gl.RENDERBUFFER, depthbuffer); // 绑定渲染缓冲区对象
+        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT); // 设置尺寸
+
+        // 将纹理和渲染缓冲区对象关联到帧缓冲区对象上
+        gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE2D, texture, 0);
+        gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthbuffer);
+
+        // 检查帧缓冲区是否被正确配置
+        let e = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+        if (e !== gl.FRAMEBUFFER_COMPLETE) {
+          console.log("帧缓冲区未被正确配置", e)
+          return Error("帧缓冲区未被正确配置");
+        }
+
+        return framebuffer;
+      }
+
+      function draw(gl, canvas, fb0, plane, cube, angle, texture, viewProjMatrix, viewProjMatrixFBO) {
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+        gl.viewport(0, 0, OFFSCREEN_WIDTH, OFFSCREEN_HEIGHT); // 为帧缓冲区做准备
+
+        gl.clearColor(0.2, 0.2, 0.4, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        drawTextureCube(gl, gl.program, cube, angle, texture, viewProjMatrixFBO);
+
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null); // 切换绘制目标为颜色缓冲区
+        // 将视窗设置回canvas的尺寸
+        gl.viewport(0, 0, canvas.width, canvas.height);
+
+
+      }
+
+      function initVertexBuffers(gl) {
+        let verticesTexCoords = new Float32Array([
+          // 顶点坐标，纹理坐标
+          -0.5, 0.5, 0.0, 1.0,
+          -0.5, -0.5, 0.0, 0.0,
+          0.5, 0.5, 1.0, 1.0,
+          0.5, -0.5, 1.0, 0.0,
+        ]);
+
+        let n = 4; // 顶点数目
+        const FSIZE = verticesTexCoords.BYTES_PER_ELEMENT;
+
+        // 创建缓冲区对象
+        const vertexTexCoordBuffer = gl.createBuffer();
+        if (!vertexTexCoordBuffer) {
+          console.log(Error("无法创建缓冲区对象"));
+          return -1;
+        }
+
+        // 将顶点坐标和纹理坐标写入缓冲区对象
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexTexCoordBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, verticesTexCoords, gl.STATIC_DRAW);
+
+        // 坐标数据
+        let a_position = gl.getAttribLocation(gl.program, "a_Position");
+        if (a_position < 0) {
+          console.log(Error("无法获取attribute变量的存储位置"));
+          return -1;
+        }
+        // 将缓冲区对象分配给 a_position 变量
+        gl.vertexAttribPointer(a_position, 2, gl.FLOAT, false, FSIZE * 4, 0);
+        // 连接 a_position 变量与分配的缓冲区对象
+        gl.enableVertexAttribArray(a_position);
+
+        // 纹理坐标数据
+        let a_texCoord = gl.getAttribLocation(gl.program, "a_TexCoord");
+        if (a_texCoord < 0) {
+          console.log(Error("无法获取attribute变量的存储位置"));
+          return -1;
+        }
+        // 将缓冲区对象分配给 a_texCoord 变量
+        gl.vertexAttribPointer(a_texCoord, 2, gl.FLOAT, false, FSIZE * 4, FSIZE * 2);
+        // 连接 a_texCoord 变量与分配的缓冲区对象
+        gl.enableVertexAttribArray(a_texCoord);
+
+        return n;
+      }
+
+      function initTextures(gl, n) {
+        // 创建纹理对象
+        let texture = gl.createTexture(); // 省略错误处理
+        // 获取 u_Sampler 存储位置
+        let u_sampler = gl.getUniformLocation(gl.program, "u_Sampler"); // 省略错误处理
+        // 创建image图像
+        let image = new Image();
+
+        // 注册图像加载事件的响应函数
+        image.onload = () => loadTexture(gl, n, texture, u_sampler, image);
+
+        // 浏览器加载图像
+        image.src = "../img/texture.png";
+
+        return true;
+      }
+
+      function loadTexture(gl, n, texture, u_sampler, image) {
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1); // 对纹理图像进行y轴翻转
+
+        gl.activeTexture(gl.TEXTURE0); // 开启0号纹理单元
+
+        gl.bindTexture(gl.TEXTURE_2D, texture); // 向target绑定纹理对象
+
+        // 配置纹理参数
+        // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+
+        //配置纹理参数
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image); // 配置纹理对象
+
+        gl.uniform1i(u_sampler, 0); // 将0号纹理传递给着色器 // 省略错误处理
+
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+      }
+    </script>
+  </div>
+</body>
+
+</html>

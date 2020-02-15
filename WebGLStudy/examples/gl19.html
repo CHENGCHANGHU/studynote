@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <title>修改：原图大小纹理</title>
+  <link rel="shortcut icon" href="../icon/sparrow.png" />
+  <link rel="bookmark" href="../icon/sparrow.png" type="image/x-icon" />
+  <link rel="stylesheet" href="../style/common.css" />
+  <!-- 对于制作原型或学习，你可以这样使用最新版本： -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
+  <script src="../lib/webgl-debug.js"></script>
+  <script src="../lib/webgl-utils.js"></script>
+  <script src="../lib/cuon-matrix.js"></script>
+  <script src="../lib/cuon-utils.js"></script>
+  <script src="../lib/allx-utils.js"></script>
+</head>
+
+<body>
+  <div id='gl19'>
+    <h2>gl19 修改：原图大小纹理</h2>
+    <canvas id="c19" width="400" height="400">
+      您的浏览器不支持canvas
+    </canvas>
+    <pre>
+<a href="../examples/gl19.html" target="_blank" title="webgl纹理">示例</a></pre>
+    <script type="text/javascript">
+      // 顶点着色器程序2
+      let VSHADER_SOURCE18 = `
+        attribute vec4 a_Position;
+        attribute vec2 a_TexCoord;
+        varying vec2 v_TexCoord;
+        void main(){
+          gl_Position=a_Position;
+          v_TexCoord=a_TexCoord;
+        }`;
+
+      // 片元着色器程序2
+      let FSHADER_SOURCE18 = `
+        precision mediump float;
+        uniform sampler2D u_Sampler;
+        varying vec2 v_TexCoord;
+        void main(){
+          gl_FragColor=texture2D(u_Sampler,v_TexCoord);
+          // gl_FragColor=vec4(1.0,0.0,0.0,1.0);
+        }`;
+      // 获取canvas，获取webGL绘图上下文
+      const c19 = document.querySelector("#c19");
+      const gl19 = getWebGLContext(c19);
+      if (!gl19) {
+        console.log(Error("无法获得webgl的绘图上下文"));
+      }
+      // 初始化着色器
+      if (!initShaders(gl19, VSHADER_SOURCE18, FSHADER_SOURCE18)) {
+        console.log(Error("无法初始化着色器"));
+      }
+
+      // 加载纹理图像，获取纹理图像大小
+      const img = new Image();
+
+      loadImg("../img/texture.png").then(([w, h]) => {
+        let cw = c19.width;
+        let ch = c19.height;
+        let verticesTexCoords = new Float32Array([
+          // 顶点坐标，纹理坐标
+          -1.0, 1.0, 0.0, 1.0,
+          -1.0, -1.0, 0.0, 0.0,
+          1.0, 1.0, 1.0, 1.0,
+          1.0, -1.0, 1.0, 0.0,
+        ]);
+        if (w > h) {
+          let y = (h * cw) / (w * ch);
+          verticesTexCoords = new Float32Array([
+            // 顶点坐标，纹理坐标
+            -1.0, y, 0.0, 1.0,
+            -1.0, -y, 0.0, 0.0,
+            1.0, y, 1.0, 1.0,
+            1.0, -y, 1.0, 0.0,
+          ]);
+        } else if (w < h) {
+          let x = (ch * w) / (h * cw);
+          verticesTexCoords = new Float32Array([
+            // 顶点坐标，纹理坐标
+            -x, 1.0, 0.0, 1.0,
+            -x, -1.0, 0.0, 0.0,
+            x, 1.0, 1.0, 1.0,
+            x, -1.0, 1.0, 0.0,
+          ]);
+        }
+
+        // 设置顶点着色器缓冲区信息
+        let n19 = initVertexBuffers19(gl19, verticesTexCoords);
+        if (n19 < 0) console.log(Error("设置顶点着色器缓冲区信息"));
+
+        gl19.clearColor(0.0, 0.0, 0.0, 1.0);
+
+        // 创建纹理对象
+        let texture19 = gl19.createTexture(); // 省略错误处理
+        // 获取 u_Sampler 存储位置
+        let u_sampler19 = gl19.getUniformLocation(gl19.program, "u_Sampler"); // 省略错误处理
+
+        loadTexture(gl19, n19, texture19, u_sampler19, img);
+
+      });
+
+      function loadImg(src) {
+        return new Promise((resolve, reject) => {
+          img.src = src;
+          img.onload = () => {
+            resolve([img.width, img.height]);
+          }
+        });
+      }
+
+      function initVertexBuffers19(gl, verticesTexCoords) {
+        let n = 4; // 顶点数目
+        const FSIZE = verticesTexCoords.BYTES_PER_ELEMENT;
+
+        // 创建缓冲区对象
+        const vertexTexCoordBuffer = gl.createBuffer();
+        if (!vertexTexCoordBuffer) {
+          console.log(Error("无法创建缓冲区对象"));
+          return -1;
+        }
+
+        // 将顶点坐标和纹理坐标写入缓冲区对象
+        gl.bindBuffer(gl.ARRAY_BUFFER, vertexTexCoordBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, verticesTexCoords, gl.STATIC_DRAW);
+
+        // 坐标数据
+        let a_position = gl.getAttribLocation(gl.program, "a_Position");
+        if (a_position < 0) {
+          console.log(Error("无法获取attribute变量的存储位置"));
+          return -1;
+        }
+        // 将缓冲区对象分配给 a_position 变量
+        gl.vertexAttribPointer(a_position, 2, gl.FLOAT, false, FSIZE * 4, 0);
+        // 连接 a_position 变量与分配的缓冲区对象
+        gl.enableVertexAttribArray(a_position);
+
+        // 纹理坐标数据
+        let a_texCoord = gl.getAttribLocation(gl.program, "a_TexCoord");
+        if (a_texCoord < 0) {
+          console.log(Error("无法获取attribute变量的存储位置"));
+          return -1;
+        }
+        // 将缓冲区对象分配给 a_texCoord 变量
+        gl.vertexAttribPointer(a_texCoord, 2, gl.FLOAT, false, FSIZE * 4, FSIZE * 2);
+        // 连接 a_texCoord 变量与分配的缓冲区对象
+        gl.enableVertexAttribArray(a_texCoord);
+
+        return n;
+      }
+
+      function loadTexture(gl, n, texture, u_sampler, image) {
+        // 对纹理图像进行y轴翻转
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+
+        // 开启0号纹理单元
+        gl.activeTexture(gl.TEXTURE0);
+
+        // 向target绑定纹理对象
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+
+        // 配置纹理参数
+        // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+
+        //配置纹理参数
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+        // 配置纹理对象
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+
+        // 将0号纹理传递给着色器
+        gl.uniform1i(u_sampler, 0); // 省略错误处理
+
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, n);
+      }
+    </script>
+  </div>
+</body>
+
+</html>
