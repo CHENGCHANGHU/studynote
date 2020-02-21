@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <title>nodejs</title>
+  <link rel="stylesheet" href="../styles/common.css" />
+  <!-- 对于制作原型或学习，你可以这样使用最新版本： -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+  <div class="sticky-title">
+    伟大、无私、正经的 黄橙 先生存笔记于此
+  </div>
+  <div class="content-container">
+    <div class="chapter-box">
+
+
+      <div class="chapter" id='nodejs1'>
+        <h2>nodejs1 Nodejs背景</h2>
+        <pre>
+  1、V8虚拟机，去掉中间环节，不执行字节码，不使用解释器，直接编译成本地机器码，提升性能
+    V8紧跟ECMAScript标准，使用新特性，不用等到所有浏览器的支持
+  2、Node为服务端JavaScript提供了一个事件驱动的、异步的平台
+    事件轮询、非阻塞I/O（I/O总是在主事件轮询之外进行）
+  3、DIRT（Data-Intensive Real-Time）：数据密集型实时程序（Node所针对的应用程序）
+  4、Node从构建开始就有一个事件驱动和异步的模型，是一个JavaScript程序的平台，而不是框架
+  5、在Node中，服务器和程序是一样的
+  6、流数据：特殊的数组
+    数组中数据在空间上分散，数据流中数据在时间上分散（可以边读取，边处理）
+    可写数据流，http响应的res对象
+    可读和可写可以连接起来形成管道（pipe，更高效，数据准备好就处理，处理完成就写出，不用等整个资源都读取完）
+    在数据流动的时候，事件轮询还能处理其他事件
+  7、Node在多个平台上均默认提供了DIRT方式
+</pre>
+      </div>
+
+      <div class="chapter" id='nodejs2'>
+        <h2>nodejs2 示例：聊天室</h2>
+        <pre>
+  1、需求：
+    1）提供静态文件
+      使用Node内置的http模块，发送文件内容和文件类型（MIME，mime模块）
+    2）在服务器上处理与聊天相关的信息
+      Ajax使用HTTP作为传输机制，HTTP发送消息，需要使用一个新的TCP/IP连接，打开、关闭连接需要时间
+        HTTP的请求头也使得传输的数据量较大
+      WebSocket是一个为支持实时通讯而设计的轻量双向通信协议
+    3）在用户的浏览器上处理与聊天相关的信息
+  2、程序文件结构
+    1）项目目录
+    2）lib子目录：存放服务端逻辑代码
+    3）public子目录：存放客户端文件（静态文件）
+  3、初始化项目文件夹（npm init）
+    安装依赖项（npm install socket.io mime）
+</pre>
+      </div>
+
+      <div class="chapter" id='nodejs3'>
+        <h2>nodejs3 Node编程基础</h2>
+        <pre>
+  1、require是Node中少数几个同步I/O操作之一，同步操作会阻塞Node，出现性能问题
+    所以只在程序最初加载时使用require和其他同步操作
+  2、模块
+    最终在程序中导出的是module.exports，exports只是对module.exports的一个全局引用
+      module.exports最初被定义为一个空对象
+    同时返回exports和module.exports，则前者会被忽略
+    exports对象是当前模块的导出对象，用于导出模块公有方法和属性。
+    通过module对象可以访问到当前模块的一些相关信息，但最多的用途是替换当前模块的导出对象。
+    如果模块是目录，在模块目录中的模块文件必须命名为index.html
+  3、两种响应逻辑管理方式：回调、事件监听
+    1）回调：通常用来定义一次性响应的逻辑，如：指定回调函数处理数据库查询结果
+      node内置模块使用回调函数的第一个参数通常都是err
+    2）事件监听器：本质也是回调，但与一个概念实体（事件）相关联，处理重复事件
+      EventEmitter：事件发射器（可以添加事件发射及处理）
+      on--重复事件，once--一次性事件
+  4、
+</pre>
+      </div>
+
+    </div>
+    <!-- -----------------------------目录----------------------------- -->
+    <div class="catalog-box" id="catalog">
+      <ol>
+        <li v-for="(c,index) in reverseCatalogs">
+          <a :href="getCatalogId(index)">nodejs{{ index + 1}} {{ c }}</a>
+        </li>
+      </ol>
+    </div>
+    <script type="text/javascript">
+      const catalogs = [
+        "Node编程基础",
+        "示例：聊天室",
+        "Nodejs背景",
+        // "在此写目录"
+      ];
+      const catalogVM = new Vue({
+        el: '#catalog',
+        data: {
+          catalogs, // 对象增强写法
+          currId: 1,
+        },
+        computed: {
+          reverseCatalogs() {
+            return this.catalogs.reverse();
+          },
+        },
+        methods: {
+          // 获取id
+          getCatalogId(index) {
+            return '#nodejs' + (index + 1);
+          },
+        },
+      });
+    </script>
+  </div>
+</body>
+
+</html>
