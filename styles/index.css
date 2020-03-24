@@ -1,0 +1,35 @@
+body {
+  /* width: 100vw;
+  height: 100vh; */
+  position: relative;
+}
+
+p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#canvas {
+  /* position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto; */
+}
+
+a {
+  display: inline-block;
+  line-height: 26px;
+  font-size: 10pt;
+  text-decoration: none;
+  background-color: coral;
+  border-radius: 5px;
+  padding: 2px 5px 2px 5px;
+  color: antiquewhite;
+}
+
+a:hover{
+  background-color: chocolate;
+}

@@ -13,7 +13,8 @@
 
 <body>
   <div class="sticky-title">
-    伟大、无私、正经的 黄橙 先生存笔记于此
+    <!-- 伟大、无私、正经的 黄橙 先生存笔记于此 -->
+    JS入门要点笔记
   </div>
   <div class="content-container">
     <div class="chapter-box">
@@ -354,7 +355,8 @@
     也就是说，闭包可以让你从内部函数访问外部函数作用域。
     在JavaScript，函数在每次创建时生成闭包。
     闭包是由函数以及创建该函数的词法环境组合而成。这个环境包含了这个闭包创建时所能访问的所有局部变量。
-    闭包的最大用处有两个：一个是可以读取函数内部的变量，另一个就是让这些变量始终保持在内存中，即闭包可以使得它诞生环境一直存在。
+    闭包的最大用处有两个：一个是可以读取函数内部的变量，
+      另一个就是让这些变量始终保持在内存中，即闭包可以使得它诞生环境一直存在。
     闭包的另一个用处，是封装对象的私有属性和私有方法。
     注意，外层函数每次运行，都会生成一个新的闭包，而这个闭包又会保留外层函数的内部变量，所以内存消耗很大。
     闭包很有用，因为它允许将函数与其所操作的某些数据（环境）关联起来。这显然类似于面向对象编程。
@@ -1262,7 +1264,7 @@
       事件完全可以理解成“信号”，如果存在一个“信号中心”，某个任务执行完成，就向信号中心“发布”（publish）一个信号，
         其他任务可以向信号中心“订阅”（subscribe）这个信号，从而知道什么时候自己可以开始执行。
       这就叫做”发布/订阅模式”（publish-subscribe pattern），又称“观察者模式”（observer pattern）。
-      性质与“事件监听”类似，但明显更优。通过查看“消息中心”，了解存在多少信号、每个信号有多少订阅者，从而监控程序的运行。
+      性质与“事件监听”类似，但更优。通过查看“消息中心”，了解存在多少信号、每个信号有多少订阅者，从而监控程序的运行。
   5、异步操作的流程控制
     流程控制：如何确定异步操作执行的顺序，以及如何保证遵守这种顺序。
     1）串行执行
@@ -1827,6 +1829,631 @@
 </pre>
       </div>
 
+      <!-- 属性的操作 -->
+      <div class="chapter" id='kp37'>
+        <h2>kp37 属性的操作</h2>
+        <pre>
+  1、HTML 元素包括标签名和若干个键值对，这个键值对就称为“属性”（attribute）。
+    属性本身是一个对象（Attr对象）
+  2、Element.attributes 属性：返回一个类似数组的动态对象，成员是该元素标签的所有属性节点对象（动态）
+    属性节点对象有name和value属性，对应该属性的属性名和属性值，等同于nodeName属性和nodeValue属性。
+  3、元素的标准属性：HTML 元素的标准属性（即在标准中定义的属性），会自动成为元素节点对象的属性。
+  4、属性操作的标准方法
+    Element.getAttribute()：返回当前元素节点的指定属性。
+    Element.getAttributeNames()：返回一个数组，成员是当前元素的所有属性的名字。
+    Element.setAttribute()：用于为当前元素节点新增属性。如果同名属性已存在，则相当于编辑已存在的属性。
+      属性值总是字符串，其他类型的值会自动转成字符串
+      有些属性不需要属性值，只要设置了就总是会生效
+    Element.hasAttribute()：返回一个布尔值，表示当前元素节点是否包含指定属性。
+    Element.hasAttributes()：返回一个布尔值，表示当前元素是否有属性
+    Element.removeAttribute()：移除指定属性
+  5、dataset 属性：使用标准提供的data-*属性。在HTML元素上附加数据，供 JavaScript 脚本使用
+    使用元素节点对象的dataset属性，它指向一个对象，可以用来操作 HTML 元素标签的data-*属性。
+    删除一个data-*属性，可以直接使用delete命令。
+    注意，data-后面的属性名有限制，只能包含字母、数字、连词线（-）、点（.）、冒号（:）和下划线（_)。
+    而且，属性名不应该使用A到Z的大写字母，比如不能有data-helloWorld这样的属性名，而要写成data-hello-world。
+    转成dataset的键名时，变为相应的驼峰法
+</pre>
+      </div>
+
+      <!-- Text节点和DocumentFragment节点 -->
+      <div class="chapter" id='kp38'>
+        <h2>kp38 Text节点和DocumentFragment节点</h2>
+        <pre>
+  1、文本节点（Text）代表元素节点（Element）和属性节点（Attribute）的文本内容
+    用父节点的firstChild、nextSibling等属性获取文本节点，
+    或者使用Document节点的createTextNode方法创造一个文本节点。
+    浏览器原生提供一个Text构造函数。它返回一个文本节点实例。它的参数就是该文本节点的文本内容。
+    注意，由于空格也是一个字符，所以哪怕只有一个空格，也会形成文本节点。
+    文本节点除了继承Node接口，还继承了CharacterData接口
+  2、Text节点的属性
+    ·data：等同于nodeValue属性，用来设置或读取文本节点的内容。
+    ·wholeText：将当前文本节点与毗邻的文本节点，作为一个整体返回
+    ·length：返回当前文本节点的文本长度。
+    ·nextElementSibling，previousElementSibling：返回紧跟在当前文本节点后面的那个同级元素节点
+  3、Text节点的方法
+    ·appendData()：在Text节点尾部追加字符串。
+    ·deleteData()：删除Text节点内部的子字符串，第一个参数为子字符串开始位置，第二个参数为子字符串长度。
+    ·insertData()：在Text节点插入字符串，第一个参数为插入位置，第二个参数为插入的子字符串。
+    ·replaceData()：用于替换文本，第一个参数为替换开始位置，第二个参数为需要被替换掉的长度，第三个参数为新加入的字符串。
+    ·subStringData()：用于获取子字符串，第一个参数为子字符串在Text节点中的开始位置，第二个参数为子字符串长度。
+    ·remove()：用于移除当前Text节点。
+    ·splitText()：将Text节点一分为二，变成两个毗邻的Text节点
+      返回分割位置后方的字符串，而原Text节点变成只包含分割位置前方的字符串。
+      父元素节点的normalize方法可以将毗邻的两个Text节点合并。
+  4、DocumentFragment节点：代表一个文档的片段，本身就是一个完整的 DOM 树形结构
+    它不属于当前文档，操作DocumentFragment节点，要比直接操作 DOM 树快得多。（内存中，无需渲染）
+    一般用于构建一个 DOM 结构，然后插入当前文档。
+    document.createDocumentFragment方法、浏览器原生的DocumentFragment构造函数，可以创建一个空的DocumentFragment节点。
+    DocumentFragment节点本身不能被插入当前文档。
+      作为appendChild()、insertBefore()、replaceChild()等方法的参数时，是它的所有子节点插入当前文档，而不是它自身。
+    一旦DocumentFragment节点被添加进当前文档，它自身就变成了空节点（textContent属性为空字符串），可以被再次使用
+    如果想要保存DocumentFragment节点的内容，可以使用cloneNode方法。
+</pre>
+      </div>
+
+      <!-- CSS操作 -->
+      <div class="chapter" id='kp39'>
+        <h2>kp39 CSS操作</h2>
+        <pre>
+  1、HTML元素的style属性
+    使用网页元素节点的getAttribute()方法、setAttribute()方法和removeAttribute()方法，
+      直接读写或删除网页元素的style属性。
+  2、CSSStyleDeclaration接口：CSSStyleDeclaration 接口可以直接读写 CSS 的样式属性
+    不过，连词号需要变成骆驼拼写法。
+    三个地方部署了这个接口：元素节点的style属性（Element.style）、CSSStyle实例的style属性
+      window.getComputedStyle()的返回值
+  3、CSSStyleDeclaration实例属性
+    ·cssText：用来读写当前规则的所有样式声明文本。
+      删除一个元素的所有行内样式，最简便的方法就是设置cssText为空字符串。
+    ·length：返回一个整数值，表示当前规则包含多少条样式声明。
+    ·parentRule：返回当前规则所属的那个样式块（CSSRule实例）。只读，且只在使用CSSRule接口时有意义。
+  4、CSSStyleDeclaration实例方法
+    ·getPropertyPriority：接受 CSS 样式的属性名作为参数，返回一个字符串，表示有没有设置important优先级。
+      如果有就返回important，否则返回空字符串。
+    ·getPropertyValue：接受 CSS 样式属性名作为参数，返回一个字符串，表示该属性的属性值。
+    ·item：接受一个整数值作为参数，返回该位置的 CSS 属性名。
+    ·removeProperty：接受一个属性名作为参数，在 CSS 规则里面移除这个属性，返回这个属性原来的值。
+    ·setProperty：用来设置新的 CSS 属性。
+  5、CSS模块的侦测：需要知道当前浏览器是否支持某个模块，这就叫做“CSS模块的侦测”。
+    一个比较普遍适用的方法是，判断元素的style对象的某个属性值是否为字符串。
+    如果该 CSS 属性确实存在，会返回一个字符串。如果该属性不存在，则会返回undefined。
+  6、CSS对象：浏览器原生提供 CSS 对象
+    ·CSS.escape()：转义 CSS 选择器里面的特殊字符。
+    ·CSS.supports()：返回一个布尔值，表示当前环境是否支持某一句 CSS 规则。
+  7、window.getComputedStyle()：得到元素实际的样式，需要得到浏览器最终计算出来的样式规则。只读
+    行内样式（inline style）具有最高的优先级，改变行内样式，通常会立即反映出来。
+    但是，网页元素最终的样式是综合各种规则计算出来的
+    CSSStyleDeclaration实例是动态对象，任何对于样式的修改，会实时反映到这个实例上面。
+  8、CSS伪元素：通过CSS向DOM添加的元素，主要是通过:before和:after选择器生成，然后用content属性指定伪元素的内容。
+    要用到window.getComputedStyle()获取伪元素，window.getComputedStyle(test, ':before').content;
+    也可以使用 CSSStyleDeclaration 实例的getPropertyValue方法，获取伪元素的属性。
+  9、StyleSheet接口：StyleSheet接口代表网页的一张样式表，包括< lin k>元素加载的样式表和< styl e>元素内嵌的样式表。
+    document对象的styleSheets属性，可以返回当前页面的所有StyleSheet实例（即所有样式表）。类似数组
+    ·实例属性
+      ·disabled：返回一个布尔值，表示该样式表是否处于禁用状态。
+        设置disabled属性为true，等同于在< lin k>元素里面，将这张样式表设为alternate stylesheet，样式表将不会生效。
+      ·media：返回一个类似数组的对象（MediaList实例），成员是表示适用媒介的字符串。
+        表示当前样式表是用于屏幕（screen），还是用于打印（print）或手持设备（handheld），或各种媒介都适用（all）。
+        该属性只读，默认值是screen。
+        MediaList实例的appendMedium方法，用于增加媒介；deleteMedium方法用于删除媒介。
+      ·title：返回样式表的title属性。
+      ·type：返回样式表的type属性，通常是text/css。
+      ·parentStyleSheet：返回包含了当前样式表的那张样式表。
+        CSS 的@import命令允许在样式表中加载其他样式表。
+      ·ownerNode：返回StyleSheet对象所在的 DOM 节点，通常是< lin k>或< styl e>。
+      ·cssRules：指向一个类似数组的对象（CSSRuleList实例），里面每一个成员就是当前样式表的一条 CSS 规则。
+        使用该规则的cssText属性，可以得到 CSS 规则对应的字符串。
+        每条 CSS 规则还有一个style属性，指向一个对象，用来读写具体的 CSS 命令。
+      ·有些样式表是通过@import规则输入的，它的ownerRule属性会返回一个CSSRule实例，代表那行@import规则
+    ·实例方法 
+      ·CSSStyleSheet.insertRule方法用于在当前样式表的插入一个新的 CSS 规则。
+      ·CSSStyleSheet.deleteRule方法用来在样式表里面移除一条规则，参数是该条规则在cssRules对象中的位置。
+  10、实例：添加样式表
+    ·一种是添加一张内置样式表，即在文档中添加一个< styl e>节点。
+    ·一种是添加外部样式表，即在文档中添加一个< lin k>节点，然后将href属性指向外部样式表的 URL。
+  11、CSSRuleList接口：一个类似数组的对象，表示一组 CSS 规则，成员都是 CSSRule 实例。
+    获取 CSSRuleList 实例，一般是通过StyleSheet.cssRules属性。
+    每一条规则（CSSRule 实例）可以通过rules.item(index)或者rules[index]拿到。
+  12、CSSRule 接口：JavaScript 通过 CSSRule 接口操作 CSS 规则。
+    一条 CSS 规则包括两个部分：CSS 选择器和样式声明。
+    一般通过 CSSRuleList 接口（StyleSheet.cssRules）获取 CSSRule 实例。
+  13、CSSRule 实例的属性
+    ·CSSRule.cssText属性返回当前规则的文本，还是使用上面的例子。
+    ·CSSRule.parentStyleSheet属性返回当前规则所在的样式表对象（StyleSheet 实例）
+    ·CSSRule.parentRule属性返回包含当前规则的父规则
+    ·CSSRule.type属性返回一个整数值，表示当前规则的类型。
+      1：普通样式规则（CSSStyleRule实例）、3：@import规则、4：@media规则（CSSMediaRule实例）、5：@font-face规则
+  14、CSSStyleRule接口：
+    ·CSSStyleRule.selectorText属性返回当前规则的选择器。属性是可写的。
+    ·CSSStyleRule.style属性返回一个对象（CSSStyleDeclaration 实例），代表当前规则的样式声明，
+      也就是选择器后面的大括号里面的部分。
+  15、CSSMediaRule 接口：主要提供media属性和conditionText属性。
+    前者返回代表@media规则的一个对象（MediaList 实例），后者返回@media规则的生效条件。
+  16、window.matchMedia()：用来将 CSS 的MediaQuery条件语句，转换成一个 MediaQueryList 实例。
+    MediaQueryList 接口的实例属性：
+      media属性返回一个字符串，表示对应的 MediaQuery 条件语句。
+      matches属性返回一个布尔值，表示当前页面是否符合指定的 MediaQuery 条件语句。
+      onchange属性用来指定change事件的监听函数。
+        如果 MediaQuery 条件语句的适配环境发生变化，会触发change事件。
+    MediaQueryList 接口的实例方法：
+      MediaQueryList.addListener()和MediaQueryList.removeListener()，用来为change事件添加或撤销监听函数。
+</pre>
+      </div>
+
+      <!-- Mutation Observer API -->
+      <div class="chapter" id='kp40'>
+        <h2>kp40 Mutation Observer API</h2>
+        <pre>
+  1、Mutation Observer API 用来监视 DOM 变动。
+    DOM 的任何变动，比如节点的增减、属性的变动、文本内容的变动，这个 API 都可以得到通知。
+    事件是同步触发，也就是说，DOM 的变动立刻会触发相应的事件；
+    Mutation Observer 则是异步触发，DOM 的变动并不会马上触发，而是要等到当前所有 DOM 操作都结束才触发。
+    这样设计是为了应付 DOM 变动频繁的特点。
+      ·它等待所有脚本任务完成后，才会运行（即异步触发方式）。
+      ·它把 DOM 变动记录封装成一个数组进行处理，而不是一条条个别处理 DOM 变动。
+      ·它既可以观察 DOM 的所有类型变动，也可以指定只观察某一类变动。
+  2、MutationObserver 构造函数
+    使用MutationObserver构造函数，新建一个观察器实例，同时指定这个实例的回调函数。
+    回调函数接受两个参数，第一个是变动数组，第二个是观察器实例
+  3、MutationObserver 的实例方法
+    ·observe方法用来启动监听，它接受两个参数。
+      第一个参数：所要观察的 DOM 节点
+      第二个参数：一个配置对象，指定所要观察的特定变动
+      像使用addEventListener方法一样，多次添加同一个观察器是无效的，回调函数依然只会触发一次。
+      如果指定不同的options对象，以后面添加的那个为准，类似覆盖。
+    ·disconnect方法用来停止观察。调用该方法后，DOM 再发生变动，也不会触发观察器。
+    ·takeRecords方法用来清除变动记录，即不再处理未处理的变动。该方法返回变动记录的数组。
+  4、MutationRecord 对象
+    DOM 每次发生变化，就会生成一条变动记录（MutationRecord 实例），包含了与变动相关的所有信息。
+    Mutation Observer 处理的就是一个个MutationRecord实例所组成的数组。
+</pre>
+      </div>
+
+      <!-- EventTarget接口 -->
+      <div class="chapter" id='kp41'>
+        <h2>kp41 EventTarget接口</h2>
+        <pre>
+  1、DOM的事件操作（监听和触发），都定义在EventTarget接口。
+  2、EventTarget.addEventListener()用于在当前节点或对象上，定义一个特定事件的监听函数。
+    针对当前对象的同一个事件，添加多个不同的监听函数。这些函数按照添加顺序触发，即先添加先触发。
+    如果为同一个事件多次添加同一个监听函数，该函数只会执行一次，
+  3、EventTarget.removeEventListener方法用来移除addEventListener方法添加的事件监听函数
+  4、EventTarget.dispatchEvent方法在当前节点上触发指定事件，从而触发监听函数的执行。
+</pre>
+      </div>
+
+      <!-- 事件模型 -->
+      <div class="chapter" id='kp42'>
+        <h2>kp42 事件模型</h2>
+        <pre>
+  1、浏览器的事件模型，就是通过监听函数（listener）对事件做出反应。
+    事件发生后，浏览器监听到了这个事件，就会执行对应的监听函数。
+    事件驱动编程模式（event-driven）的主要编程方式。
+  2、HTML 的 on- 属性：直接定义某些事件的监听代码。
+    直接设置on-属性，与通过元素节点的setAttribute方法设置on-属性，效果是一样的。
+    使用这个方法指定的监听代码，只会在冒泡阶段触发。
+    违反了 HTML 与 JavaScript 代码相分离的原则，将两者写在一起，不利于代码分工，不推荐使用。
+  3、元素节点对象的事件属性，同样可以指定监听函数。
+    使用这个方法指定的监听代码，只会在冒泡阶段触发。
+    同一个事件只能定义一个监听函数，如果定义两次onclick属性，后一次定义会覆盖前一次。也不推荐使用。
+  4、所有 DOM 节点实例都有addEventListener方法，用来为该节点定义事件的监听函数。
+    同一个事件可以添加多个监听函数。能够指定在哪个阶段（捕获阶段还是冒泡阶段）触发监听函数。
+    除了 DOM 节点，其他对象也有这个接口，它等于是整个 JavaScript 统一的监听函数接口。
+  5、监听函数内部的this指向触发事件的那个元素节点。
+  6、事件的传播
+    一个事件发生后，会在子元素和父元素之间传播（propagation）。这种传播分成三个阶段。
+    第一阶段：从window对象传导到目标节点（上层传到底层），称为“捕获阶段”（capture phase）。
+    第二阶段：在目标节点上触发，称为“目标阶段”（target phase）。
+    第三阶段：从目标节点传导回window对象（从底层传回上层），称为“冒泡阶段”（bubbling phase）。
+    三阶段的传播模型，使得同一个事件会在多个节点上触发。
+  7、事件的代理（delegation）
+    事件会在冒泡阶段向上传播到父节点，可以把子节点的监听函数定义在父节点上，由父节点的监听函数统一处理多个子元素的事件。
+    只要定义一个监听函数，就能处理多个子节点的事件，而不用在每个< li>节点上定义监听函数。
+    如果希望事件到某个节点为止，不再传播，可以使用事件对象的stopPropagation方法。
+    stopPropagation方法只会阻止事件的传播，不会阻止该事件触发< p>节点的其他click事件的监听函数。
+    如果想要彻底取消该事件，不再触发后面所有click的监听函数，可以使用stopImmediatePropagation方法。
+</pre>
+      </div>
+
+      <!-- Event对象 -->
+      <div class="chapter" id='kp43'>
+        <h2>kp43 Event对象</h2>
+        <pre>
+  1、事件发生以后，会产生一个事件对象，作为参数传给监听函数。
+    浏览器原生提供一个Event对象，所有的事件都是这个对象的实例，或者说继承了Event.prototype对象。
+    Event构造函数接受两个参数。第一个参数type是字符串，表示事件的名称；第二个参数options是一个对象，表示事件对象的配置。
+  2、Event实例属性
+    Event.bubbles属性返回一个布尔值，表示当前事件是否会冒泡。只读属性
+    Event.eventPhase属性返回一个整数常量，表示事件目前所处的阶段。该属性只读。
+    Event.cancelable属性返回一个布尔值，表示事件是否可以取消。只读
+      如果事件不能取消，调用Event.preventDefault()会没有任何效果。
+    Event.cancelBubble属性是一个布尔值，如果设为true，相当于执行Event.stopPropagation()，可以阻止事件的传播。
+    Event.defaultPrevented属性返回一个布尔值，表示该事件是否调用过Event.preventDefault方法
+    Event.currentTarget属性返回事件当前所在的节点，即事件当前正在通过的节点，也就是当前正在执行的监听函数所在的那个节点
+      随着事件的传播，这个属性的值会变。e.currentTarget总是等同于监听函数内部的this。
+    Event.target属性返回原始触发事件的那个节点，即事件最初发生的节点。这个属性不会随着事件的传播而改变。
+    Event.type属性返回一个字符串，表示事件类型。事件的类型是在生成事件的时候指定的。该属性只读。
+    Event.timeStamp属性返回一个毫秒时间戳，表示事件发生的时间。它是相对于网页加载成功开始计算的。
+    Event.isTrusted属性返回一个布尔值，表示该事件是否由真实的用户行为产生。
+      比如，用户点击链接会产生一个click事件，该事件是用户产生的；Event构造函数生成的事件，则是脚本产生的。
+    Event.detail属性只有浏览器的 UI （用户界面）事件才具有。该属性返回一个数值，表示事件的某种信息。具体含义与事件类型相关
+  3、Event实例方法
+    Event.preventDefault方法取消浏览器对当前事件的默认行为
+      前提是，事件对象的cancelable属性为true，如果为false，调用该方法没有任何效果。
+      注意，该方法只是取消事件对当前元素的默认影响，不会阻止事件的传播。
+      利用这个方法，可以为文本输入框设置校验条件。如果用户的输入不符合条件，就无法将字符输入文本框。
+    Event.stopPropagation()：阻止事件在 DOM 中继续传播，防止再触发定义在别的节点上的监听函数，
+      但是不包括在当前节点上其他的事件监听函数。
+    Event.stopImmediatePropagation方法阻止同一个事件的其他监听函数被调用，不管监听函数定义在当前节点还是其他节点。
+    Event.composedPath()返回一个数组，成员是事件的最底层节点和依次冒泡经过的所有上层节点。
+</pre>
+      </div>
+
+      <!-- 鼠标事件 -->
+      <div class="chapter" id='kp44'>
+        <h2>kp44 鼠标事件</h2>
+        <pre>
+  1、鼠标事件指与鼠标相关的事件，继承了MouseEvent接口。
+    ·click：按下鼠标（通常是按下主按钮）时触发。
+      用户在同一个位置先完成mousedown动作，再完成mouseup动作。
+    ·dblclick：在同一个元素上双击鼠标时触发。
+    ·mousedown：按下鼠标键时触发。
+    ·mouseup：释放按下的鼠标键时触发。
+    ·mousemove：当鼠标在一个节点内部移动时触发。当鼠标持续移动时，该事件会连续触发。
+      为了避免性能问题，建议对该事件的监听函数做一些限定，比如限定一段时间内只能运行一次。
+    ·mouseenter：鼠标进入一个节点时触发，进入子节点不会触发这个事件。
+    ·mouseover：鼠标进入一个节点时触发，进入子节点会再一次触发这个事件。
+    ·mouseout：鼠标离开一个节点时触发，离开父节点也会触发这个事件。
+    ·mouseleave：鼠标离开一个节点时触发，离开父节点不会触发这个事件。
+    ·contextmenu：按下鼠标右键时（上下文菜单出现前）触发，或者按下“上下文菜单键”时触发。
+    ·wheel：滚动鼠标的滚轮时触发，该事件继承的是WheelEvent接口。
+    触发顺序是，mousedown首先触发，mouseup接着触发，click最后触发。
+    dblclick事件则会在mousedown、mouseup、click之后触发。
+    mouseover事件和mouseenter事件，都是鼠标进入一个节点时触发
+    mouseenter事件只触发一次，而只要鼠标在节点内部移动，mouseover事件会在子节点上触发多次。
+    在父元素内部离开一个子元素时，mouseleave事件不会触发，而mouseout事件会触发。
+  2、MouseEvent接口的实例属性
+    ·MouseEvent.altKey、MouseEvent.ctrlKey、MouseEvent.metaKey、MouseEvent.shiftKey
+      这四个属性都返回一个布尔值，表示事件发生时，是否按下对应的键。它们都是只读属性。
+    ·MouseEvent.button属性返回一个数值，表示事件发生时按下了鼠标的哪个键。该属性只读。
+      0：按下主键（通常是左键）、1：按下辅助键（通常是中键或者滚轮键）、2：按下次键（通常是右键）
+    ·MouseEvent.buttons属性返回一个三个比特位的值，表示同时按下了哪些键。
+      1：二进制为001（十进制的1），表示按下左键。
+      2：二进制为010（十进制的2），表示按下右键。
+      4：二进制为100（十进制的4），表示按下中键或滚轮键。
+    ·MouseEvent.clientX属性返回鼠标位置相对于浏览器窗口左上角的水平坐标（单位像素），别名 MouseEvent.x。
+    ·MouseEvent.clientY属性返回垂直坐标。这两个属性都是只读属性。别名 MouseEvent.y。
+    ·MouseEvent.movementX属性返回当前位置与上一个mousemove事件之间的水平距离（单位像素）。只读
+    ·MouseEvent.movementY属性返回当前位置与上一个mousemove事件之间的垂直距离（单位像素）。只读
+    ·MouseEvent.screenX属性返回鼠标位置相对于屏幕左上角的水平坐标（单位像素），
+    ·MouseEvent.screenY属性返回垂直坐标。这两个属性都是只读属性。
+    ·MouseEvent.offsetX属性返回鼠标位置与目标节点左侧的padding边缘的水平距离（单位像素），
+    ·MouseEvent.offsetY属性返回与目标节点上方的padding边缘的垂直距离。这两个属性都是只读属性。
+    ·MouseEvent.pageX属性返回鼠标位置与文档左侧边缘的距离（单位像素），返回值包括文档不可见的部分。只读。
+    ·MouseEvent.pageY属性返回与文档上侧边缘的距离（单位像素）。返回值包括文档不可见的部分。只读。
+    ·MouseEvent.relatedTarget属性返回事件的相关节点。对于那些没有相关节点的事件，该属性返回null。只读。
+  3、MouseEvent 接口的实例方法
+    ·MouseEvent.getModifierState方法返回一个布尔值，表示有没有按下特定的功能键。
+  4、WheelEvent 接口继承了 MouseEvent 实例，代表鼠标滚轮事件的实例对象。
+</pre>
+      </div>
+
+      <!-- 键盘事件 -->
+      <div class="chapter" id='kp45'>
+        <h2>kp45 键盘事件</h2>
+        <pre>
+  1、键盘事件由用户击打键盘触发，主要有keydown、keypress、keyup三个事件，它们都继承了KeyboardEvent接口。
+    keydown：按下键盘时触发。
+    keypress：按下有值的键时触发，即按下 Ctrl、Alt、Shift、Meta 这样无值的键，这个事件不会触发。
+      对于有值的键，按下时先触发keydown事件，再触发这个事件。
+    keyup：松开键盘时触发该事件。
+  2、KeyboardEvent接口用来描述用户与键盘的互动。这个接口继承了Event接口
+  3、KeyboardEvent 的实例属性
+    ·KeyboardEvent.altKey：是否按下 Alt 键 只读。
+    ·KeyboardEvent.ctrlKey：是否按下 Ctrl 键 只读。
+    ·KeyboardEvent.metaKey：是否按下 meta 键（Mac 系统是一个四瓣的小花，Windows 系统是 windows 键）只读。
+    ·KeyboardEvent.shiftKey：是否按下 Shift 键 只读。
+    ·KeyboardEvent.code属性返回一个字符串，表示当前按下的键的字符串形式。该属性只读。
+    ·KeyboardEvent.key属性返回一个字符串，表示按下的键名。该属性只读。
+    ·KeyboardEvent.location属性返回一个整数，表示按下的键处在键盘的哪一个区域。
+    ·KeyboardEvent.repeat返回一个布尔值，代表该键是否被按着不放，以便判断是否重复这个键，
+      即浏览器会持续触发keydown和keypress事件，直到用户松开手为止。
+  4、KeyboardEvent 的实例方法
+    ·KeyboardEvent.getModifierState()方法返回一个布尔值，表示是否按下或激活指定的功能键。
+      常用参数：Alt：Alt键、CapsLock：大写锁定键、Control：Ctrl键、Meta：Meta键、NumLock：数字键盘开关键、Shift：Shift键
+</pre>
+      </div>
+
+      <!-- 进度事件 -->
+      <div class="chapter" id='kp46'>
+        <h2>kp46 进度事件</h2>
+        <pre>
+  1、进度事件用来描述资源加载的进度，继承了ProgressEvent接口。
+    主要由 AJAX 请求、< im g>、< audi o>、< vide o>、< styl e>、< lin k>等外部资源的加载触发，
+      abort：外部资源中止加载时（比如用户取消）触发。如果发生错误导致中止，不会触发该事件。
+      error：由于错误导致外部资源无法加载时触发。
+      load：外部资源加载成功时触发。
+      loadstart：外部资源开始加载时触发。
+      loadend：外部资源停止加载时触发，发生顺序排在error、abort、load等事件的后面。
+      progress：外部资源加载过程中不断触发。
+      timeout：加载超时时触发。
+    注意，除了资源下载，文件上传也存在这些事件。
+    有时，图片加载会在脚本运行之前就完成，脚本放置在网页底部的时候，有可能load和error事件的监听函数根本不会执行。
+    所以，比较可靠的方式，是用complete属性先判断一下是否加载完成。
+  2、ProgressEvent接口主要用来描述外部资源加载的进度，比如 AJAX 加载、< img>、< video>、< styl e>、< link>等外部资源加载。
+    ProgressEvent具有对应的实例属性：
+      ProgressEvent.lengthComputable、ProgressEvent.loaded、ProgressEvent.total
+</pre>
+      </div>
+
+      <!-- 表单事件 -->
+      <div class="chapter" id='kp47'>
+        <h2>kp47 表单事件</h2>
+        <pre>
+  1、表单事件的种类
+    1）input事件：当< input>、< select>、< textarea>的值发生变化时触发
+      复选框checkbox或单选框radio，用户改变选项时，也会触发这个事件
+      对于打开contenteditable属性的元素，只要值发生变化，也会触发input事件。
+      input事件的一个特点，就是会连续触发，比如用户每按下一次按键，就会触发一次input事件。
+    2）select事件当在input、textarea里面选中文本时触发。
+      选中的文本可以通过event.target元素的selectionDirection、selectionEnd、selectionStart和value属性拿到。
+    3）change事件当input、select、textarea的值发生变化时触发。
+      与input事件的最大不同，就是不会连续触发，只有全部修改完成时才会触发，另一方面input事件必然伴随change事件。
+    4）用户提交表单时，如果表单元素的值不满足校验条件，就会触发invalid事件。
+    5）reset事件当表单重置（所有表单成员变回默认值）时触发。
+    6）submit事件当表单数据向服务器提交时触发。
+  2、InputEvent接口主要用来描述input事件的实例。
+    ·InputEvent.data属性返回一个字符串，表示变动的内容。
+    ·InputEvent.inputType属性返回一个字符串，表示字符串发生变更的类型。
+    ·InputEvent.dataTransfer属性返回一个 DataTransfer 实例。
+      只在文本框接受粘贴内容（insertFromPaste）或拖拽内容（insertFromDrop）时才有效。
+</pre>
+      </div>
+
+      <!-- 触摸事件 -->
+      <div class="chapter" id='kp48'>
+        <h2>kp48 触摸事件</h2>
+        <pre>
+  1、浏览器的触摸 API 由三个部分组成。
+    Touch：一个触摸点、TouchList：多个触摸点的集合、TouchEvent：触摸引发的事件实例
+  2、Touch 接口代表单个触摸点。触摸点可能是一根手指，也可能是一根触摸笔。
+  3、TouchList接口表示一组触摸点的集合。它的实例是一个类似数组的对象，成员是Touch的实例对象，表示所有触摸点。
+  4、TouchEvent 接口继承了 Event 接口，表示由触摸引发的事件实例，通常来自触摸屏或轨迹板。
+  5、触摸事件的种类，可以通过TouchEvent.type属性，查看到底发生的是哪一种事件。
+    touchstart：用户开始触摸时触发，它的target属性返回发生触摸的元素节点。
+    touchend：用户不再接触触摸屏时触发，它的target属性与touchstart事件一致的，就是开始触摸时所在的元素节点。
+      它的changedTouches属性返回一个TouchList实例，包含所有不再触摸的触摸点（即Touch实例对象）。
+    touchmove：用户移动触摸点时触发，它的target属性与touchstart事件一致。
+      如果触摸的半径、角度、力度发生变化，也会触发该事件。
+    touchcancel：触摸点取消时触发，比如在触摸区域跳出一个模态窗口（modal window）、
+      触摸点离开了文档区域（进入浏览器菜单栏）、用户的触摸点太多，超过了支持的上限（自动取消早先的触摸点）。
+</pre>
+      </div>
+
+      <!-- 拖拉事件 -->
+      <div class="chapter" id='kp49'>
+        <h2>kp49 拖拉事件</h2>
+        <pre>
+  1、拖拉（drag）指的是，用户在某个对象上按下鼠标键不放，拖动它到另一个位置，然后释放鼠标键，将该对象放在那里。
+    为了让元素节点可拖拉，可以将该节点的draggable属性设为true。
+    注意，一旦某个元素节点的draggable属性设为true，就无法再用鼠标选中该节点内部的文字或子节点了。
+  2、DataTransfer的实例对象用来读写拖拉事件中传输的数据
+  3、其他事件
+</pre>
+      </div>
+
+      <!-- 浏览器环境概述 -->
+      <div class="chapter" id='kp50'>
+        <h2>kp50 浏览器环境概述</h2>
+        <pre>
+  1、代码嵌入网页的方法
+    1）script 元素嵌入代码：< scrip t>元素内部可以直接写 JavaScript 代码。
+      对 JavaScript 脚本来说，type属性可以设为两种值：
+        ·text/javascript：这是默认值，也是历史上一贯设定的值。
+        ·application/javascript：对于较新的浏览器，建议设为这个值。
+    2）script 元素加载外部脚本，< scrip t>标签也可以指定加载外部的脚本文件。
+      加载外部脚本和直接添加代码块，这两种方法不能混用。
+      为防止攻击者篡改外部脚本，script标签允许设置一个integrity属性，写入外部脚本Hash签名，来验证脚本的一致性。
+    3）事件属性：网页元素的事件属性（比如onclick和onmouseover），可以写入JavaScript代码
+    4）URL协议：URL支持javascript:协议，即在URL的位置写入代码，使用这个URL的时候就会执行JavaScript代码。
+      浏览器的地址栏也可以执行javascript:协议。
+      javascript:协议的常见用途是书签脚本Bookmarklet。浏览器的书签保存的是一个网址
+      为了防止书签替换掉当前文档，可以在脚本前加上void，或者在脚本最后加上void 0。
+  2、script元素
+    浏览器加载 JavaScript 脚本，主要通过script元素完成。正常的网页加载流程是这样的。
+      ·浏览器一边下载 HTML 网页，一边开始解析。也就是说，不等到下载完，就开始解析。
+      ·解析过程中，浏览器发现script元素，就暂停解析，把网页渲染的控制权转交给JavaScript引擎。
+      ·如果script元素引用了外部脚本，就下载该脚本再执行，否则就直接执行代码。
+      ·JavaScript 引擎执行完毕，控制权交还渲染引擎，恢复往下解析 HTML 网页。
+    加载外部脚本时，浏览器会暂停页面渲染，等待脚本下载并执行完成后，再继续渲染。
+    如果外部脚本加载时间很长，浏览器就一直等待脚本下载完成，网页长时间失去响应，浏览器呈现“假死”状态，被称为“阻塞效应”。
+    为了避免这种情况，较好的做法是将script标签都放在页面底部，而不是头部。
+    对于来自同一个域名的资源，比如脚本文件、样式表文件、图片文件等，浏览器一般有限制，同时最多下载6～20个资源，
+      即最多同时打开的 TCP 连接有限制，这是为了防止对服务器造成太大压力。
+    如果是来自不同域名的资源，就没有这个限制。所以，通常把静态文件放在不同的域名之下，以加快下载速度。
+    浏览器会同时并行下载js文件，但是，执行时会保证按出现顺序执行js，即使后者先下载完成
+  3、为了解决脚本文件下载阻塞网页渲染的问题，一个方法是对script元素加入defer属性
+      作用是延迟脚本的执行，等到 DOM 加载生成后，再执行脚本。
+    defer属性的运行流程如下：
+      ·浏览器开始解析 HTML 网页。
+      ·解析过程中，发现带有defer属性的script元素。
+      ·浏览器继续往下解析 HTML 网页，同时并行下载script元素加载的外部脚本。
+      ·浏览器完成解析 HTML 网页，此时再回过头执行已经下载完成的脚本。
+    对于内置而不是加载外部脚本的script标签，以及动态生成的script标签，defer属性不起作用。
+    使用defer加载的外部脚本不应该使用document.write方法。
+  4、async 属性：解决“阻塞效应”的另一个方法是对script元素加入async属性。
+    async属性的作用是，使用另一个进程下载脚本，下载时不会阻塞渲染。
+      ·浏览器开始解析 HTML 网页。
+      ·解析过程中，发现带有async属性的script标签。
+      ·浏览器继续往下解析 HTML 网页，同时并行下载script标签中的外部脚本。
+      ·脚本下载完成，浏览器暂停解析 HTML 网页，开始执行下载的脚本。
+      ·脚本执行完毕，浏览器恢复解析 HTML 网页。
+    async属性可以保证脚本下载的同时，浏览器继续渲染
+    注意，一旦采用这个属性，就无法保证脚本的执行顺序。哪个脚本先下载结束，就先执行那个脚本。
+    使用async属性的脚本文件里面的代码，不应该使用document.write方法。
+    一般来说，如果脚本之间没有依赖关系，就使用async属性，如果脚本之间有依赖关系，就使用defer属性。
+    如果同时使用async和defer属性，后者不起作用，浏览器行为由async属性决定。
+  5、脚本的动态加载：script元素还可以动态生成，生成后再插入页面，从而实现脚本的动态加载。
+    为动态加载的脚本指定回调函数
+    如果不指定协议，浏览器默认采用 HTTP 协议下载。如果要采用 HTTPS 协议下载，必需写明。
+    根据页面本身的协议来决定加载协议，这时可以采用下面的写法。
+  6、浏览器的核心是两部分：渲染引擎和 JavaScript 解释器（又称 JavaScript 引擎）。
+    1）渲染引擎的主要作用是，将网页代码渲染为用户视觉可以感知的平面文档。不同的浏览器有不同的渲染引擎。
+      渲染引擎处理网页，通常分成四个阶段：
+        ·解析代码：HTML 代码解析为 DOM，CSS 代码解析为 CSSOM（CSS Object Model）。
+        ·对象合成：将 DOM 和 CSSOM 合成一棵渲染树（render tree）。
+        ·布局：计算出渲染树的布局（layout）。
+        ·绘制：将渲染树绘制到屏幕。
+      以上四步并非严格按顺序执行，往往第一步还没完成，第二步和第三步就已经开始了。
+    2）重流和重绘
+      渲染树转换为网页布局，称为“布局流”（flow）；布局显示到页面的这个过程，称为“绘制”（paint）。
+      页面生成以后，脚本操作和样式表操作，都会触发“重流”（reflow）和“重绘”（repaint）
+      用户的互动也会触发重流和重绘，
+      重流和重绘并不一定一起发生，重流必然导致重绘，重绘不一定需要重流。
+      开发者，应该尽量设法降低重绘的次数和成本。
+        比如，尽量不要变动高层的 DOM 元素，而以底层 DOM 元素的变动代替；
+        再比如，重绘table布局和flex布局，开销都会比较大。
+      优化技巧：
+        ·读取DOM或者写入DOM，尽量写在一起，不要混杂。不要读取一个DOM节点，然后立刻写入，接着再读取一个DOM节点。
+        ·缓存 DOM 信息。
+        ·不要一项一项地改变样式，而是使用 CSS class 一次性改变样式。
+        ·使用documentFragment操作 DOM
+        ·动画使用absolute定位或fixed定位，这样可以减少对其他元素的影响。
+        ·只在必要时才显示隐藏元素。
+        ·使用window.requestAnimationFrame()，因为它可以把代码推迟到下一次重流时执行，而不是立即要求页面重流。
+        ·使用虚拟 DOM（virtual DOM）库。
+    3）JavaScript 引擎的主要作用是，读取网页中的 JavaScript 代码，对其处理后运行。
+      JavaScript 是一种解释型语言，也就是说，它不需要编译，由解释器实时运行。
+      好处是运行和修改都比较方便，刷新页面就可以重新解释；
+      缺点是每次运行都要调用解释器，系统开销较大，运行速度慢于编译型语言。
+      为提高运行速度，目前的浏览器都将js进行一定程度的编译，生成类似字节码的中间代码，以提高运行速度。
+      早期，浏览器内部对 JavaScript 的处理过程如下：
+        ·读取代码，进行词法分析（Lexical analysis），将代码分解成词元（token）。
+        ·对词元进行语法分析（parsing），将代码整理成“语法树”（syntax tree）。
+        ·使用“翻译器”（translator），将代码转为字节码（bytecode）。
+        ·使用“字节码解释器”（bytecode interpreter），将字节码转为机器码。
+      为了提高运行速度，现代浏览器改为采用“即时编译”（Just In Time compiler，缩写 JIT），
+        即字节码只在运行时编译，用到哪一行就编译哪一行，并且把编译结果缓存（inline cache）
+      字节码不能直接运行，而是运行在一个虚拟机（Virtual Machine）之上，一般也把虚拟机称为 JavaScript 引擎。
+</pre>
+      </div>
+
+      <!-- window对象 -->
+      <div class="chapter" id='kp51'>
+        <h2>kp51 window对象</h2>
+        <pre>
+  1、浏览器里面，window对象（注意，w为小写）指当前的浏览器窗口。
+    也是当前页面的顶层对象，即最高一层的对象，所有其他对象都是它的下属。
+    一个变量如果未声明，那么默认就是顶层对象的属性。
+  2、window 对象的属性
+    ·name属性是一个字符串，表示当前浏览器窗口的名字。
+      窗口不一定需要名字，这个属性主要配合超链接和表单的target属性使用。
+      只要浏览器窗口不关闭，这个属性是不会消失的。
+    ·closed属性返回一个布尔值，表示窗口是否关闭。一般用来检查，使用脚本打开的新窗口是否关闭。
+    ·opener属性表示打开当前窗口的父窗口。如果当前窗口没有父窗口，则返回null。
+      如果两个窗口之间不需要通信，建议将子窗口的opener属性显式设为null，这样可以减少一些安全隐患。
+    ·window.self和window.window属性都指向窗口本身。这两个属性只读。
+    ·frames属性返回一个类似数组的对象，成员为页面内所有框架窗口，包括frame元素和iframe元素。
+      frames属性实际上是window对象的别名。
+    ·length属性返回当前网页包含的框架总数。如果当前网页不包含frame和iframe元素，window.length就返回0。
+      window.frames.length与window.length应该是相等的。
+    ·frameElement属性主要用于当前窗口嵌在另一个网页的情况，返回当前窗口所在的那个元素节点。
+    ·top属性指向最顶层窗口，主要用于在框架窗口（frame）里面获取顶层窗口。不包含框架的网页，等同于window对象。
+    ·parent属性指向父窗口。如果当前窗口没有父窗口，window.parent指向自身。
+    ·status属性用于读写浏览器状态栏的文本。
+    ·devicePixelRatio属性返回一个数值，表示一个 CSS 像素的大小与一个物理像素的大小之间的比率。
+      表示一个 CSS 像素由多少个物理像素组成。
+      如果这个比率较大，就表示用户正在使用高清屏幕，因此可以显示较大像素的图片。
+    ·screenX和screenY属性，返回浏览器窗口左上角相对于当前屏幕左上角的水平距离和垂直距离（像素）。只读。
+    ·innerHeight和innerWidth属性，返回网页在当前窗口中可见部分的高度和宽度，即“视口”（viewport）的大小（像素）。只读。
+    ·outerHeight和window.outerWidth属性返回浏览器窗口的高度和宽度，包括浏览器菜单和边框（像素）。只读。
+    ·scrollX属性返回页面的水平滚动距离，scrollY属性返回页面的垂直滚动距离，单位像素。只读。
+      返回值不是整数，而是双精度浮点数。如果页面没有滚动，它们的值就是0。
+      pageXOffset属性和pageYOffset属性，是window.scrollX和window.scrollY别名。
+    ·组件属性：组件属性返回浏览器的组件对象。这样的属性有下面几个。
+      ·window.locationbar：地址栏对象
+      ·window.menubar：菜单栏对象
+      ·window.scrollbars：窗口的滚动条对象
+      ·window.toolbar：工具栏对象
+      ·window.statusbar：状态栏对象
+      ·window.personalbar：用户安装的个人工具栏对象
+    ·全局对象属性指向一些浏览器原生的全局对象。
+    ·isSecureContext属性返回一个布尔值，表示当前窗口是否处在加密环境。如果是 HTTPS 协议，就是true，否则就是false。
+  3、window 对象的方法
+    ·alert()方法弹出的对话框，只有一个“确定”按钮，往往用来通知用户某些信息。
+    ·prompt()方法弹出的对话框，提示文字的下方，还有一个输入框，要求用户输入信息，并有“确定”和“取消”两个按钮。
+      用来获取用户输入的数据。最好总是提供第二个参数，作为输入框的默认值。
+    ·confirm()方法弹出的对话框，除了提示信息之外，只有“确定”和“取消”两个按钮，往往用来征询用户是否同意。
+    三个方法都具有堵塞效应，一旦弹出对话框，整个页面就是暂停执行，等待用户做出反应。都是浏览器统一规定的式样，无法定制。
+    ·open方法用于新建另一个浏览器窗口，类似于浏览器菜单的新建窗口选项。返回新窗口的引用，如果无法新建窗口，则返回null。
+      url：字符串，表示新窗口的网址。如果省略，默认网址就是about:blank。
+      windowName：字符串，表示新窗口的名字。如果该名字的窗口已经存在，则占用该窗口，不再新建窗口。
+        如果省略，就默认使用_blank，表示新建一个没有名字的窗口。
+        预设值，_self表示当前窗口，_top表示顶层窗口，_parent表示上一层窗口。
+      windowFeatures：字符串，内容为逗号分隔的键值对，表示新窗口的参数。
+        如果省略，则默认打开一个完整 UI 的新窗口。
+        如果新建的是一个已经存在的窗口，则该参数不起作用，浏览器沿用以前窗口的参数。
+      window.open方法返回新窗口的引用。
+      注意，如果新窗口和父窗口不是同源的（即不在同一个域），它们彼此不能获取对方窗口对象的内部属性。
+    ·close方法用于关闭当前窗口，一般只用来关闭window.open方法新建的窗口。
+      该方法只对顶层窗口有效，iframe框架之中的窗口使用该方法无效。
+    ·stop()方法完全等同于单击浏览器的停止按钮，会停止加载图像、视频等正在或等待加载的对象。
+    ·moveTo()：用于移动浏览器窗口到指定位置。接受两个参数，分别是窗口左上角距离屏幕左上角的水平距离和垂直距离，像素。
+    ·moveBy()：将窗口移动到一个相对位置。接受两个参数，分别是窗口左上角向右移动的水平距离和向下移动的垂直距离，像素。
+    ·resizeTo()方法用于缩放窗口到指定大小。两个参数，缩放后的窗口宽度、缩放后的窗口高度。
+    ·window.resizeBy()：用于缩放窗口。按照相对的量缩放，需要给出缩放后的绝对大小。
+      它接受两个参数，第一个是水平缩放的量，第二个是垂直缩放的量，单位都是像素。
+    ·scrollTo方法用于将文档滚动到指定位置。它接受两个参数，表示滚动后位于窗口左上角的页面坐标。
+      或者接受一个配置对象作为参数。配置对象options有三个属性：
+        top：滚动后页面左上角的垂直坐标，即 y 坐标。
+        left：滚动后页面左上角的水平坐标，即 x 坐标。
+        behavior：字符串，表示滚动的方式，有三个可能值（smooth、instant、auto），默认值为auto。
+      scroll()方法是window.scrollTo()方法的别名。
+    ·scrollBy()方法用于将网页滚动指定距离（单位像素）。它接受两个参数：水平向右滚动的像素，垂直向下滚动的像素。
+      将网页向下滚动一屏。window.scrollBy(0, window.innerHeight)
+      如果不是要滚动整个文档，而是要滚动某个元素，可以使用下面三个属性和方法。
+        Element.scrollTop、Element.scrollLeft、Element.scrollIntoView()
+    ·print方法会跳出打印对话框，与用户点击菜单里面的“打印”命令效果相同。
+    ·focus()方法会激活窗口，使其获得焦点，出现在其他窗口的前面。
+    ·blur()方法将焦点从窗口移除。
+    当前窗口获得焦点时，会触发focus事件；当前窗口失去焦点时，会触发blur事件。
+    ·getSelection方法返回一个Selection对象，表示用户现在选中的文本。
+      使用Selection对象的toString方法可以得到选中的文本。
+    ·getComputedStyle()方法接受一个元素节点作为参数，返回一个包含该元素的最终样式信息的对象，
+    ·matchMedia()方法用来检查 CSS 的mediaQuery语句，
+    ·requestAnimationFrame()方法跟setTimeout类似，都是推迟某个函数的执行。
+      setTimeout必须指定推迟的时间，requestAnimationFrame()则是推迟到浏览器下一次重流时执行，执行完才会进行下一次重绘。
+      重绘通常是16ms执行一次，浏览器自动调节速率，比如网页切换到后台Tab页时，requestAnimationFrame()会暂停执行。
+      该方法接受一个回调函数callback作为参数。
+      callback执行时，参数是系统传入的一个高精度时间戳（performance.now()的返回值），单位毫秒，表示距离网页加载的时间。
+      requestAnimationFrame()的返回值是一个整数，可以传入window.cancelAnimationFrame()，用来取消回调函数的执行。
+    ·requestIdleCallback()跟setTimeout类似，也是将某个函数推迟执行，但是它保证将回调函数推迟到系统资源空闲时执行。
+      也就是说，如果某个任务不是很关键，可以使用requestIdleCallback()将其推迟执行，以保证网页性能。
+  4、window对象事件
+    ·load事件发生在文档在浏览器窗口加载完毕时。
+    ·浏览器脚本发生错误时，会触发window对象的error事件。
+  5、多窗口操作
+    网页可以使用iframe元素，嵌入其他网页，因此一个网页之中会形成多个窗口。如果子窗口之中又嵌入别的网页，就会形成多级窗口。
+    窗口的引用：各个窗口之中的脚本，可以引用其他窗口。
+      top：顶层窗口，即最上层的那个窗口、parent：父窗口、self：当前窗口，即自身
+</pre>
+      </div>
+
+      <!-- cookie -->
+      <div class="chapter" id='kp52'>
+        <h2>kp52 cookie</h2>
+        <pre>
+  1、Cookie是服务器保存在浏览器的一小段文本信息，一般大小不能超过4KB。浏览器每次向服务器发出请求，就会自动附上这段信息。
+</pre>
+      </div>
+
+      <div class="chapter" id='kp53'>
+        <h2>kp53 </h2>
+        <pre>
+        </pre>
+      </div>
+
 
 
     </div>
@@ -1840,6 +2467,22 @@
     </div>
     <script type="text/javascript">
       const catalogs = [
+        "cookie",
+        "window对象",
+        "浏览器环境概述",
+        "拖拉事件",
+        "触摸事件",
+        "表单事件",
+        "进度事件",
+        "键盘事件",
+        "鼠标事件",
+        "Event对象",
+        "事件模型",
+        "EventTarget接口",
+        "Mutation Observer API",
+        "CSS操作",
+        "Text节点和DocumentFragment节点",
+        "属性的操作",
         "Element节点",
         "Document节点",
         "ParentNode接口，ChildNode接口",
