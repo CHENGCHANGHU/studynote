@@ -1,8 +1,8 @@
 let canvas = document.getElementById("canvas");
 let ctx = canvas.getContext("2d");
 
-let W = 400,
-  H = 400,
+let W = 320,
+  H = 320,
   bgColor = "#000",
   frColor = "#eee",
   radius = 150,
