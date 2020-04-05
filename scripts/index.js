@@ -19,7 +19,7 @@ let W = 320,
 
 canvas.setAttribute("width", W);
 canvas.setAttribute("height", H);
-canvas.style["background-color"] = "rgba(0,0,0,0)";
+// canvas.style["background-color"] = "rgba(0,0,0,0)";
 
 // 依据圆心获取指定半径、弧度的终端坐标 
 const getCircleEnd = (cx, cy, radius, radian) => ({
