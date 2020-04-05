@@ -1,17 +1,23 @@
 body {
-  /* width: 100vw;
-  height: 100vh; */
+  padding: 0;
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
   position: relative;
   background-image: url("../img/img10.jpg");
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
 }
 
 h1 {
-  color: aliceblue;
-  background-color: darkgray;
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.4);
   display: inline-block;
   border-radius: 50px;
+  width: 320px;
+  margin: 10px 0 0 60px;
+  text-align: center;
 }
 
 p {
@@ -21,17 +27,11 @@ p {
 }
 
 #canvas {
-  /* position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto; */
   background-color: rgba(255, 255, 255, 0.4);
   border-radius: 160px;
   width: 320px;
   height: 320px;
-  margin-left: 20px;
+  margin-left: 60px;
 }
 
 a {
@@ -41,10 +41,97 @@ a {
   text-decoration: none;
   background-color: coral;
   border-radius: 5px;
-  padding: 2px 5px 2px 5px;
+  padding: 1px 5px 1px 5px;
   color: antiquewhite;
+  color: lightcyan;
 }
 
-a:hover {
-  background-color: chocolate;
+.link-container {
+  margin-top: 40px;
+  width: calc(50vw);
+  height: 200px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  position: absolute;
+  box-sizing: border-box;
+  left: calc(30px - 50vw);
+  transition: left 0.5s ease-in-out;
+}
+
+.link-container:target {
+  left: 0;
+}
+
+.link-box {
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.2);
+  box-sizing: border-box;
+  padding: 10px;
+  display: flex;
+  align-items: flex-start;
+  /* justify-content: space-around; */
+  justify-content: flex-start;
+  position: relative;
+  flex-flow: row wrap;
+}
+
+.link-box>a {
+  min-width: 50px;
+  background-color: lightgray;
+  color: gray;
+  margin: 0 5px;
+}
+
+.link-box>a:hover {
+  background-color: coral;
+  opacity: 1;
+  color: darkred;
+}
+
+.control-box {
+  padding: 0;
+  width: 60px;
+  border-radius: 0 20px 20px 0;
+  display: flex;
+  /* align-items: stretch; */
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.open-btn, .close-btn {
+  padding: 0;
+  width: 30px;
+  min-width: 30px;
+  height: 60px;
+  border-radius: 0 15px 15px 0;
+  display: flex;
+  align-items: center;
+  /* background-color: coral; */
+}
+
+.open-btn {
+  border-radius: 0 30px 30px 0;
+}
+
+.close-btn {
+  border-radius: 30px 0 0 30px;
+}
+
+.open-btn::before {
+  content: "";
+  border: 15px solid lightcyan;
+  border-color: transparent transparent transparent lightcyan;
+  margin-left: 5px;
+}
+
+.close-btn::before {
+  content: "";
+  border: 15px solid lightcyan;
+  margin-left: -5px;
+  border-color: transparent lightcyan transparent transparent;
+}
+
+.open-btn:hover, .close-btn:hover {
+  background-color: rgb(196, 55, 4);
 }
