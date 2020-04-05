@@ -7,10 +7,17 @@ body {
   background-position: center;
 }
 
+h1 {
+  color: aliceblue;
+  background-color: darkgray;
+  display: inline-block;
+  border-radius: 50px;
+}
+
 p {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 #canvas {
@@ -20,10 +27,11 @@ p {
   top: 0;
   bottom: 0;
   margin: auto; */
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(255, 255, 255, 0.4);
   border-radius: 160px;
   width: 320px;
   height: 320px;
+  margin-left: 20px;
 }
 
 a {
