@@ -383,14 +383,14 @@ a {
 
 .bg-control-box>div>a:hover {
   /* background-color: rgba(255, 255, 255, 0.7); */
-  background-color: brown;
+  background-color: #fff;
   color: #333;
   transform: scale(1.1);
 }
 
 .bg-control-box>div>a:active {
   /* background-color: rgba(255, 255, 255, 0.7); */
-  background-color: brown;
+  background-color: #fff;
   color: #333;
   transform: scale(1.5);
 }
