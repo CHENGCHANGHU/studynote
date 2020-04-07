@@ -1,6 +1,9 @@
-body {
+* {
   padding: 0;
   margin: 0;
+}
+
+body {
   width: 100vw;
   height: 100vh;
   position: relative;
@@ -31,7 +34,43 @@ a {
   display: inline-block;
 }
 
+@font-face {
+  font-family: 'iconfont';
+  src: url('../fonts/font_83cmiq50abd/iconfont.eot');
+  src: url('../fonts/font_83cmiq50abd/iconfont.eot?#iefix') format('embedded-opentype'), url('../fonts/font_83cmiq50abd/iconfont.woff2') format('woff2'), url('../fonts/font_83cmiq50abd/iconfont.woff') format('woff'), url('../fonts/font_83cmiq50abd/iconfont.ttf') format('truetype'), url('../fonts/font_83cmiq50abd/iconfont.svg#iconfont') format('svg');
+}
+
+/* .logo{
+  position: relative;
+} */
+
+.logo h1 a {
+  display: inline-block;
+  height: 48px;
+  width: 100%;
+  border-radius: 50px;
+  /* color: #fff; */
+  color: #ccc;
+  font-size: 18px;
+  vertical-align: center;
+  line-height: 48px;
+  letter-spacing: 2px;
+}
+
+.logo h1 span {
+  font-family: "iconfont" !important;
+  display: inline-block;
+  height: 48px;
+  font-size: 30px;
+  font-style: normal;
+  line-height: 48px;
+  color: brown;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
 .content-container {
+  position: relative;
   z-index: 2;
 }
 
@@ -40,6 +79,7 @@ a {
   border-radius: 160px;
   width: 320px;
   height: 320px;
+  margin-top: 20px;
   margin-left: 60px;
 }
 
@@ -72,10 +112,10 @@ a {
   justify-content: flex-start;
   position: relative;
   flex-flow: row wrap;
-  transition:all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
-.link-box:hover{
+.link-box:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
@@ -88,7 +128,7 @@ a {
   background-color: lightgray;
   color: gray;
   margin: 0 5px;
-  transition:all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .link-box>a:hover {
@@ -104,7 +144,7 @@ a {
   display: flex;
   align-items: center;
   background-color: rgba(255, 255, 255, 0.1);
-  transition:all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .link-control-box:hover {
@@ -120,7 +160,7 @@ a {
   display: flex;
   align-items: center;
   background-color: rgba(255, 255, 255, 0.2);
-  transition:all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .open-btn {
@@ -350,7 +390,7 @@ a {
   z-index: 10;
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 20px;
-  transition:all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .bg-control-box:hover {

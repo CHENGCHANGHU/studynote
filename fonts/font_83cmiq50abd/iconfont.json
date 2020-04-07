@@ -1,0 +1,16 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "5482942",
+      "name": "麻雀鸟",
+      "font_class": "maqueniao",
+      "unicode": "e68d",
+      "unicode_decimal": 59021
+    }
+  ]
+}
