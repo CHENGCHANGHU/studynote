@@ -133,8 +133,9 @@ a {
 
 .link-box>a:hover {
   background-color: coral;
-  color: darkred;
-  box-shadow: 2px 2px 2px 2px #333;
+  /* color: darkred;
+  box-shadow: 2px 2px 2px 2px #333; */
+  text-shadow: 1px 1px 2px #333;
 }
 
 .link-control-box {
