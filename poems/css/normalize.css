@@ -1,0 +1,32 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+html {
+  font-size: 20px;
+  font-family: "Arial", "Microsoft YaHei", "黑体", "宋体", sans-serif;
+  background-color: #fff;
+}
+body {
+  width: 50rem;
+  margin: 0 auto;
+  background-color: seashell;
+  position: relative;
+}
+a {
+  text-decoration: none;
+}
+li {
+  list-style: none;
+}
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.indent {
+  text-indent: 2rem;
+}
+.center {
+  text-align: center;
+}
