@@ -113,6 +113,7 @@ a {
   position: relative;
   flex-flow: row wrap;
   transition: all 0.3s ease-in-out;
+  align-content: flex-start;
 }
 
 .link-box:hover {
@@ -127,14 +128,14 @@ a {
   min-width: 50px;
   background-color: lightgray;
   color: gray;
-  margin: 0 5px;
+  margin: 2px 5px;
   transition: all 0.3s ease-in-out;
 }
 
 .link-box>a:hover {
   background-color: coral;
   color: darkred;
-  box-shadow: 1px 1px 1px 2px #333;
+  box-shadow: 1px 1px 3px #333;
   /* text-shadow: 1px 1px 2px #333; */
   transform: translate(-1px, -1px);
 }

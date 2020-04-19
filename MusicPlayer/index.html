@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+  <title>音乐播放器</title>
+  <link rel="stylesheet" href="./index.css">
+  <script defer src="./index.js"></script>
+</head>
+
+<body>
+  <div class="MusicPlayer">
+    <div class="ControlBox">
+      <audio src="./sunset-road.mp3" id="TheMusic"></audio>
+      <div class="prev">
+        <div id="prev"></div>
+      </div>
+      <div class="record-cover" id="recordCover">
+        <div id="pause"></div>
+        <div id="play"></div>
+      </div>
+      <div class="next">
+        <div id="next"></div>
+      </div>
+      <div class="progress-box" id="progressBox">
+        <div class="song-title">歌曲名</div>
+        <div class="progress-bar" id="progressBar">
+          <div class="played-bar" id="playedBar"></div>
+          <div class="controller" id="controller"></div>
+        </div>
+        <div class="song-duration">
+          <span class="curr-duration">00:00</span>
+          /
+          <span class="total-duration">04:35</span>
+        </div>
+        <!-- <div class="lyrics">lyrics</div> -->
+      </div>
+      <div>
+
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
