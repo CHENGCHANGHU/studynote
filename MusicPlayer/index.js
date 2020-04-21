@@ -56,10 +56,11 @@ setTimeout(async () => {
   let loadedBlob = new Blob([loadedDataBuffer]);
   let blobURL = window.URL.createObjectURL(new Blob([loadedDataBuffer]));
   console.log(blobURL);
+  theMusic.src = blobURL;
 }, 0);
 document.querySelector("#loading").style.display = "none";
 
-theMusic.src = "https://chengchanghu.github.io/studynote/MusicPlayer/sunset-road.mp3";
+// theMusic.src = "https://chengchanghu.github.io/studynote/MusicPlayer/sunset-road.mp3";
 
 const controlBox = document.querySelector(".ControlBox");
 const recordCover = controlBox.querySelector("#recordCover");
