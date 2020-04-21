@@ -4,6 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+
+  <link rel="shortcut icon" href="../icon/sparrow.png" />
+  <link rel="bookmark" href="../icon/sparrow.png" type="image/x-icon" />
   <title>音乐播放器</title>
   <link rel="stylesheet" href="./index.css">
   <script defer src="./index.js"></script>
@@ -18,15 +21,20 @@
         <div id="prev"></div>
       </div>
       <div class="record-cover" id="recordCover">
-        <div id="pause"></div>
-        <div id="play"></div>
-        <div id="loading"></div>
+        <div class="pause" id="pause"></div>
+        <div class="play" id="play"></div>
+        <div class="loading" id="loading">
+          <div class="wave"></div>
+        </div>
       </div>
       <div class="next">
         <div id="next"></div>
       </div>
       <div class="progress-box" id="progressBox">
-        <div class="song-title">歌曲名</div>
+        <div class="song-title">
+          <span id="songTitle">日落大道</span>
+          <span class="more" id="more"></span>
+        </div>
         <div class="progress-bar" id="progressBar">
           <div class="played-bar" id="playedBar"></div>
           <div class="controller" id="controller"></div>
@@ -38,8 +46,22 @@
         </div>
         <!-- <div class="lyrics">lyrics</div> -->
       </div>
-      <div>
-
+      <div class="music-panel" id="musicPanel">
+        <div class="panel-header">歌曲面板
+          <input type="file" class="local-file" id="localFile" />
+          <div class="local-music" id="localMusic">本地音乐</div>
+        </div>
+        <ul class="music-list">
+          <li class="active-music"><a href="#">
+              <img class="pic" src="./sunset-road.jpg" /> 日落大道
+            </a></li>
+          <li><a href="#">
+              <img class="pic" src="./drift-north.jpg" />飘向北方
+            </a></li>
+          <li><a href="#">
+              <img class="pic" src="./skin.jpg" />Skin
+            </a></li>
+        </ul>
       </div>
     </div>
   </div>

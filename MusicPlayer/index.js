@@ -28,39 +28,44 @@ let requestHeader = {
   responseType: 'arraybuffer',
 };
 
-setTimeout(async () => {
-  let respHeader = await fetch(currMusicUrl, requestHeader);
-  let respReader = respHeader.body.getReader();
-  let totalLength = respHeader.headers.get("Content-Length");
-  console.log(totalLength);
-  let loadedDataBuffer = new Uint8Array(totalLength);
+// setTimeout(async () => {
+//   let respHeader = await fetch(currMusicUrl, requestHeader);
+//   let respReader = respHeader.body.getReader();
+//   let totalLength = respHeader.headers.get("Content-Length");
+//   console.log(totalLength);
+//   let loadedDataBuffer = new Uint8Array(totalLength);
 
-  let loadedLength = 0;
+//   let loadedLength = 0;
 
-  while (true) {
-    const {
-      value,
-      done
-    } = await respReader.read();
-    if (done) break;
-    if (loadedLength < totalLength / 20) {
-      console.log(value);
-    }
+//   while (true) {
+//     const {
+//       value,
+//       done
+//     } = await respReader.read();
+//     if (done) break;
+//     // if (loadedLength < totalLength / 20) {
+//     //   console.log(value);
+//     // }
 
-    loadedDataBuffer.set(value, loadedLength);
-    loadedLength += value.length;
+//     loadedDataBuffer.set(value, loadedLength);
+//     loadedLength += value.length;
 
-    document.querySelector("#loading-progress").innerHTML = (loadedLength / totalLength * 100).toFixed(2) + "%";
-  }
-  console.log(loadedDataBuffer);
-  let loadedBlob = new Blob([loadedDataBuffer]);
-  let blobURL = window.URL.createObjectURL(new Blob([loadedDataBuffer]));
-  console.log(blobURL);
-  theMusic.src = blobURL;
-}, 0);
+//     document.querySelector("#loading-progress").innerHTML = (loadedLength / totalLength * 100).toFixed(2) + "%";
+//     document.querySelector("#loading div").style.height = (100 - (loadedLength / totalLength * 100)) + "%";
+//     // document.querySelector("#loading").style.borderBottomWidth = loadedLength / totalLength * 100 + "%";
+//   }
+//   console.log(loadedDataBuffer);
+//   let loadedBlob = new Blob([loadedDataBuffer]);
+//   let blobURL = window.URL.createObjectURL(new Blob([loadedDataBuffer]));
+//   console.log(blobURL);
+//   // theMusic.src = blobURL;
+//   // theMusic.src = "./sunset-road.mp3";
+//   document.querySelector("#loading").style.display = "none";
+//   document.querySelector("#recordCover").classList.add("play-status");
+// }, 0);
+
 document.querySelector("#loading").style.display = "none";
-
-// theMusic.src = "https://chengchanghu.github.io/studynote/MusicPlayer/sunset-road.mp3";
+document.querySelector("#recordCover").classList.add("play-status");
 
 const controlBox = document.querySelector(".ControlBox");
 const recordCover = controlBox.querySelector("#recordCover");
@@ -96,6 +101,9 @@ const updateSongDuration = function () {
   RAFid = requestAnimationFrame(updateSongDuration);
 }
 
+let moreFlag = false;
+
+// 点击事件
 controlBox.addEventListener("click", e => {
   let {
     clientX,
@@ -106,13 +114,15 @@ controlBox.addEventListener("click", e => {
     case "play":
       console.log("播放歌曲");
       theMusic.play();
-      recordCover.classList.add("play-status");
+      recordCover.classList.remove("play-status");
+      recordCover.classList.add("pause-status");
       RAFid = requestAnimationFrame(updateSongDuration);
       break;
     case "pause":
       console.log("暂停歌曲");
       theMusic.pause();
-      recordCover.classList.remove("play-status");
+      recordCover.classList.remove("pause-status");
+      recordCover.classList.add("play-status");
       cancelAnimationFrame(RAFid);
       break;
     case "progressBar":
@@ -129,8 +139,49 @@ controlBox.addEventListener("click", e => {
       document.querySelector("#playedBar").style.width = scale * 100 + "%";
       document.querySelector("#controller").style.left = scale * 100 + "%";
       break;
+    case "more":
+      if (!moreFlag) {
+        document.querySelector("#more").classList.add("more-active");
+        document.querySelector("#musicPanel").classList.add("active-music-panel");
+      } else {
+        document.querySelector("#more").classList.remove("more-active");
+        document.querySelector("#musicPanel").classList.remove("active-music-panel");
+      }
+      moreFlag = !moreFlag;
+      break;
+    case "localMusic":
+      console.log("localMusic");
+      document.querySelector("#localFile").click();
+      break;
     default:
       break;
+  }
+});
+
+document.querySelector("#localFile").addEventListener("change", e => {
+  // console.log(e);
+  // console.log(e.target);
+  // console.log(e.target.files[0]);
+  let localMusicFile = e.target.files[0];
+  // theMusic.src = "./drift-north.mp3";
+  // theMusic.src = window.URL.createObjectURL(localMusicFile);
+  if (!!localMusicFile) {
+    let reader = new FileReader();
+    reader.readAsDataURL(localMusicFile);
+    reader.onprogress = function (e) {
+      console.log(e);
+    };
+    reader.onload = function () {
+      console.log("本地音乐加载完成");
+      // theMusic.src = window.URL.createObjectURL(localMusicFile);
+      theMusic.src = this.result;
+      // document.querySelector("#songTitle").innerHTML=localMusicFile.
+      recordCover.classList.remove("pause-status");
+      recordCover.classList.add("play-status");
+      cancelAnimationFrame(RAFid);
+      document.querySelector("#playedBar").style.width = "0%";
+      document.querySelector("#controller").style.left = "0%";
+    }
   }
 });
 
@@ -171,8 +222,6 @@ const debounce = function (fn, delay) {
   }
 }
 
-
-
 document.addEventListener("mousemove", e => {
   throttle(function () {
     if (dragController) {
@@ -201,12 +250,14 @@ document.addEventListener("keypress", e => {
       if (theMusic.paused) {
         console.log("播放歌曲");
         theMusic.play();
-        recordCover.classList.add("play-status");
+        recordCover.classList.remove("play-status");
+        recordCover.classList.add("pause-status");
         RAFid = requestAnimationFrame(updateSongDuration);
       } else {
         console.log("暂停歌曲");
         theMusic.pause();
-        recordCover.classList.remove("play-status");
+        recordCover.classList.remove("pause-status");
+        recordCover.classList.add("play-status");
         cancelAnimationFrame(RAFid);
       }
       break;

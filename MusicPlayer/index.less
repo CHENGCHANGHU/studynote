@@ -8,6 +8,10 @@ html {
   font-size: 20px;
 }
 
+li {
+  list-style: none;
+}
+
 .MusicPlayer {
   width: 100vw;
   height: 100vh;
@@ -67,17 +71,23 @@ html {
       background-position: center center;
       overflow: hidden;
 
-      div {
+      &>div {
         width: 100%;
         height: 100%;
         position: absolute;
-        background-color: rgba(0, 0, 0, 0.2);
+        background-color: rgba(0, 0, 0, 0.1);
         display: flex;
         justify-content: space-around;
         align-items: center;
         cursor: pointer;
+      }
 
-        &:nth-child(1)::before {
+      .pause {
+        position: absolute;
+        left: -100%;
+        // transition: all 0.2s ease;
+
+        &::before {
           content: "";
           display: block;
           width: 1rem;
@@ -87,7 +97,18 @@ html {
           border-right: 0.3rem solid rgba(255, 255, 255, 0.7);
         }
 
-        &:nth-child(2)::after {
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.4);
+        }
+      }
+
+      .play {
+        position: absolute;
+        // left: 0;
+        left: -100%;
+        // transition: all 0.2s ease;
+
+        &::after {
           content: "";
           display: block;
           border-top: 0.5rem solid transparent;
@@ -95,47 +116,56 @@ html {
           border-left: 0.7rem solid rgba(255, 255, 255, 0.7);
         }
 
-        &:nth-child(3)::before {
-          content: "LOAD";
-          color: #333;
-          display: block;
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.4);
+        }
+      }
+
+      .loading {
+        display: block;
+        cursor: progress;
+        background-color: rgba(0, 0, 0, 0.2);
+
+        .wave {
+          position: absolute;
+          top: 0;
+          left: 0;
           height: 100%;
           width: 100%;
           background-color: rgb(5, 190, 190);
-          cursor: progress;
-        }
-
-        &:nth-child(1) {
-          position: absolute;
-          left: -100%;
-          // transition: all 0.2s ease;
-
-          &:hover {
-            background-color: rgba(0, 0, 0, 0.4);
-          }
-        }
-
-        &:nth-child(2) {
-          position: absolute;
-          left: 0;
-          // transition: all 0.2s ease;
-
-          &:hover {
-            background-color: rgba(0, 0, 0, 0.4);
-          }
         }
       }
     }
 
-    .play-status {
-      div:nth-child(1) {
+    .pause-status {
+      .pause {
         position: absolute;
         left: 0%;
       }
 
-      div:nth-child(2) {
+      .play {
         position: absolute;
         left: -100%;
+      }
+
+      .loading {
+        display: none;
+      }
+    }
+
+    .play-status {
+      .pause {
+        position: absolute;
+        left: -100%;
+      }
+
+      .play {
+        position: absolute;
+        left: 0;
+      }
+
+      .loading {
+        display: none;
       }
     }
 
@@ -152,6 +182,27 @@ html {
       .song-title {
         font-size: 0.7rem;
         color: darkcyan;
+
+        .more {
+          // background-color: darkcyan;
+          float: right;
+          width: 0.6rem;
+          height: 0.6rem;
+          border-left: 3px solid rgb(2, 187, 187);
+          border-top: 3px solid rgb(2, 187, 187);
+          box-sizing: border-box;
+          transform: translate(-0.5rem, 0.2rem) rotate(45deg);
+          cursor: pointer;
+
+          &:hover {
+            border-left: 3px solid darkcyan;
+            border-top: 3px solid darkcyan;
+          }
+        }
+
+        .more-active {
+          transform: translate(-0.5rem, -0.1rem) rotate(225deg);
+        }
       }
 
       .progress-bar {
@@ -201,6 +252,112 @@ html {
       }
     }
 
+    .music-panel {
+      background-color: rgb(204, 247, 255);
+      position: absolute;
+      // height: auto;
+      height: 0rem;
+      max-height: 10rem;
+      overflow-y: auto;
+      width: 100vw;
+      top: 0rem;
+      // transform: translateY(-100%);
+      right: 0;
+      box-sizing: border-box;
+      border-top: 0px solid darkcyan;
+      border-bottom: 0px solid darkcyan;
+      transition: all 0.5s ease;
 
+      .panel-header {
+        font-size: 0.6rem;
+        padding: 0.2rem 1rem 0.2rem 0.5rem;
+        height: 1.5rem;
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+
+        .local-file {
+          display: none;
+        }
+
+        .local-music {
+          // background-color: steelblue;
+          background-color: rgb(192, 223, 248);
+          color: steelblue;
+          font-size: 0.7rem;
+          height: 1.2rem;
+          line-height: 1.2rem;
+          width: 4rem;
+          text-align: center;
+          cursor: pointer;
+          border-radius: 0.1rem;
+          float: right;
+          margin-left: auto;
+          transition: all 0.2s ease;
+
+          &:hover {
+            background-color: steelblue;
+            color: seashell;
+          }
+        }
+      }
+
+      .music-list {
+        li {
+          display: block;
+          // height: 2rem;
+          // line-height: 2rem;
+          cursor: pointer;
+          // background-color: steelblue;
+          background-color: darkcyan;
+          box-sizing: border-box;
+          border-left: 0.5rem solid darkcyan;
+          border-right: 0.5rem solid darkcyan;
+
+          a {
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            color: seashell;
+            font-size: 0.7rem;
+            margin: 0.2rem;
+            padding: 0.1rem 0.2rem;
+            text-decoration: none;
+
+            .pic {
+              width: 1.6rem;
+              height: 1.6rem;
+              background: url("./skin.jpg") no-repeat center;
+              background-size: cover;
+              margin: 0 0.2rem;
+              border-radius: 50%;
+            }
+          }
+
+          &:hover {
+            background-color: rgba(252, 250, 249, 1);
+            box-shadow: 0 2px 5px darkcyan;
+
+            a {
+              color: darkcyan;
+            }
+          }
+        }
+
+        .active-music {
+          a {
+            color: coral;
+          }
+        }
+      }
+    }
+
+    .active-music-panel {
+      height: 10rem;
+      top: -10rem;
+      border-width: 1px;
+    }
   }
+
+
 }
