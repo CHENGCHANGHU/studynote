@@ -6,21 +6,80 @@ const sec2min = function (sec) {
   return `${min<10?'0'+min:min}:${sec<10?'0'+sec:sec}`;
 }
 
+const throttle = function (fn, delay) {
+  let valid = true;
+  return function () {
+    if (!valid) {
+      return false;
+    }
+    valid = false;
+    setTimeout(() => {
+      fn();
+      valid = true;
+    }, delay);
+  }
+}
+
+let currMusicUrl = `https://chengchanghu.github.io/studynote/MusicPlayer/sunset-road.mp3`;
+let requestHeader = {
+  method: "GET",
+  accept: "audio/mp3",
+  // cache: "force-cache",
+  responseType: 'arraybuffer',
+};
+
+setTimeout(async () => {
+  let respHeader = await fetch(currMusicUrl, requestHeader);
+  let respReader = respHeader.body.getReader();
+  let totalLength = respHeader.headers.get("Content-Length");
+  console.log(totalLength);
+  let loadedDataBuffer = new Uint8Array(totalLength);
+
+  let loadedLength = 0;
+
+  while (true) {
+    const {
+      value,
+      done
+    } = await respReader.read();
+    if (done) break;
+    if (loadedLength < totalLength / 20) {
+      console.log(value);
+    }
+
+    loadedDataBuffer.set(value, loadedLength);
+    loadedLength += value.length;
+
+    document.querySelector("#loading-progress").innerHTML = (loadedLength / totalLength * 100).toFixed(2) + "%";
+  }
+  console.log(loadedDataBuffer);
+  let loadedBlob = new Blob([loadedDataBuffer]);
+  let blobURL = window.URL.createObjectURL(new Blob([loadedDataBuffer]));
+  console.log(blobURL);
+}, 0);
+document.querySelector("#loading").style.display = "none";
+
+theMusic.src = "https://chengchanghu.github.io/studynote/MusicPlayer/sunset-road.mp3";
+
+const controlBox = document.querySelector(".ControlBox");
+const recordCover = controlBox.querySelector("#recordCover");
+
 let RAFid = 0;
 let currTime = 0;
 let lastTime = 0;
-// const songDuration = theMusic.duration;
-// console.log(songDuration);
+
+// 更新界面
 const updateSongDuration = function () {
   currTime = theMusic.currentTime;
 
   document.querySelector(".curr-duration").textContent = sec2min(currTime);
   let percentage = currTime / theMusic.duration * 100;
   document.querySelector("#playedBar").style.width = percentage + "%";
+
   const Controller = document.querySelector("#controller");
   let currLeft = parseFloat(Controller.style.left.slice(0, -1)) || 0;
-  // console.log(currLeft, percentage);
-  // console.log(lastTime, currTime);
+  if (currLeft > percentage) currLeft = 0;
+
   let speed = (percentage - currLeft) / 5;
 
   for (let i = currLeft; i < percentage; i += speed) {
@@ -28,16 +87,13 @@ const updateSongDuration = function () {
   }
 
   if (theMusic.paused) {
+    recordCover.classList.remove("play-status");
     cancelAnimationFrame(RAFid);
   }
   lastTime = currTime;
 
   RAFid = requestAnimationFrame(updateSongDuration);
 }
-
-
-const controlBox = document.querySelector(".ControlBox");
-const recordCover = controlBox.querySelector("#recordCover");
 
 controlBox.addEventListener("click", e => {
   let {
@@ -114,19 +170,7 @@ const debounce = function (fn, delay) {
   }
 }
 
-const throttle = function (fn, delay) {
-  let valid = true;
-  return function () {
-    if (!valid) {
-      return false;
-    }
-    valid = false;
-    setTimeout(() => {
-      fn();
-      valid = true;
-    }, delay);
-  }
-}
+
 
 document.addEventListener("mousemove", e => {
   throttle(function () {
