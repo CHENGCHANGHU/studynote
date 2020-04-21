@@ -5,12 +5,17 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import Catalog from "./components/catalog";
 import ChapterContainer from "./components/chapter-container";
+import * as data from "./staticData";
+console.log(data.default.header);
 
 ReactDOM.render(
   <React.StrictMode>
+
     {/* <App /> */}
+    <header>{data.default.header}</header>
+
     <Catalog />
-    <ChapterContainer />
+    <ChapterContainer chapters={data.default.chapters}/>
   </React.StrictMode>,
   document.getElementById('root')
 );

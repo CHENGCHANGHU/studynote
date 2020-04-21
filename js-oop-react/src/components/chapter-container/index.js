@@ -1,34 +1,58 @@
-import React from "react";
+import React, { Component } from "react";
 
-const chapters = [
-  {
-    id: 1,
-    title: "标题一",
-    content: "内容一"
-  },
-  {
-    id: 2,
-    title: "标题2",
-    content: "内容2"
-  },
-  {
-    id: 3,
-    title: "标题3",
-    content: "内容3"
+export default class ChapterContainer extends Component {
+  constructor() {
+    super(...arguments);
+    console.log(this.__proto__.constructor.name, "constructor");
+    // console.log("ChapterContainer:", this.props);
+    this.chapters = this.props.chapters;
   }
-];
 
-export default function ChapterContainer() {
-  return (
-    <div>
-      {
-        chapters.map(chapter => (
-          <div key={chapter.id}>
-            <span>{chapter.title}</span>
-            <span>{chapter.content}</span>
-          </div>
-        ))
-      }
-    </div>
-  );
+  // unsafe
+  // componentWillMount() {
+  //   console.log(this.__proto__.constructor.name, "componentWillMount");
+  // }
+  
+  componentDidMount() {
+    console.log(this.__proto__.constructor.name, "componentDidMount");
+  }
+
+  // unsafe
+  // componentWillReceiveProps(nextProps) {
+  //   console.log(this.__proto__.constructor.name, "componentWillReceiveProps", nextProps);
+  // }
+
+  shouldComponentUpdate(){
+    console.log(this.__proto__.constructor.name, "shouldComponentUpdate");
+    return true;
+  }
+
+  // unsafe
+  // componentWillUpdate(){
+  //   console.log(this.__proto__.constructor.name, "componentWillUpdate");
+  // }
+
+  componentDidUpdate(){
+    console.log(this.__proto__.constructor.name, "componentDidUpdate");
+  }
+
+  componentWillUnmount(){
+    console.log(this.__proto__.constructor.name, "componentWillUnmount");
+  }
+
+  render() {
+    console.log(this.__proto__.constructor.name, "render");
+    return (
+      <div>
+        {
+          this.chapters.map(chapter => (
+            <div key={chapter.id}>
+              <h3>{chapter.title}</h3>
+              <pre>{chapter.content}</pre>
+            </div>
+          ))
+        }
+      </div>
+    );
+  }
 }
