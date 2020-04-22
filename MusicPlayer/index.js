@@ -1,4 +1,10 @@
-const theMusic = document.getElementById("TheMusic");
+const theMusic = document.getElementById("TheMusic"),
+  loadingCover = document.querySelector("#loading"),
+  recordCover = document.querySelector("#recordCover"),
+  controlBox = document.querySelector(".ControlBox"),
+  currDuration = document.querySelector(".curr-duration"),
+  Controller = document.querySelector("#controller"),
+  playedBar = document.querySelector("#playedBar");
 
 const sec2min = function (sec) {
   const min = Math.floor(sec / 60);
@@ -64,11 +70,8 @@ let requestHeader = {
 //   document.querySelector("#recordCover").classList.add("play-status");
 // }, 0);
 
-document.querySelector("#loading").style.display = "none";
-document.querySelector("#recordCover").classList.add("play-status");
-
-const controlBox = document.querySelector(".ControlBox");
-const recordCover = controlBox.querySelector("#recordCover");
+loadingCover.style.display = "none";
+recordCover.classList.add("play-status");
 
 let RAFid = 0;
 let currTime = 0;
@@ -76,13 +79,18 @@ let lastTime = 0;
 
 // 更新界面
 const updateSongDuration = function () {
+  if (theMusic.paused || theMusic.ended) {
+    recordCover.classList.remove("pause-status");
+    recordCover.classList.add("play-status");
+    cancelAnimationFrame(RAFid);
+  }
   currTime = theMusic.currentTime;
 
-  document.querySelector(".curr-duration").textContent = sec2min(currTime);
+  currDuration.textContent = sec2min(currTime);
   let percentage = currTime / theMusic.duration * 100;
   document.querySelector("#playedBar").style.width = percentage + "%";
 
-  const Controller = document.querySelector("#controller");
+
   let currLeft = parseFloat(Controller.style.left.slice(0, -1)) || 0;
   if (currLeft > percentage) currLeft = 0;
 
@@ -92,10 +100,6 @@ const updateSongDuration = function () {
     Controller.style.left = i + "%";
   }
 
-  if (theMusic.paused) {
-    recordCover.classList.remove("play-status");
-    cancelAnimationFrame(RAFid);
-  }
   lastTime = currTime;
 
   RAFid = requestAnimationFrame(updateSongDuration);
@@ -128,16 +132,16 @@ controlBox.addEventListener("click", e => {
     case "progressBar":
       scale = (clientX - target.offsetLeft) / target.offsetWidth;
       theMusic.currentTime = scale * theMusic.duration;
-      document.querySelector(".curr-duration").textContent = sec2min(scale * theMusic.duration);
-      document.querySelector("#playedBar").style.width = scale * 100 + "%";
-      document.querySelector("#controller").style.left = scale * 100 + "%";
+      currDuration.textContent = sec2min(scale * theMusic.duration);
+      playedBar.style.width = scale * 100 + "%";
+      Controller.style.left = scale * 100 + "%";
       break
     case "playedBar":
       scale = (clientX - target.parentNode.offsetLeft) / target.parentNode.offsetWidth;
       theMusic.currentTime = scale * theMusic.duration;
-      document.querySelector(".curr-duration").textContent = sec2min(scale * theMusic.duration);
-      document.querySelector("#playedBar").style.width = scale * 100 + "%";
-      document.querySelector("#controller").style.left = scale * 100 + "%";
+      currDuration.textContent = sec2min(scale * theMusic.duration);
+      playedBar.style.width = scale * 100 + "%";
+      Controller.style.left = scale * 100 + "%";
       break;
     case "more":
       if (!moreFlag) {
@@ -161,7 +165,7 @@ controlBox.addEventListener("click", e => {
 document.querySelector("#localFile").addEventListener("change", e => {
   // console.log(e);
   // console.log(e.target);
-  // console.log(e.target.files[0]);
+  console.log(e.target.files);
   let localMusicFile = e.target.files[0];
   // theMusic.src = "./drift-north.mp3";
   // theMusic.src = window.URL.createObjectURL(localMusicFile);
@@ -181,8 +185,16 @@ document.querySelector("#localFile").addEventListener("change", e => {
       cancelAnimationFrame(RAFid);
       document.querySelector("#playedBar").style.width = "0%";
       document.querySelector("#controller").style.left = "0%";
+      document.querySelector("#songTitle").innerHTML = localMusicFile.name;
     }
   }
+});
+
+theMusic.addEventListener("canplay", function () {
+  console.log(theMusic.duration);
+  console.log(theMusic.buffered);
+  console.log(theMusic.readyState);
+  document.querySelector(".total-duration").textContent = sec2min(theMusic.duration);
 });
 
 let dragController = false;
@@ -201,13 +213,6 @@ document.addEventListener("mousedown", e => {
 document.addEventListener("mouseup", e => {
   if (dragController)
     dragController = false;
-  // switch (e.target.getAttribute("id")) {
-  //   case "controller":
-  //     dragController = false;
-  //     break;
-  //   default:
-  //     break;
-  // }
 });
 
 const debounce = function (fn, delay) {
