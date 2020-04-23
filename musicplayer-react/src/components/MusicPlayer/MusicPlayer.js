@@ -11,7 +11,7 @@ export default class MusicPlayer extends React.Component {
       panelFlag: false,
       controllerFlag: false,
       controller: null,
-      localFileInput,
+      // localFileInput: null,
       musicList: [
         { id: 1, title: "日落大道", picSrc: require("./sample/img/sunset-road.jpg"), musicSrc: require("./sample/music/sunset-road.mp3") },
         { id: 2, title: "飘向北方", picSrc: require("./sample/img/drift-north.jpg"), musicSrc: require("./sample/music/drift-north.mp3") },
@@ -130,7 +130,7 @@ export default class MusicPlayer extends React.Component {
           </div>
           <div className={`music-panel ${panelFlag ? "active-music-panel" : ""}`} id="musicPanel">
             <div className="panel-header">歌曲面板
-              <input type="file" className="local-file" ref={this.state.localFileInput} id="localFile" />
+              {/* <input type="file" className="local-file" ref={this.state.localFileInput} id="localFile" /> */}
               <div className="local-music" id="localMusic">本地音乐</div>
             </div>
             <ul className="music-list">

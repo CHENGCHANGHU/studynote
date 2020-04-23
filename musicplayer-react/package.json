@@ -2,7 +2,7 @@
   "name": "musicplayer-react",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
+  "homepage": "https://chengchanghu.github.io/studynote/musicplayer-react/build",
   "dependencies": {
     "@babel/core": "7.9.0",
     "@svgr/webpack": "4.3.3",
