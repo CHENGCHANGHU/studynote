@@ -68,9 +68,10 @@ li {
       position: relative;
       overflow: hidden;
 
-      img{
+      img {
         width: 100%;
         height: 100%;
+        position: absolute;
       }
 
       &>div {
@@ -273,12 +274,16 @@ li {
       transition: all 0.5s ease;
 
       .panel-header {
-        font-size: 0.6rem;
+        font-size: 0.8rem;
         padding: 0.2rem 1rem 0.2rem 0.5rem;
         height: 1.5rem;
         display: flex;
         flex-flow: row nowrap;
         align-items: center;
+        background-color: lightseagreen;
+        position: sticky;
+        top: 0;
+        color: seashell;
 
         .local-file {
           display: none;
@@ -286,7 +291,7 @@ li {
 
         .local-music {
           // background-color: steelblue;
-          background-color: rgb(192, 223, 248);
+          background-color: rgb(182, 214, 240);
           color: steelblue;
           font-size: 0.7rem;
           height: 1.2rem;
@@ -309,23 +314,27 @@ li {
       .music-list {
         li {
           display: block;
-          // height: 2rem;
-          // line-height: 2rem;
+          height: 1.8rem;
+          line-height: 1.8rem;
+          margin: 0.2rem 0;
           cursor: pointer;
           // background-color: steelblue;
           background-color: darkcyan;
           box-sizing: border-box;
           border-left: 0.5rem solid darkcyan;
           border-right: 0.5rem solid darkcyan;
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
+          transition: all 0.2s ease;
 
           a {
+            flex: 1;
             display: flex;
             flex-flow: row nowrap;
             align-items: center;
             color: seashell;
             font-size: 0.7rem;
-            margin: 0.2rem;
-            padding: 0.1rem 0.2rem;
             text-decoration: none;
 
             .pic {
@@ -342,6 +351,11 @@ li {
             background-color: rgba(252, 250, 249, 1);
             box-shadow: 0 2px 5px darkcyan;
 
+            &::after {
+              color: seashell;
+              background-color: coral;
+            }
+
             a {
               color: darkcyan;
             }
@@ -349,6 +363,22 @@ li {
         }
 
         .active-music {
+
+          &::after {
+            content: "当前播放";
+            display: block;
+            height: 1.2rem;
+            line-height: 1.2rem;
+            width: 3rem;
+            font-size: 0.6rem;
+            color: coral;
+            background-color: seashell;
+            border-radius: 5px;
+            text-align: center;
+            margin-right: 1rem;
+            border-radius: 0.6rem;
+          }
+
           a {
             color: coral;
           }
