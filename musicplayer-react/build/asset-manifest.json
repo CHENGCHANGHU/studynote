@@ -1,0 +1,30 @@
+{
+  "files": {
+    "main.css": "/studynote/musicplayer-react/build/static/css/main.622a2614.chunk.css",
+    "main.js": "/studynote/musicplayer-react/build/static/js/main.9ff695dc.chunk.js",
+    "main.js.map": "/studynote/musicplayer-react/build/static/js/main.9ff695dc.chunk.js.map",
+    "runtime-main.js": "/studynote/musicplayer-react/build/static/js/runtime-main.9ad5fefa.js",
+    "runtime-main.js.map": "/studynote/musicplayer-react/build/static/js/runtime-main.9ad5fefa.js.map",
+    "static/js/2.bae2f5da.chunk.js": "/studynote/musicplayer-react/build/static/js/2.bae2f5da.chunk.js",
+    "static/js/2.bae2f5da.chunk.js.map": "/studynote/musicplayer-react/build/static/js/2.bae2f5da.chunk.js.map",
+    "index.html": "/studynote/musicplayer-react/build/index.html",
+    "precache-manifest.9629825ccd730e51eecd03b7d27e71d5.js": "/studynote/musicplayer-react/build/precache-manifest.9629825ccd730e51eecd03b7d27e71d5.js",
+    "service-worker.js": "/studynote/musicplayer-react/build/service-worker.js",
+    "static/css/main.622a2614.chunk.css.map": "/studynote/musicplayer-react/build/static/css/main.622a2614.chunk.css.map",
+    "static/js/2.bae2f5da.chunk.js.LICENSE.txt": "/studynote/musicplayer-react/build/static/js/2.bae2f5da.chunk.js.LICENSE.txt",
+    "static/media/another-year.jpg": "/studynote/musicplayer-react/build/static/media/another-year.1a12fbd6.jpg",
+    "static/media/another-year.mp3": "/studynote/musicplayer-react/build/static/media/another-year.b283adba.mp3",
+    "static/media/drift-north.mp3": "/studynote/musicplayer-react/build/static/media/drift-north.24ba70c3.mp3",
+    "static/media/drift-north.jpg": "/studynote/musicplayer-react/build/static/media/drift-north.81bdc6ee.jpg",
+    "static/media/skin.jpg": "/studynote/musicplayer-react/build/static/media/skin.3d6ddd11.jpg",
+    "static/media/skin.mp3": "/studynote/musicplayer-react/build/static/media/skin.9da8c78e.mp3",
+    "static/media/sunset-road.jpg": "/studynote/musicplayer-react/build/static/media/sunset-road.94c8ebf5.jpg",
+    "static/media/sunset-road.mp3": "/studynote/musicplayer-react/build/static/media/sunset-road.cc52929d.mp3"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.9ad5fefa.js",
+    "static/js/2.bae2f5da.chunk.js",
+    "static/css/main.622a2614.chunk.css",
+    "static/js/main.9ff695dc.chunk.js"
+  ]
+}
