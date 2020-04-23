@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/studynote/musicplayer-react/build/static/css/main.622a2614.chunk.css",
-    "main.js": "/studynote/musicplayer-react/build/static/js/main.9ff695dc.chunk.js",
-    "main.js.map": "/studynote/musicplayer-react/build/static/js/main.9ff695dc.chunk.js.map",
+    "main.js": "/studynote/musicplayer-react/build/static/js/main.b4a12736.chunk.js",
+    "main.js.map": "/studynote/musicplayer-react/build/static/js/main.b4a12736.chunk.js.map",
     "runtime-main.js": "/studynote/musicplayer-react/build/static/js/runtime-main.9ad5fefa.js",
     "runtime-main.js.map": "/studynote/musicplayer-react/build/static/js/runtime-main.9ad5fefa.js.map",
-    "static/js/2.bae2f5da.chunk.js": "/studynote/musicplayer-react/build/static/js/2.bae2f5da.chunk.js",
-    "static/js/2.bae2f5da.chunk.js.map": "/studynote/musicplayer-react/build/static/js/2.bae2f5da.chunk.js.map",
+    "static/js/2.840461cd.chunk.js": "/studynote/musicplayer-react/build/static/js/2.840461cd.chunk.js",
+    "static/js/2.840461cd.chunk.js.map": "/studynote/musicplayer-react/build/static/js/2.840461cd.chunk.js.map",
     "index.html": "/studynote/musicplayer-react/build/index.html",
-    "precache-manifest.9629825ccd730e51eecd03b7d27e71d5.js": "/studynote/musicplayer-react/build/precache-manifest.9629825ccd730e51eecd03b7d27e71d5.js",
+    "precache-manifest.35c16273af151dc32f3c2441a7352f3a.js": "/studynote/musicplayer-react/build/precache-manifest.35c16273af151dc32f3c2441a7352f3a.js",
     "service-worker.js": "/studynote/musicplayer-react/build/service-worker.js",
     "static/css/main.622a2614.chunk.css.map": "/studynote/musicplayer-react/build/static/css/main.622a2614.chunk.css.map",
-    "static/js/2.bae2f5da.chunk.js.LICENSE.txt": "/studynote/musicplayer-react/build/static/js/2.bae2f5da.chunk.js.LICENSE.txt",
+    "static/js/2.840461cd.chunk.js.LICENSE.txt": "/studynote/musicplayer-react/build/static/js/2.840461cd.chunk.js.LICENSE.txt",
     "static/media/another-year.jpg": "/studynote/musicplayer-react/build/static/media/another-year.1a12fbd6.jpg",
     "static/media/another-year.mp3": "/studynote/musicplayer-react/build/static/media/another-year.b283adba.mp3",
     "static/media/drift-north.mp3": "/studynote/musicplayer-react/build/static/media/drift-north.24ba70c3.mp3",
@@ -23,8 +23,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.9ad5fefa.js",
-    "static/js/2.bae2f5da.chunk.js",
+    "static/js/2.840461cd.chunk.js",
     "static/css/main.622a2614.chunk.css",
-    "static/js/main.9ff695dc.chunk.js"
+    "static/js/main.b4a12736.chunk.js"
   ]
 }

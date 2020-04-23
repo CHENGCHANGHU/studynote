@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "a0eef271c6834e292a09b9885e86d510",
+    "revision": "7f1a1d63ce2af34dda7cf14bc447e4a9",
     "url": "/studynote/musicplayer-react/build/index.html"
   },
   {
-    "revision": "89db2561bf03303282bb",
+    "revision": "9e767fe6b067c12c2b46",
     "url": "/studynote/musicplayer-react/build/static/css/main.622a2614.chunk.css"
   },
   {
-    "revision": "5374a83a7f046ba7cbb8",
-    "url": "/studynote/musicplayer-react/build/static/js/2.bae2f5da.chunk.js"
+    "revision": "3861cbf2847c2febdbb4",
+    "url": "/studynote/musicplayer-react/build/static/js/2.840461cd.chunk.js"
   },
   {
     "revision": "e88a3e95b5364d46e95b35ae8c0dc27d",
-    "url": "/studynote/musicplayer-react/build/static/js/2.bae2f5da.chunk.js.LICENSE.txt"
+    "url": "/studynote/musicplayer-react/build/static/js/2.840461cd.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "89db2561bf03303282bb",
-    "url": "/studynote/musicplayer-react/build/static/js/main.9ff695dc.chunk.js"
+    "revision": "9e767fe6b067c12c2b46",
+    "url": "/studynote/musicplayer-react/build/static/js/main.b4a12736.chunk.js"
   },
   {
     "revision": "4aec511a99a9ce3f02a6",
