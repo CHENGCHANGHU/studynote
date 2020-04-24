@@ -34,44 +34,44 @@ let requestHeader = {
   responseType: 'arraybuffer',
 };
 
-// setTimeout(async () => {
-//   let respHeader = await fetch(currMusicUrl, requestHeader);
-//   let respReader = respHeader.body.getReader();
-//   let totalLength = respHeader.headers.get("Content-Length");
-//   console.log(totalLength);
-//   let loadedDataBuffer = new Uint8Array(totalLength);
+setTimeout(async () => {
+  let respHeader = await fetch(currMusicUrl, requestHeader);
+  let respReader = respHeader.body.getReader();
+  let totalLength = respHeader.headers.get("Content-Length");
+  console.log(totalLength);
+  let loadedDataBuffer = new Uint8Array(totalLength);
 
-//   let loadedLength = 0;
+  let loadedLength = 0;
 
-//   while (true) {
-//     const {
-//       value,
-//       done
-//     } = await respReader.read();
-//     if (done) break;
-//     // if (loadedLength < totalLength / 20) {
-//     //   console.log(value);
-//     // }
+  while (true) {
+    const {
+      value,
+      done
+    } = await respReader.read();
+    if (done) break;
+    // if (loadedLength < totalLength / 20) {
+    //   console.log(value);
+    // }
 
-//     loadedDataBuffer.set(value, loadedLength);
-//     loadedLength += value.length;
+    loadedDataBuffer.set(value, loadedLength);
+    loadedLength += value.length;
 
-//     document.querySelector("#loading-progress").innerHTML = (loadedLength / totalLength * 100).toFixed(2) + "%";
-//     document.querySelector("#loading div").style.height = (100 - (loadedLength / totalLength * 100)) + "%";
-//     // document.querySelector("#loading").style.borderBottomWidth = loadedLength / totalLength * 100 + "%";
-//   }
-//   console.log(loadedDataBuffer);
-//   let loadedBlob = new Blob([loadedDataBuffer]);
-//   let blobURL = window.URL.createObjectURL(new Blob([loadedDataBuffer]));
-//   console.log(blobURL);
-//   // theMusic.src = blobURL;
-//   // theMusic.src = "./sunset-road.mp3";
-//   document.querySelector("#loading").style.display = "none";
-//   document.querySelector("#recordCover").classList.add("play-status");
-// }, 0);
+    document.querySelector("#loading-progress").innerHTML = (loadedLength / totalLength * 100).toFixed(2) + "%";
+    document.querySelector("#loading div").style.height = (100 - (loadedLength / totalLength * 100)) + "%";
+    // document.querySelector("#loading").style.borderBottomWidth = loadedLength / totalLength * 100 + "%";
+  }
+  console.log(loadedDataBuffer);
+  let loadedBlob = new Blob([loadedDataBuffer]);
+  let blobURL = window.URL.createObjectURL(new Blob([loadedDataBuffer]));
+  console.log(blobURL);
+  // theMusic.src = blobURL;
+  // theMusic.src = "./sunset-road.mp3";
+  loadingCover.style.display = "none";
+  recordCover.classList.add("play-status");
+}, 0);
 
-loadingCover.style.display = "none";
-recordCover.classList.add("play-status");
+// loadingCover.style.display = "none";
+// recordCover.classList.add("play-status");
 
 let RAFid = 0;
 let currTime = 0;
