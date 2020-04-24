@@ -12,6 +12,7 @@ export default class MusicPlayer extends React.Component {
       controllerFlag: false,
       controller: null,
       // localFileInput: null,
+      loadingProgress: 0,
       musicList: [
         { id: 1, title: "日落大道", picSrc: require("./sample/img/sunset-road.jpg"), musicSrc: require("./sample/music/sunset-road.mp3") },
         { id: 2, title: "飘向北方", picSrc: require("./sample/img/drift-north.jpg"), musicSrc: require("./sample/music/drift-north.mp3") },
@@ -71,10 +72,12 @@ export default class MusicPlayer extends React.Component {
       playedBarWidth,
       controllerLeft,
       currMusicDuration,
-      currMusicIndex
+      currMusicIndex,
+      loadingProgress,
     } = this.state;
     return (
       <div className="MusicPlayer" onKeyPress={this.keyPressHandler}>
+        loadingProgress: <span>{loadingProgress}</span>
         <div className="ControlBox">
           {/* <audio src="./sunset-road.mp3" id="TheMusic"></audio> */}
           <div className="prev">
