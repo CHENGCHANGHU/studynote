@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "7f1a1d63ce2af34dda7cf14bc447e4a9",
+    "revision": "616d753abcc7c783505ea16c50a9fc1f",
     "url": "/studynote/musicplayer-react/build/index.html"
   },
   {
-    "revision": "9e767fe6b067c12c2b46",
+    "revision": "f2b57d9cb5f41885ed17",
     "url": "/studynote/musicplayer-react/build/static/css/main.622a2614.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/studynote/musicplayer-react/build/static/js/2.840461cd.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "9e767fe6b067c12c2b46",
-    "url": "/studynote/musicplayer-react/build/static/js/main.b4a12736.chunk.js"
+    "revision": "f2b57d9cb5f41885ed17",
+    "url": "/studynote/musicplayer-react/build/static/js/main.560e41c9.chunk.js"
   },
   {
     "revision": "4aec511a99a9ce3f02a6",

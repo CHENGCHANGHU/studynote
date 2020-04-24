@@ -50,13 +50,16 @@ export default class MusicPlayer extends React.Component {
 
   componentDidMount() {
     console.log(this.__proto__.constructor.name, ":componentDidMount");
-    this.state.theMusicAudio.src = this.state.currMusicObj.musicSrc;
+    const { theMusicAudio, currMusicObj } = this.state;
+    theMusicAudio.src = currMusicObj.musicSrc;
     document.addEventListener("keypress", this.keyPressHandler);
 
-    this.state.theMusicAudio.addEventListener("durationchange", this.durationChangeHandler);
-    this.state.theMusicAudio.addEventListener("ended", this.endedHandler);
-    this.state.theMusicAudio.addEventListener("timeupdate", this.timeUpdateHandler);
+    // 音乐事件监听
+    theMusicAudio.addEventListener("durationchange", this.durationChangeHandler);
+    theMusicAudio.addEventListener("ended", this.endedHandler);
+    theMusicAudio.addEventListener("timeupdate", this.timeUpdateHandler);
 
+    // document事件监听
     // document.addEventListener("mousemove", this.mouseMoveHandler);
     document.addEventListener("mouseup", this.mouseUpHandler);
   }
@@ -160,6 +163,8 @@ export default class MusicPlayer extends React.Component {
   playMusic = () => {
     console.log("MusicPlayer: 播放歌曲");
     this.setState({ ...this.state, playFlag: true });
+    console.log(this.state.theMusicAudio.currentTime, this.state.currMusicDuration);
+    // if (Math.abs(this.state.theMusicAudio.currentTime - this.state.currMusicDuration) < 1.0) return;
     this.state.theMusicAudio.play();
   }
 
@@ -285,8 +290,11 @@ export default class MusicPlayer extends React.Component {
     this.setState({ ...this.state, currMusicDuration: this.state.theMusicAudio.duration });
   }
 
+  // 音乐结束事件处理器
   endedHandler = () => {
     this.pauseMusic();
+    if (this.state.controllerFlag) return;
+    this.changeMusicByNext();
   }
 
   timeUpdateHandler = event => {
