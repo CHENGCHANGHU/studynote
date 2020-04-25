@@ -220,7 +220,8 @@ export default class MusicPlayer extends React.Component {
   // 歌曲列表项点击事件处理器
   changeMusicByMusicPanel = async (musicObj, index) => {
     console.log(index, musicObj.id, musicObj.title);
-    this.state.theMusicAudio.src = this.state.baseUrl + musicObj.musicSrc;
+    this.state.theMusicAudio.src =
+      musicObj.musicSrc.slice(0, 4) === "blob" ? musicObj.musicSrc : this.state.baseUrl + musicObj.musicSrc;
     await this.playMusic();
     this.setState({
       ...this.state,
@@ -248,20 +249,29 @@ export default class MusicPlayer extends React.Component {
       reader.onprogress = function (e) {
         console.log(e);
       };
-      reader.onload = () => {
+      reader.onload = async () => {
         console.log("本地音乐加载完成");
         let musicSrc = window.URL.createObjectURL(localMusicFile);
         console.log(musicSrc);
         this.state.theMusicAudio.src = musicSrc;
 
-        this.setState({
-          ...this.state, musicList: [...musicList, {
+        await this.setState({
+          ...this.state,
+          musicList: [...musicList, {
             id: musicList.length + 1,
             title: localMusicFile.name,
             picSrc: "/sample/img/music-4.png",
             musicSrc
           }]
         });
+
+        await this.setState({
+          ...this.state,
+          currMusicIndex: this.state.musicList.length - 1,
+          currMusicObj: this.state.musicList[this.state.musicList.length - 1],
+        });
+
+        this.state.theMusicAudio.play();
 
         // theMusic.src = this.result;
         // // document.querySelector("#songTitle").innerHTML=localMusicFile. 
