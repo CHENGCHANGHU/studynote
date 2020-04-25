@@ -1,30 +1,23 @@
 {
   "files": {
-    "main.css": "/studynote/musicplayer-react/build/static/css/main.622a2614.chunk.css",
-    "main.js": "/studynote/musicplayer-react/build/static/js/main.560e41c9.chunk.js",
-    "main.js.map": "/studynote/musicplayer-react/build/static/js/main.560e41c9.chunk.js.map",
+    "main.css": "/studynote/musicplayer-react/build/static/css/main.2c76393e.chunk.css",
+    "main.js": "/studynote/musicplayer-react/build/static/js/main.31cb2d44.chunk.js",
+    "main.js.map": "/studynote/musicplayer-react/build/static/js/main.31cb2d44.chunk.js.map",
     "runtime-main.js": "/studynote/musicplayer-react/build/static/js/runtime-main.9ad5fefa.js",
     "runtime-main.js.map": "/studynote/musicplayer-react/build/static/js/runtime-main.9ad5fefa.js.map",
-    "static/js/2.840461cd.chunk.js": "/studynote/musicplayer-react/build/static/js/2.840461cd.chunk.js",
-    "static/js/2.840461cd.chunk.js.map": "/studynote/musicplayer-react/build/static/js/2.840461cd.chunk.js.map",
+    "static/js/2.1274410c.chunk.js": "/studynote/musicplayer-react/build/static/js/2.1274410c.chunk.js",
+    "static/js/2.1274410c.chunk.js.map": "/studynote/musicplayer-react/build/static/js/2.1274410c.chunk.js.map",
     "index.html": "/studynote/musicplayer-react/build/index.html",
-    "precache-manifest.0becd1518caff21cfed22cb1fdc17c2e.js": "/studynote/musicplayer-react/build/precache-manifest.0becd1518caff21cfed22cb1fdc17c2e.js",
+    "precache-manifest.d3f0fb699b6da94c314d053b8d3cc85e.js": "/studynote/musicplayer-react/build/precache-manifest.d3f0fb699b6da94c314d053b8d3cc85e.js",
     "service-worker.js": "/studynote/musicplayer-react/build/service-worker.js",
-    "static/css/main.622a2614.chunk.css.map": "/studynote/musicplayer-react/build/static/css/main.622a2614.chunk.css.map",
-    "static/js/2.840461cd.chunk.js.LICENSE.txt": "/studynote/musicplayer-react/build/static/js/2.840461cd.chunk.js.LICENSE.txt",
-    "static/media/another-year.jpg": "/studynote/musicplayer-react/build/static/media/another-year.1a12fbd6.jpg",
-    "static/media/another-year.mp3": "/studynote/musicplayer-react/build/static/media/another-year.b283adba.mp3",
-    "static/media/drift-north.mp3": "/studynote/musicplayer-react/build/static/media/drift-north.24ba70c3.mp3",
-    "static/media/drift-north.jpg": "/studynote/musicplayer-react/build/static/media/drift-north.81bdc6ee.jpg",
-    "static/media/skin.jpg": "/studynote/musicplayer-react/build/static/media/skin.3d6ddd11.jpg",
-    "static/media/skin.mp3": "/studynote/musicplayer-react/build/static/media/skin.9da8c78e.mp3",
-    "static/media/sunset-road.jpg": "/studynote/musicplayer-react/build/static/media/sunset-road.94c8ebf5.jpg",
-    "static/media/sunset-road.mp3": "/studynote/musicplayer-react/build/static/media/sunset-road.cc52929d.mp3"
+    "static/css/main.2c76393e.chunk.css.map": "/studynote/musicplayer-react/build/static/css/main.2c76393e.chunk.css.map",
+    "static/js/2.1274410c.chunk.js.LICENSE.txt": "/studynote/musicplayer-react/build/static/js/2.1274410c.chunk.js.LICENSE.txt",
+    "static/media/MusicPlayer.css": "/studynote/musicplayer-react/build/static/media/skin.3d6ddd11.jpg"
   },
   "entrypoints": [
     "static/js/runtime-main.9ad5fefa.js",
-    "static/js/2.840461cd.chunk.js",
-    "static/css/main.622a2614.chunk.css",
-    "static/js/main.560e41c9.chunk.js"
+    "static/js/2.1274410c.chunk.js",
+    "static/css/main.2c76393e.chunk.css",
+    "static/js/main.31cb2d44.chunk.js"
   ]
 }

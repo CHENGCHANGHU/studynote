@@ -177,6 +177,13 @@ li {
   position: relative;
   cursor: pointer;
 }
+.MusicPlayer .ControlBox .progress-box .progress-bar .buffered-bar {
+  width: 50%;
+  height: 100%;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 0.1rem;
+}
 .MusicPlayer .ControlBox .progress-box .progress-bar .played-bar {
   width: 0%;
   border-radius: 0.1rem;

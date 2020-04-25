@@ -11,13 +11,18 @@ export default class MusicPlayer extends React.Component {
       panelFlag: false,
       controllerFlag: false,
       controller: null,
+      baseUrl: "https://chengchanghu.github.io/studynote/musicplayer-react/src/components/MusicPlayer",
       // localFileInput: null,
       loadingProgress: 0,
       musicList: [
-        { id: 1, title: "日落大道", picSrc: require("./sample/img/sunset-road.jpg"), musicSrc: require("./sample/music/sunset-road.mp3") },
-        { id: 2, title: "飘向北方", picSrc: require("./sample/img/drift-north.jpg"), musicSrc: require("./sample/music/drift-north.mp3") },
-        { id: 3, title: "Skin", picSrc: require("./sample/img/skin.jpg"), musicSrc: require("./sample/music/skin.mp3") },
-        { id: 4, title: "又过了一年", picSrc: require("./sample/img/another-year.jpg"), musicSrc: require("./sample/music/another-year.mp3") },
+        // { id: 1, title: "日落大道", picSrc: require("./sample/img/sunset-road.jpg"), musicSrc: require("./sample/music/sunset-road.mp3") },
+        // { id: 2, title: "飘向北方", picSrc: require("./sample/img/drift-north.jpg"), musicSrc: require("./sample/music/drift-north.mp3") },
+        // { id: 3, title: "Skin", picSrc: require("./sample/img/skin.jpg"), musicSrc: require("./sample/music/skin.mp3") },
+        // { id: 4, title: "又过了一年", picSrc: require("./sample/img/another-year.jpg"), musicSrc: require("./sample/music/another-year.mp3") },
+        { id: 1, title: "日落大道", picSrc: "/sample/img/sunset-road.jpg", musicSrc: "/sample/music/sunset-road.mp3" },
+        { id: 2, title: "飘向北方", picSrc: "/sample/img/drift-north.jpg", musicSrc: "/sample/music/drift-north.mp3" },
+        { id: 3, title: "Skin", picSrc: "/sample/img/skin.jpg", musicSrc: "/sample/music/skin.mp3" },
+        { id: 4, title: "又过了一年", picSrc: "/sample/img/another-year.jpg", musicSrc: "/sample/music/another-year.mp3" },
       ],
 
       // 当前播放音乐的状态
@@ -25,14 +30,16 @@ export default class MusicPlayer extends React.Component {
       currMusicIndex: 3,
       currMusicDuration: 0,// 当前音乐时间总长
       currMusicTime: 0,
+      // currMusicBufferedTimeId: 0,
+      currMusicBufferedLength: 0,
       playedBarWidth: 0,
       controllerLeft: 0,
       playFlag: false,
     }
 
     this.state.currMusicObj = this.state.musicList[3];
-    this.state.theMusicAudio.src = this.state.currMusicObj.musicSrc;
-    console.log(isNaN(this.state.theMusicAudio.duration));
+    // this.state.theMusicAudio.src = this.state.currMusicObj.musicSrc;
+    // console.log(isNaN(this.state.theMusicAudio.duration));
   }
 
   openMusicPanel = () => {
@@ -55,6 +62,9 @@ export default class MusicPlayer extends React.Component {
     theMusicAudio.src = currMusicObj.musicSrc;
     document.addEventListener("keypress", this.keyPressHandler);
 
+    // this.state.theMusicAudio.src = `https://chengchanghu.github.io/studynote/musicplayer-react/src/components/MusicPlayer/sample/music/another-year.mp3`;
+    this.state.theMusicAudio.src = `${this.state.baseUrl}${this.state.musicList[this.state.currMusicIndex].musicSrc}`;
+
     // 音乐事件监听
     theMusicAudio.addEventListener("durationchange", this.durationChangeHandler);
     theMusicAudio.addEventListener("ended", this.endedHandler);
@@ -63,45 +73,69 @@ export default class MusicPlayer extends React.Component {
     // document事件监听
     // document.addEventListener("mousemove", this.mouseMoveHandler);
     document.addEventListener("mouseup", this.mouseUpHandler);
+
+    // this.loadingResuorce();
+    this.bufferedUpdateHandler();
+
+    this.refs.localFile.addEventListener("change", event => this.changeMusicByInputFile(event));
   }
 
+  // *******************************************************************************
+  // 渲染
   render() {
     const {
-      theMusicAudio, playFlag, panelFlag, musicList, currMusicObj,
+      baseUrl,
+      playFlag, panelFlag, musicList, currMusicObj,
       currMusicTime,
       playedBarWidth,
       controllerLeft,
       currMusicDuration,
       currMusicIndex,
       loadingProgress,
+      currMusicBufferedLength,
     } = this.state;
     return (
       <div className="MusicPlayer" onKeyPress={this.keyPressHandler}>
         loadingProgress: <span>{loadingProgress}</span>
         <div className="ControlBox">
           {/* <audio src="./sunset-road.mp3" id="TheMusic"></audio> */}
+          {/* 上一首按钮 */}
           <div className="prev">
             <div id="prev" onClick={this.changeMusicByPrev}></div>
           </div>
+          {/* 封面按钮 */}
           <div className={`record-cover ${playFlag ? "pause-status" : "play-status"}`} id="recordCover">
-            <img src={currMusicObj.picSrc} alt="封面" />
+            {/* <img src={currMusicObj.picSrc} alt="封面" /> */}
+            <img src={baseUrl + currMusicObj.picSrc} alt="封面" />
             <div className="pause" id="pause" onClick={this.pauseMusic}></div>
             <div className="play" id="play" onClick={this.playMusic}></div>
             {/* <div className="loading" id="loading">
               <div className="wave"></div>
             </div> */}
           </div>
+          {/* 下一首按钮 */}
           <div className="next">
             <div id="next" onClick={this.changeMusicByNext}></div>
           </div>
+
+          {/* 进度 */}
           <div className="progress-box" id="progressBox">
+
+            {/* 歌曲名称栏 */}
             <div className="song-title">
               <span id="songTitle">{currMusicObj.title}</span>
+
+              {/* 歌曲面板展开按钮 */}
               <span className={`more ${panelFlag ? "more-active" : ""}`} id="more" onClick={this.openMusicPanel}></span>
             </div>
+
+            {/* 进度条 */}
             <div className="progress-bar"
               id="progressBar"
               onClick={event => this.clickProgressBarHandler(event)}>
+              <div className="buffered-bar"
+                style={{ width: currMusicBufferedLength }}
+                onClick={event => this.clickBufferedBarHandler(event)}></div>
               <div className="played-bar"
                 onClick={event => {
                   console.log("played-bar");
@@ -123,6 +157,8 @@ export default class MusicPlayer extends React.Component {
                 // }}
                 style={{ left: controllerLeft }} id="controller"></div>
             </div>
+
+            {/* 歌曲时间 */}
             <div className="song-duration">
               <span className="curr-duration">
                 {this.sec2min(currMusicTime)}
@@ -134,10 +170,13 @@ export default class MusicPlayer extends React.Component {
               </span>
             </div>
           </div>
+
+          {/* 歌曲面板 */}
           <div className={`music-panel ${panelFlag ? "active-music-panel" : ""}`} id="musicPanel">
             <div className="panel-header">歌曲面板
-              {/* <input type="file" className="local-file" ref={this.state.localFileInput} id="localFile" /> */}
-              <div className="local-music" id="localMusic">本地音乐</div>
+              <input type="file" className="local-file" ref="localFile" id="localFile" />
+              <div className="local-music" id="localMusic"
+                onClick={this.clickLocalMusicHandler}>本地音乐</div>
             </div>
             <ul className="music-list">
               {
@@ -149,7 +188,7 @@ export default class MusicPlayer extends React.Component {
                         this.changeMusicByMusicPanel(musicObj, index);
                         event.preventDefault();
                       }}>
-                      <img className="pic" src={musicObj.picSrc} />
+                      <img className="pic" src={baseUrl + musicObj.picSrc} />
                       {musicObj.title}
                     </a>
                   </li>)
@@ -181,13 +220,59 @@ export default class MusicPlayer extends React.Component {
   // 歌曲列表项点击事件处理器
   changeMusicByMusicPanel = async (musicObj, index) => {
     console.log(index, musicObj.id, musicObj.title);
-    this.state.theMusicAudio.src = musicObj.musicSrc;
+    this.state.theMusicAudio.src = this.state.baseUrl + musicObj.musicSrc;
     await this.playMusic();
     this.setState({
       ...this.state,
       currMusicObj: musicObj,
       currMusicIndex: index,
     });
+  }
+
+  // 本地音乐点击事件
+  clickLocalMusicHandler = event => {
+    console.log("本地音乐点击事件", this.refs.localFile);
+    this.refs.localFile.click();
+  }
+
+  // 音乐输入改变事件处理器
+  changeMusicByInputFile = event => {
+    const { musicList } = this.state;
+    console.log("音乐输入改变");
+    let localMusicFile = event.target.files[0];
+    console.log(localMusicFile);
+
+    if (!!localMusicFile) {
+      let reader = new FileReader();
+      reader.readAsDataURL(localMusicFile);
+      reader.onprogress = function (e) {
+        console.log(e);
+      };
+      reader.onload = () => {
+        console.log("本地音乐加载完成");
+        let musicSrc = window.URL.createObjectURL(localMusicFile);
+        console.log(musicSrc);
+        this.state.theMusicAudio.src = musicSrc;
+
+        this.setState({
+          ...this.state, musicList: [...musicList, {
+            id: musicList.length + 1,
+            title: localMusicFile.name,
+            picSrc: "/sample/img/music-4.png",
+            musicSrc
+          }]
+        });
+
+        // theMusic.src = this.result;
+        // // document.querySelector("#songTitle").innerHTML=localMusicFile. 
+        // recordCover.classList.remove("pause-status");
+        // recordCover.classList.add("play-status");
+        // cancelAnimationFrame(RAFid);
+        // document.querySelector("#playedBar").style.width = "0%";
+        // document.querySelector("#controller").style.left = "0%";
+        // document.querySelector("#songTitle").innerHTML = localMusicFile.name;
+      }
+    }
   }
 
   // 上一首点击事件处理器
@@ -222,8 +307,19 @@ export default class MusicPlayer extends React.Component {
     const { clientX, target: { offsetLeft, offsetWidth } } = event;
     const scale = Math.min(1, Math.max(0, (clientX - offsetLeft) / offsetWidth));
     console.log("进度条点击事件", clientX, offsetLeft, offsetWidth, scale);
+    // theMusicAudio.currentTime = scale * currMusicDuration;
+    // this.setState({ ...this.state, currMusicTime: scale * currMusicDuration });
+  }
+
+  // 缓冲条点击事件处理器
+  clickBufferedBarHandler = event => {
+    const { theMusicAudio, currMusicDuration } = this.state;
+    const { clientX, target: { parentNode: { offsetLeft, offsetWidth } } } = event;
+    const scale = Math.min(1, Math.max(0, (clientX - offsetLeft) / offsetWidth));
+    console.log("缓冲条条点击事件", clientX, offsetLeft, offsetWidth, scale);
     theMusicAudio.currentTime = scale * currMusicDuration;
     this.setState({ ...this.state, currMusicTime: scale * currMusicDuration });
+    event.stopPropagation();
   }
 
   // 已播放进度条点击事件处理器
@@ -287,6 +383,7 @@ export default class MusicPlayer extends React.Component {
     }
   }
 
+  // 音乐时长改变处理器
   durationChangeHandler = () => {
     // console.log(this.state.theMusicAudio.duration);
     // this.setState({ ...this.state });
@@ -300,6 +397,7 @@ export default class MusicPlayer extends React.Component {
     this.changeMusicByNext();
   }
 
+  // 时间更新处理器
   timeUpdateHandler = event => {
     let currentTime = this.state.theMusicAudio.currentTime;
     let percntage = currentTime / this.state.currMusicDuration * 100;
@@ -309,6 +407,73 @@ export default class MusicPlayer extends React.Component {
       currMusicTime: currentTime,
       playedBarWidth: `${percntage}%`,
       controllerLeft: `${percntage}%`
+    });
+  }
+
+  // 缓冲区更新处理器
+  bufferedUpdateHandler = () => {
+    setTimeout(() => {
+      const { currMusicDuration, theMusicAudio } = this.state;
+      const timeRanges = theMusicAudio.buffered;
+      if (timeRanges.length != 0) {
+        this.setState({
+          ...this.state,
+          currMusicBufferedLength: `${timeRanges.end(timeRanges.length - 1) / currMusicDuration * 100}%`
+        });
+        if (timeRanges.end(timeRanges.length - 1) < currMusicDuration)
+          this.bufferedUpdateHandler();
+      }
+    }, 500);
+  }
+
+  // 加载资源
+  loadingResuorce = () => {
+    let p = new Promise(async (resolve, reject) => {
+      const { baseUrl, currMusicIndex, musicList } = this.state;
+      let currMusicUrl = `${baseUrl}${musicList[currMusicIndex]}`;
+      let requestHeader = {
+        method: "GET",
+        accept: "audio/mp3",
+        // cache: "force-cache",
+        responseType: 'arraybuffer',
+      };
+      let respHeader = await fetch(currMusicUrl, requestHeader);
+      let respReader = respHeader.body.getReader();
+      let totalLength = respHeader.headers.get("Content-Length");
+      console.log("totalLength:", totalLength);
+      let loadedDataBuffer = new Uint8Array(totalLength);
+
+      let loadedLength = 0;
+
+      while (true) {
+        const {
+          value,
+          done
+        } = await respReader.read();
+        if (done) break;
+        if (loadedLength > totalLength / 10) {
+          console.log(value);
+          break;
+        }
+
+        // console.log(loadedLength);
+        loadedDataBuffer.set(value, loadedLength);
+        loadedLength += value.length;
+
+        this.setState({ ...this.state, loadingProgress: (loadedLength / totalLength * 100).toFixed(2) + "%" });
+      }
+      console.log(loadedDataBuffer);
+      let blobURL = window.URL.createObjectURL(new Blob([loadedDataBuffer]));
+      resolve(blobURL);
+
+      // let audio = new Audio(blobURL);
+      // audio.play();
+
+      // loadingCover.style.display = "none";
+      // recordCover.classList.add("play-status");
+    }).then(url => {
+      console.log(url);
+      // this.state.theMusicAudio.src = url;
     });
   }
 
