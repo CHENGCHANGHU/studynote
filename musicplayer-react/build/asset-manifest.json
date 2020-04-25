@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/studynote/musicplayer-react/build/static/css/main.3c0b21eb.chunk.css",
-    "main.js": "/studynote/musicplayer-react/build/static/js/main.9233d726.chunk.js",
-    "main.js.map": "/studynote/musicplayer-react/build/static/js/main.9233d726.chunk.js.map",
+    "main.js": "/studynote/musicplayer-react/build/static/js/main.2ef2d99a.chunk.js",
+    "main.js.map": "/studynote/musicplayer-react/build/static/js/main.2ef2d99a.chunk.js.map",
     "runtime-main.js": "/studynote/musicplayer-react/build/static/js/runtime-main.9ad5fefa.js",
     "runtime-main.js.map": "/studynote/musicplayer-react/build/static/js/runtime-main.9ad5fefa.js.map",
     "static/js/2.1274410c.chunk.js": "/studynote/musicplayer-react/build/static/js/2.1274410c.chunk.js",
     "static/js/2.1274410c.chunk.js.map": "/studynote/musicplayer-react/build/static/js/2.1274410c.chunk.js.map",
     "index.html": "/studynote/musicplayer-react/build/index.html",
-    "precache-manifest.6279575b3ef8347ae1005309ff238a7f.js": "/studynote/musicplayer-react/build/precache-manifest.6279575b3ef8347ae1005309ff238a7f.js",
+    "precache-manifest.4f54a299611068a0ceb10d01291d4d33.js": "/studynote/musicplayer-react/build/precache-manifest.4f54a299611068a0ceb10d01291d4d33.js",
     "service-worker.js": "/studynote/musicplayer-react/build/service-worker.js",
     "static/css/main.3c0b21eb.chunk.css.map": "/studynote/musicplayer-react/build/static/css/main.3c0b21eb.chunk.css.map",
     "static/js/2.1274410c.chunk.js.LICENSE.txt": "/studynote/musicplayer-react/build/static/js/2.1274410c.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.9ad5fefa.js",
     "static/js/2.1274410c.chunk.js",
     "static/css/main.3c0b21eb.chunk.css",
-    "static/js/main.9233d726.chunk.js"
+    "static/js/main.2ef2d99a.chunk.js"
   ]
 }

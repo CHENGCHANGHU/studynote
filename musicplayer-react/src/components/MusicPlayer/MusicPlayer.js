@@ -271,7 +271,7 @@ export default class MusicPlayer extends React.Component {
           currMusicObj: this.state.musicList[this.state.musicList.length - 1],
         });
 
-        this.state.theMusicAudio.play();
+        this.playMusic();
 
         // theMusic.src = this.result;
         // // document.querySelector("#songTitle").innerHTML=localMusicFile. 
